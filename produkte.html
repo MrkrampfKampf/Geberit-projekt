@@ -7,64 +7,113 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
+            line-height: 1.5;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f5f5f5;
+            color: #222;
         }
         header {
-            background-color: #333;
+            background-color: #2f3e46;
             color: #fff;
             padding: 1rem;
             text-align: center;
         }
         nav {
-            background-color: #555;
-            padding: 0.5rem;
+            background-color: #4f5d66;
+            padding: 0.7rem;
+            text-align: center;
         }
         nav a {
             color: #fff;
-            margin: 0 1rem;
+            margin: 0 0.8rem;
             text-decoration: none;
         }
         nav a:hover {
             text-decoration: underline;
         }
         main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 1100px;
+            margin: 1.5rem auto;
+            padding: 1.5rem;
             background-color: #fff;
-            padding: 2rem;
-            border-radius: 5px;
+            border-radius: 6px;
         }
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1.2rem;
         }
         .product-card {
             border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 1.5rem;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            padding: 0.9rem;
+            background-color: #fafafa;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
         }
         .product-card:hover {
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
         .product-card h3 {
-            margin-top: 0;
+            margin: 0 0 0.4rem;
             color: #333;
+            font-size: 1rem;
         }
         .product-card p {
             color: #666;
-            margin-bottom: 1rem;
+            margin: 0.2rem 0;
+            font-size: 0.92rem;
         }
-
+        .product-card .price {
+            font-weight: bold;
+            color: #2f6f9f;
+            margin-top: 0.6rem;
+        }
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+        }
+        .modal-backdrop.active {
+            display: flex;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            width: min(100%, 560px);
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.2rem;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            border: none;
+            background: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+        .modal h3 {
+            margin: 0 0 0.4rem;
+            color: #333;
+        }
+        .modal .meta {
+            margin-top: 0.8rem;
+            font-weight: bold;
+            color: #2f6f9f;
+        }
         footer {
-            background-color: #333;
+            background-color: #2f3e46;
             color: #fff;
             text-align: center;
             padding: 1rem;
@@ -86,46 +135,116 @@
 
     <main>
         <h2>Geberit Produkte</h2>
-        <p>Hier finden Sie alle unsere Produkte. </p>
+        <p>Hier finden Sie alle unsere Produkte. Klicken Sie auf ein Produkt, um die Details zu sehen.</p>
 
-        <div class="products-grid" id="productsContainer">
-            <div class="product-card">
-                <h3>Beispielprodukt 1</h3>
-                <p>Beschreibung des Produkts 1</p>
-                <p><strong>Preis:</strong> €</p>
-            </div>
-            <div class="product-card">
-                <h3>Beispielprodukt 2</h3>
-                <p>Beschreibung des Produkts 2</p>
-                <p><strong>Preis:</strong> €</p>
-            </div>
-            <div class="product-card">
-                <h3>Beispielprodukt 3</h3>
-                <p>Beschreibung des Produkts 3</p>
-                <p><strong>Preis:</strong> €</p>
-            </div>
-            <div class="product-card">
-                <h3>Beispielprodukt 4</h3>
-                <p>Beschreibung des Produkts 4</p>
-                <p><strong>Preis:</strong> €</p>
-            </div>
-            <div class="product-card">
-                <h3>Beispielprodukt 5</h3>
-                <p>Beschreibung des Produkts 5</p>
-                <p><strong>Preis:</strong> €</p>
-            </div>
-            <div class="product-card">
-                <h3>Beispielprodukt 6</h3>
-                <p>Beschreibung des Produkts 6</p>
-                <p><strong>Preis:</strong> €</p>
+        <div class="products-grid" id="productsContainer"></div>
+    </main>
+
+    <div class="modal-backdrop" id="productModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button class="modal-close" id="closeModal" aria-label="Produktdetails schließen">×</button>
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+            <div class="meta">
+                <span id="modalPrice"></span>
+                <span id="modalArticle"></span>
             </div>
         </div>
-    </main>
+    </div>
 
     <footer>
         <p>&copy; 2026 GeberitPraktikanten vorbehalten.</p>
     </footer>
 
+    <script>
+        const products = [
+            {
+                name: 'Produkt 1',
+                description: 'Beschreibung Produkt 1.',
+                price: 'Preis hier',
+                articleNumber: 'ART-001'
+            },
+            {
+                name: 'Produkt 2',
+                description: 'Beschreibung Produkt 2.',
+                price: 'Preis hier',
+                articleNumber: 'ART-002'
+            },
+            {
+                name: 'Produkt 3',
+                description: 'Beschreibung Produkt 3.',
+                price: 'Preis hier',
+                articleNumber: 'ART-003'
+            },
+            {
+                name: 'Produkt 4',
+                description: 'Beschreibung Produkt 4.',
+                price: 'Preis hier',
+                articleNumber: 'ART-004'
+            },
+            {
+                name: 'Produkt 5',
+                description: 'Beschreibung Produkt 5.',
+                price: 'Preis hier',
+                articleNumber: 'ART-005'
+            },
+            {
+                name: 'Produkt 6',
+                description: 'Beschreibung Produkt 6.',
+                price: 'Preis hier',
+                articleNumber: 'ART-006'
+            }
+        ];
 
+        const container = document.getElementById('productsContainer');
+        const modal = document.getElementById('productModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalArticle = document.getElementById('modalArticle');
+        const closeButton = document.getElementById('closeModal');
+
+        products.forEach(product => {
+            const button = document.createElement('button');
+            button.className = 'product-card';
+            button.type = 'button';
+            button.innerHTML = `
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+                <p class="price">${product.price}</p>
+            `;
+            button.addEventListener('click', () => openModal(product));
+            container.appendChild(button);
+        });
+
+        function openModal(product) {
+            modalTitle.textContent = product.name;
+            modalDescription.textContent = product.description;
+            modalPrice.textContent = `Preis: ${product.price}`;
+            modalArticle.textContent = `Artikelnummer: ${product.articleNumber}`;
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        closeButton.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
