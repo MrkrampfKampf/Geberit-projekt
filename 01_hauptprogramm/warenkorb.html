@@ -44,6 +44,11 @@
 
         .logo img {
             height: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
         }
 
         nav > a {
@@ -68,6 +73,7 @@
             transform: scaleX(0);
             transform-origin: center;
             transition: transform 0.3s ease;
+            pointer-events: none;
         }
 
         nav > a:hover,
