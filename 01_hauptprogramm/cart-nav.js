@@ -25,8 +25,21 @@
             }
 
             .cart-nav-icon {
-                font-size: 1.1rem;
+                display: inline-flex;
+                width: 1.45rem;
+                height: 1.45rem;
+                color: #111;
                 line-height: 1;
+            }
+
+            .cart-nav-icon svg {
+                width: 100%;
+                height: 100%;
+                display: block;
+                stroke: currentColor;
+                stroke-width: 2.5;
+                stroke-linecap: round;
+                stroke-linejoin: round;
             }
 
             .cart-nav-count {
@@ -50,6 +63,20 @@
         document.head.appendChild(style);
     }
 
+    function getCartIcon() {
+        return `
+            <span class="cart-nav-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.4L21 8H7"></path>
+                    <path d="M9 20h.01"></path>
+                    <path d="M17 20h.01"></path>
+                    <path d="M9 11h10"></path>
+                    <path d="M10 14h8"></path>
+                </svg>
+            </span>
+        `;
+    }
+
     function updateCartNavigation() {
         ensureStyle();
         const count = getCartCount();
@@ -61,7 +88,7 @@
             }
 
             const countId = link.id === 'cartNavLink' ? ' id="cartNavCount"' : '';
-            link.innerHTML = `<span class="cart-nav-icon" aria-hidden="true">&#128722;</span><span class="cart-nav-count"${countId}>${count}</span>`;
+            link.innerHTML = `${getCartIcon()}<span class="cart-nav-count"${countId}>${count}</span>`;
             link.setAttribute('aria-label', count ? `Einkaufswagen, ${count} Artikel` : 'Einkaufswagen');
             link.setAttribute('title', count ? `Einkaufswagen (${count})` : 'Einkaufswagen');
             link.classList.toggle('has-items', count > 0);
