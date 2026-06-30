@@ -3,6 +3,7 @@ const GeberitDatabase = (() => {
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_R__QyYodPo3dnVb9RJqqkg_UTAZXqyP';
     const PRODUCTS_TABLE = 'products';
     const PRODUCT_CLICKS_TABLE = 'product_clicks';
+    const CART_ITEMS_TABLE = 'cart_items';
 
     function isConfigured() {
         return !SUPABASE_URL.includes('HIER_DEINE')
@@ -96,8 +97,105 @@ const GeberitDatabase = (() => {
         return true;
     }
 
+    async function loadCartItems(visitorId) {
+        if (!isConfigured()) {
+            return [];
+        }
+
+        const ipAddress = await getVisitorIp();
+        const filters = [
+            `visitor_id=eq.${encodeURIComponent(visitorId)}`,
+            ipAddress ? `ip_address=eq.${encodeURIComponent(ipAddress)}` : ''
+        ].filter(Boolean).join('&');
+        const endpoint = `${SUPABASE_URL}/rest/v1/${CART_ITEMS_TABLE}?select=*&${filters}&order=updated_at.desc`;
+        const response = await fetch(endpoint, {
+            headers: getHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error(`Supabase Warenkorb laden Fehler: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+    }
+
+    async function saveCartItem(cartItem) {
+        if (!isConfigured()) {
+            return false;
+        }
+
+        const ipAddress = await getVisitorIp();
+        const endpoint = `${SUPABASE_URL}/rest/v1/${CART_ITEMS_TABLE}?on_conflict=visitor_id,ip_address,product_name`;
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: getHeaders({
+                'Content-Type': 'application/json',
+                Prefer: 'resolution=merge-duplicates,return=minimal'
+            }),
+            body: JSON.stringify({
+                ...cartItem,
+                ip_address: ipAddress || null
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Supabase Warenkorb speichern Fehler: ${response.status} ${response.statusText}`);
+        }
+
+        return true;
+    }
+
+    async function removeCartItem(visitorId, productName) {
+        if (!isConfigured()) {
+            return false;
+        }
+
+        const ipAddress = await getVisitorIp();
+        const filters = [
+            `visitor_id=eq.${encodeURIComponent(visitorId)}`,
+            ipAddress ? `ip_address=eq.${encodeURIComponent(ipAddress)}` : '',
+            `product_name=eq.${encodeURIComponent(productName)}`
+        ].filter(Boolean).join('&');
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/${CART_ITEMS_TABLE}?${filters}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error(`Supabase Warenkorb löschen Fehler: ${response.status} ${response.statusText}`);
+        }
+
+        return true;
+    }
+
+    async function clearCartItems(visitorId) {
+        if (!isConfigured()) {
+            return false;
+        }
+
+        const ipAddress = await getVisitorIp();
+        const filters = [
+            `visitor_id=eq.${encodeURIComponent(visitorId)}`,
+            ipAddress ? `ip_address=eq.${encodeURIComponent(ipAddress)}` : ''
+        ].filter(Boolean).join('&');
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/${CART_ITEMS_TABLE}?${filters}`, {
+            method: 'DELETE',
+            headers: getHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error(`Supabase Warenkorb leeren Fehler: ${response.status} ${response.statusText}`);
+        }
+
+        return true;
+    }
+
     return {
         loadProducts,
-        saveProductClick
+        saveProductClick,
+        loadCartItems,
+        saveCartItem,
+        removeCartItem,
+        clearCartItems
     };
 })();
