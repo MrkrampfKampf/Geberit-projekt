@@ -1,113 +1,483 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeberitProdukte</title>
+    <title>Über Geberit</title>
     <style>
+        :root {
+            --geberit-blue: #3f6f8f;
+            --geberit-blue-light: #4fc3f7;
+            --geberit-dark: #2f3f47;
+            --geberit-text: #23343b;
+            --geberit-border: #c9d4db;
+            --geberit-soft: #eef4f7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f8f9fa; 
-        }
-        
-        header {
-            background-color: #00427c; 
-            color: #fff;
-            padding: 1rem;
-            text-align: center;
-            height: 64px;
-            position: relative;
-        }
-        
-        nav {
-            background-color: #003360; 
-            padding: 0.5rem;
-            text-align: center;
-        }
-        
-        nav a {
-            color: #fff;
-            margin: 0 1rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        nav a:hover {
-            text-decoration: underline;
-            color: #5596ff;
-            transform: (1.2);
-        }
-        
-        main {
-            max-width: 3000px; 
-            padding: 2rem;
-            background-color: #fff;
-            border-radius: 5px;
-        }
-        
-        section {
-            background-color: #f0f4f8; 
-            padding: 10px 5px;
-            text-align: center; 
-            border-radius: 25px; 
-            margin-bottom: 1rem; 
+            background: linear-gradient(135deg, #f7f9fb 0%, #eef4f7 100%);
+            color: var(--geberit-text);
         }
 
-        section h2 {
-            color: #00427c; 
-            margin-top: 5px;
+        nav {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 18px rgba(47, 63, 71, 0.2);
+        }
+
+        .logo {
+            margin-right: 40px;
+        }
+
+        .logo img {
+            height: 25px;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(79, 195, 247, 0.75));
+        }
+
+        .logo a.logo-clicked img {
+            filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.85));
+            transform: scale(1.14);
+        }
+
+        .secret-bomb {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 1.5rem;
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 35% 30%, #59646b 0 12%, #1e2529 44%, #07090a 100%);
+            color: white;
+            font-size: 2.2rem;
+            text-decoration: none;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28), 0 0 24px rgba(79, 195, 247, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(18px) scale(0.88);
+            transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            z-index: 2000;
+        }
+
+        .secret-bomb.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+            animation: secretBombFloat 2.6s ease-in-out infinite;
+        }
+
+        .secret-bomb:hover {
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.34), 0 0 30px rgba(79, 195, 247, 0.55);
+        }
+
+        @keyframes secretBombFloat {
+            0%, 100% {
+                translate: 0 0;
+            }
+            50% {
+                translate: 0 -12px;
+            }
+        }
+
+        nav > a {
+            position: relative;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 25px;
+            padding: 0.25rem 0;
+            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        nav > a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 3px;
+            border-radius: 999px;
+            background: var(--geberit-blue-light);
+            box-shadow: 0 0 12px rgba(79, 195, 247, 0.85);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+
+        nav > a:hover,
+        nav > a.active {
+            color: var(--geberit-blue-light);
+            text-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
+            transform: translateY(-1px);
+        }
+
+        nav > a:hover::after,
+        nav > a.active::after {
+            transform: scaleX(1);
+        }
+
+        main {
+            background: #fff;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 58vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+            padding: 5rem 1.2rem;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(47, 63, 71, 0.88) 0%, rgba(47, 63, 71, 0.58) 48%, rgba(47, 63, 71, 0.28) 100%),
+                url("images/img-teaser-master-16-9.jpg");
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.02);
+            z-index: 0;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            height: 130px;
+            background: linear-gradient(0deg, #ffffff 0%, rgba(255,255,255,0) 100%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+            padding: 0.3rem 0.7rem;
+            background: rgba(255, 255, 255, 0.12);
+            color: #dff6ff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 0 18px rgba(79, 195, 247, 0.25);
+        }
+
+        .hero h1 {
+            margin: 1rem 0 0.8rem;
+            max-width: 720px;
+            font-size: clamp(2.2rem, 5vw, 4.4rem);
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+
+        .hero p {
+            max-width: 720px;
+            margin: 0;
+            color: #eef8fb;
+            font-size: 1.12rem;
+        }
+
+        .content-section {
+            padding: 4rem 1.2rem;
+        }
+
+        .content-section.alt {
+            background: linear-gradient(135deg, #f8fbfd 0%, #eef4f7 100%);
+        }
+
+        .section-shell {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            max-width: 740px;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background-color: #e8f0f5;
+            color: var(--geberit-blue);
+            padding: 0.28rem 0.6rem;
+            border: 1px solid #c3d5e0;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 0.45rem;
+            font-size: 1.85rem;
+            color: var(--geberit-dark);
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: #5e6a70;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid var(--geberit-border);
+            border-radius: 14px;
+            padding: 1.15rem;
+            box-shadow: 0 8px 22px rgba(47, 63, 71, 0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(79, 195, 247, 0.7);
+            box-shadow: 0 16px 36px rgba(47, 63, 71, 0.14), 0 0 22px rgba(79, 195, 247, 0.22);
+        }
+
+        .info-card h3 {
+            margin: 0 0 0.45rem;
+            color: var(--geberit-dark);
+            font-size: 1.05rem;
+        }
+
+        .info-card p {
+            margin: 0;
+            color: #5f6b70;
+        }
+
+        .numbers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .number-card {
+            background: linear-gradient(135deg, #3f6f8f 0%, #2f3f47 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 1.2rem;
+            box-shadow: 0 12px 30px rgba(47, 63, 71, 0.18), 0 0 24px rgba(79, 195, 247, 0.18);
+        }
+
+        .number-card strong {
+            display: block;
+            font-size: 2rem;
+            line-height: 1;
+            color: #dff6ff;
+        }
+
+        .number-card span {
+            display: block;
+            margin-top: 0.45rem;
+            color: #eef8fb;
+        }
+
+        .contact-panel {
+            background: #ffffff;
+            border: 1px solid var(--geberit-border);
+            border-radius: 14px;
+            padding: 1.2rem;
+            box-shadow: 0 10px 28px rgba(47, 63, 71, 0.09);
+            max-width: 560px;
+        }
+
+        .contact-panel p {
+            margin: 0.25rem 0;
+            color: #5f6b70;
+        }
+
+        .contact-panel a {
+            color: var(--geberit-blue);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .contact-panel a:hover {
+            text-decoration: underline;
         }
 
         footer {
-            background-color: #222;
+            background: linear-gradient(90deg, #4d5b61 0%, #2f3f47 100%);
             color: #fff;
             text-align: center;
             padding: 1rem;
-            margin-top: 2rem;
+        }
+
+        @media (max-width: 720px) {
+            nav {
+                flex-wrap: wrap;
+                gap: 0.4rem 0;
+            }
+
+            .logo {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            nav > a {
+                margin-right: 18px;
+            }
+
+            .hero {
+                min-height: 66vh;
+                padding: 4rem 1rem;
+            }
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Über GEBERIT</h1>
-    </header>
-
     <nav>
+        <div class="logo">
+            <a href="Grundseite.html#home">
+                <img src="images/geberit-logo.png" alt="Geberit Logo">
+            </a>
+        </div>
         <a href="Grundseite.html">Home</a>
-        <a href="Über-Uns.html">Über Geberit</a>
+        <a href="Über-Uns.html" class="active">Über Geberit</a>
         <a href="produkte.html">Produkte</a>
         <a href="#contact">Kontakt</a>
     </nav>
 
+    <a class="secret-bomb" id="secretBomb" href="Tictactoe.html" aria-hidden="true" aria-label="Tic Tac Toe öffnen">💣</a>
+
     <main>
-        <section>
-            <h2>Wer sind wir?</h2>
-            <p>GEBERIT ist die marktführende Wassertechnik-Firma für Sanitäranlagen.</p>
+        <section class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">Über Geberit</span>
+                <h1>Sanitärtechnik, die vor und hinter der Wand überzeugt.</h1>
+                <p>Geberit verbindet präzise Technik, langlebige Produkte und modernes Baddesign zu Lösungen, die zuverlässig funktionieren und im Alltag sauber aussehen.</p>
+            </div>
         </section>
 
-        <section>
-            <h2>Was stellen wir her?</h2>
-            <p>Wir stellen zueinander passende Bad- und Sanitärprodukte her.</p>
+        <section class="content-section">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <span class="section-badge">Wer wir sind</span>
+                    <h2>Ein starker Partner für moderne Badezimmer</h2>
+                    <p>Geberit steht für hochwertige Sanitärlösungen, die Planung, Montage und Nutzung einfacher machen. Das Ziel: Technik, Design und Qualität in einem durchdachten System.</p>
+                </div>
+                <div class="info-grid">
+                    <article class="info-card">
+                        <h3>Sanitärtechnik</h3>
+                        <p>Installationssysteme, Spültechnik und Rohrleitungslösungen sorgen für zuverlässige Funktion hinter der Wand.</p>
+                    </article>
+                    <article class="info-card">
+                        <h3>Badprodukte</h3>
+                        <p>WC-Systeme, Waschtische und Badserien verbinden klare Optik mit komfortabler Nutzung.</p>
+                    </article>
+                    <article class="info-card">
+                        <h3>Passgenaue Systeme</h3>
+                        <p>Produkte sind so aufeinander abgestimmt, dass sie technisch und optisch sauber zusammenarbeiten.</p>
+                    </article>
+                </div>
+            </div>
         </section>
 
-        <section>
-            <h2>Unsere Werte</h2>
-            <p>Uns sind Qualität und Einheitlichkeit wichtig.</p>
+        <section class="content-section alt">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <span class="section-badge">Unsere Werte</span>
+                    <h2>Qualität, Innovation und Verantwortung</h2>
+                    <p>Die Lösungen sind auf lange Lebensdauer, einfache Bedienung und einen bewussten Umgang mit Ressourcen ausgelegt.</p>
+                </div>
+                <div class="numbers">
+                    <div class="number-card">
+                        <strong>150+</strong>
+                        <span>Jahre Erfahrung im Sanitärbereich</span>
+                    </div>
+                    <div class="number-card">
+                        <strong>2</strong>
+                        <span>Bereiche: vor und hinter der Wand</span>
+                    </div>
+                    <div class="number-card">
+                        <strong>1</strong>
+                        <span>durchgängiges System für Bad und Technik</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <section>
-            <h2>Was unterscheidet uns von anderen?</h2>
-            <p>Wir stellen Sanitäranlagen vor und hinter der Wand her, um Passgenauigkeit zu garantieren.</p>
+        <section class="content-section" id="contact">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <span class="section-badge">Kontakt</span>
+                    <h2>Kontakt aufnehmen</h2>
+                    <p>Für Fragen zu Produkten, Technik oder Beratung steht Geberit als Ansprechpartner zur Verfügung.</p>
+                </div>
+                <div class="contact-panel">
+                    <p><strong>E-Mail:</strong> <a href="mailto:info@geberit.com">info@geberit.com</a></p>
+                    <p><strong>Telefon:</strong> +49 30 12345-0</p>
+                </div>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 GEBERIT | Kontakt über E-Mail: GEBERIT@e-mail.com</p>
+        <p>&copy; 2026 Geberit | Alle Rechte vorbehalten.</p>
     </footer>
+    <script>
+        const logoLink = document.querySelector('.logo a');
+        const secretBomb = document.getElementById('secretBomb');
+        let logoClickCount = 0;
+        let logoClickTimer;
+
+        if (logoLink && secretBomb) {
+            logoLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                logoClickCount += 1;
+                clearTimeout(logoClickTimer);
+
+                logoLink.classList.add('logo-clicked');
+                setTimeout(() => logoLink.classList.remove('logo-clicked'), 180);
+
+                if (logoClickCount >= 3) {
+                    secretBomb.classList.add('active');
+                    secretBomb.setAttribute('aria-hidden', 'false');
+                    logoClickCount = 0;
+                }
+
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0;
+                }, 1200);
+            });
+        }
+    </script>
 </body>
 </html>

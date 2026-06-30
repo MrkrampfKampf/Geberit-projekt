@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -60,17 +60,105 @@
             transform: scale(1.1);
         }
 
-        nav a {
+        .logo a.logo-clicked img {
+            filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.85));
+            transform: scale(1.14);
+        }
+
+        .secret-bomb {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 35% 30%, #59646b 0 12%, #1e2529 44%, #07090a 100%);
+            color: white;
+            font-size: 2.8rem;
+            text-decoration: none;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 42px rgba(255, 42, 66, 0.45);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.78);
+            transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            z-index: 3001;
+        }
+
+        .secret-bomb.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+            animation: secretBombFloat 2.6s ease-in-out infinite;
+        }
+
+        .secret-bomb:hover {
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9), 0 0 56px rgba(255, 42, 66, 0.75);
+        }
+
+        .secret-bomb-backdrop {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(255, 42, 66, 0.16), transparent 18%),
+                radial-gradient(circle at 50% 50%, transparent 0 18%, rgba(0, 0, 0, 0.92) 48%),
+                rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 3000;
+        }
+
+        .secret-bomb-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @keyframes secretBombFloat {
+            0%, 100% {
+                translate: 0 0;
+            }
+            50% {
+                translate: 0 -12px;
+            }
+        }
+
+        nav > a {
+            position: relative;
             color: white;
             text-decoration: none;
             font-weight: bold;
             margin-right: 25px;
-            transition: 0.3s;
+            padding: 0.25rem 0;
+            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
         }
 
-        nav a:hover {
+        nav > a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 3px;
+            border-radius: 999px;
+            background: #4fc3f7;
+            box-shadow: 0 0 12px rgba(79, 195, 247, 0.85);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+
+        nav > a:hover,
+        nav > a.active {
             color: #4fc3f7;
-            transform: scale(1.05);
+            text-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
+            transform: translateY(-1px);
+        }
+
+        nav > a:hover::after,
+        nav > a.active::after {
+            transform: scaleX(1);
         }
 
         main {
@@ -255,11 +343,14 @@
    
         </div>
 
-    <a href="#home">Home</a>
-    <a href="#about">Über Geberit</a>
+    <a href="#home" class="active">Home</a>
+    <a href="Über-Uns.html">Über Geberit</a>
     <a href="produkte.html">Produkte</a>
     <a href="#contact">Kontakt</a>
 </nav>
+
+    <a class="secret-bomb" id="secretBomb" href="Tictactoe.html" aria-hidden="true" aria-label="Tic Tac Toe öffnen">💣</a>
+    <div class="secret-bomb-backdrop" id="secretBombBackdrop" aria-hidden="true"></div>
 
     <main>
        <section id="home">
@@ -425,5 +516,35 @@ html {
     <footer>
         <p>&copy; 2026 GeberitProdukte Alle Rechte vorbehalten.</p>
     </footer>
+    <script>
+        const logoLink = document.querySelector('.logo a');
+        const secretBomb = document.getElementById('secretBomb');
+        const secretBombBackdrop = document.getElementById('secretBombBackdrop');
+        let logoClickCount = 0;
+        let logoClickTimer;
+
+        if (logoLink && secretBomb && secretBombBackdrop) {
+            logoLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                logoClickCount += 1;
+                clearTimeout(logoClickTimer);
+
+                logoLink.classList.add('logo-clicked');
+                setTimeout(() => logoLink.classList.remove('logo-clicked'), 180);
+
+                if (logoClickCount >= 3) {
+                    secretBombBackdrop.classList.add('active');
+                    secretBomb.classList.add('active');
+                    secretBombBackdrop.setAttribute('aria-hidden', 'false');
+                    secretBomb.setAttribute('aria-hidden', 'false');
+                    logoClickCount = 0;
+                }
+
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0;
+                }, 1200);
+            });
+        }
+    </script>
 </body>
 </html>

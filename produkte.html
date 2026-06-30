@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -49,17 +49,105 @@
             transform: scale(1.1);
         }
 
-        nav a {
+        .logo a.logo-clicked img {
+            filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.85));
+            transform: scale(1.14);
+        }
+
+        .secret-bomb {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 35% 30%, #59646b 0 12%, #1e2529 44%, #07090a 100%);
+            color: white;
+            font-size: 2.8rem;
+            text-decoration: none;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 42px rgba(255, 42, 66, 0.45);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.78);
+            transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            z-index: 3001;
+        }
+
+        .secret-bomb.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+            animation: secretBombFloat 2.6s ease-in-out infinite;
+        }
+
+        .secret-bomb:hover {
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9), 0 0 56px rgba(255, 42, 66, 0.75);
+        }
+
+        .secret-bomb-backdrop {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(255, 42, 66, 0.16), transparent 18%),
+                radial-gradient(circle at 50% 50%, transparent 0 18%, rgba(0, 0, 0, 0.92) 48%),
+                rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 3000;
+        }
+
+        .secret-bomb-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @keyframes secretBombFloat {
+            0%, 100% {
+                translate: 0 0;
+            }
+            50% {
+                translate: 0 -12px;
+            }
+        }
+
+        nav > a {
+            position: relative;
             color: white;
             text-decoration: none;
             font-weight: bold;
             margin-right: 25px;
-            transition: 0.3s;
+            padding: 0.25rem 0;
+            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
         }
 
-        nav a:hover {
+        nav > a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 3px;
+            border-radius: 999px;
+            background: #4fc3f7;
+            box-shadow: 0 0 12px rgba(79, 195, 247, 0.85);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+
+        nav > a:hover,
+        nav > a.active {
             color: #4fc3f7;
-            transform: scale(1.05);
+            text-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
+            transform: translateY(-1px);
+        }
+
+        nav > a:hover::after,
+        nav > a.active::after {
+            transform: scaleX(1);
         }
 
         main {
@@ -97,6 +185,55 @@
         .hero p {
             margin: 0;
             color: #5e6a70;
+        }
+
+        .search-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin: 1rem 0 0;
+            padding: 0.75rem 0.85rem;
+            background: #fff;
+            border: 1px solid #c9d4db;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(47, 63, 71, 0.07);
+        }
+
+        .search-panel label {
+            color: var(--geberit-dark);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .search-panel input {
+            width: 100%;
+            border: 1px solid #c5d1d8;
+            border-radius: 10px;
+            padding: 0.7rem 0.85rem;
+            color: var(--geberit-text);
+            font: inherit;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-panel input:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.18);
+        }
+
+        .empty-state {
+            display: none;
+            margin: 1rem 0 0;
+            padding: 1rem;
+            border: 1px solid #c9d4db;
+            border-radius: 14px;
+            background: #fff;
+            color: #5e6a70;
+            box-shadow: 0 8px 20px rgba(47, 63, 71, 0.06);
+        }
+
+        .empty-state.active {
+            display: block;
         }
 
         .products-grid {
@@ -315,18 +452,26 @@
             </a>
         </div>
         <a href="Grundseite.html">Home</a>
-        <a href="Grundseite.html#about">Über Geberit</a>
-        <a href="produkte.html">Produkte</a>
+        <a href="Über-Uns.html">Über Geberit</a>
+        <a href="produkte.html" class="active">Produkte</a>
         <a href="Grundseite.html#contact">Kontakt</a>
     </nav>
 
+    <a class="secret-bomb" id="secretBomb" href="Tictactoe.html" aria-hidden="true" aria-label="Tic Tac Toe öffnen">💣</a>
+    <div class="secret-bomb-backdrop" id="secretBombBackdrop" aria-hidden="true"></div>
+
     <main>
         <section class="hero">
-            <span class="hero-badge">eine kleine Auswahl</span>
+            <span class="hero-badge">Eine kleine Auswahl</span>
             <h2>Unsere Produkte</h2>
-            <p>Die Übersicht ist bewusst einfach gehalten, aber trotzdem ordentlich aufgebaut. Klicke auf ein Produkt, um mehr zur Funktion und zum Aufbau zu erfahren.</p>
+          
+            <div class="search-panel">
+                <label for="productSearch">Suche</label>
+                <input type="search" id="productSearch" placeholder="Produkt suchen..." autocomplete="off">
+            </div>
         </section>
 
+        <p class="empty-state" id="emptyState">Kein Produkt passt zu deiner Suche.</p>
         <div class="products-grid" id="productsContainer"></div>
     </main>
 
@@ -413,6 +558,8 @@
 
         const dom = {
             container: document.getElementById('productsContainer'),
+            searchInput: document.getElementById('productSearch'),
+            emptyState: document.getElementById('emptyState'),
             modal: document.getElementById('productModal'),
             modalTitle: document.getElementById('modalTitle'),
             modalDescription: document.getElementById('modalDescription'),
@@ -459,9 +606,20 @@
             return button;
         }
 
+        function productMatchesSearch(product, searchTerm) {
+            const searchableText = `${product.name} ${product.description} ${product.articleNumber}`.toLowerCase();
+            return searchableText.includes(searchTerm);
+        }
+
         function renderProducts() {
+            const searchTerm = dom.searchInput.value.trim().toLowerCase();
+            const visibleProducts = searchTerm
+                ? products.filter(product => productMatchesSearch(product, searchTerm))
+                : products;
+
             dom.container.innerHTML = '';
-            products.forEach(product => dom.container.appendChild(createProductCard(product)));
+            visibleProducts.forEach(product => dom.container.appendChild(createProductCard(product)));
+            dom.emptyState.classList.toggle('active', visibleProducts.length === 0);
         }
 
         function openModal(product) {
@@ -622,12 +780,42 @@
         }
 
         renderProducts();
+        dom.searchInput.addEventListener('input', renderProducts);
         dom.closeModalButton.addEventListener('click', closeModal);
         dom.modal.addEventListener('click', handleBackdropClick);
         dom.closeSnakeButton.addEventListener('click', closeSnakeModal);
         dom.snakeModal.addEventListener('click', handleSnakeBackdropClick);
         document.addEventListener('keydown', handleGlobalKeydown);
         document.addEventListener('keydown', handleSnakeControl);
+
+        const logoLink = document.querySelector('.logo a');
+        const secretBomb = document.getElementById('secretBomb');
+        const secretBombBackdrop = document.getElementById('secretBombBackdrop');
+        let logoClickCount = 0;
+        let logoClickTimer;
+
+        if (logoLink && secretBomb && secretBombBackdrop) {
+            logoLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                logoClickCount += 1;
+                clearTimeout(logoClickTimer);
+
+                logoLink.classList.add('logo-clicked');
+                setTimeout(() => logoLink.classList.remove('logo-clicked'), 180);
+
+                if (logoClickCount >= 3) {
+                    secretBombBackdrop.classList.add('active');
+                    secretBomb.classList.add('active');
+                    secretBombBackdrop.setAttribute('aria-hidden', 'false');
+                    secretBomb.setAttribute('aria-hidden', 'false');
+                    logoClickCount = 0;
+                }
+
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0;
+                }, 1200);
+            });
+        }
     </script>
 </body>
 </html>

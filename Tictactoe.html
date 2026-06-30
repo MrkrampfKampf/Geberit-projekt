@@ -2,298 +2,879 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Geberit Snake Game</title>
- 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geberit Tic Tac Toe</title>
+
 <style>
+  :root {
+    --geberit-blue: #3f6f8f;
+    --geberit-dark: #080b0d;
+    --geberit-light: #9be7ff;
+    --geberit-text: #d7e5ea;
+    --danger: #ff1738;
+    --blood: #7a0010;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
   body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin-top: 40px;
-    background-color: #f5f5f5;
-    color: #2f3e46;
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255, 23, 56, 0.13), transparent 18%),
+      radial-gradient(circle at 12% 16%, rgba(91, 0, 18, 0.35), transparent 25%),
+      radial-gradient(circle at 86% 80%, rgba(5, 53, 67, 0.22), transparent 30%),
+      linear-gradient(135deg, #020303 0%, #070a0d 48%, #010101 100%);
+    color: var(--geberit-text);
+    overflow-x: hidden;
   }
 
-  h1 {
-    color: #2f3e46;
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.025) 50%, transparent 50%),
+      radial-gradient(circle at 50% 50%, transparent 0 42%, rgba(0, 0, 0, 0.72) 100%);
+    background-size: 100% 4px, 100% 100%;
+    mix-blend-mode: screen;
+    opacity: 0.32;
+    z-index: 1;
   }
 
-  #gameContainer {
-    display: inline-block;
-    margin-top: 20px;
-    background-color: #1a1a1a;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  body::after {
+    content: "ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص\A ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م\A ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق\A م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح\A ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع\A ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص\A ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م\A ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق\A م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح\A ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع";
+    position: fixed;
+    inset: -8vh -8vw;
+    color: rgba(255, 18, 48, 0.42);
+    font-family: "Traditional Arabic", "Amiri", "Times New Roman", serif;
+    font-size: clamp(2rem, 5.6vw, 5.2rem);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: 0.28em;
+    white-space: pre-wrap;
+    word-break: break-all;
+    pointer-events: none;
+    text-shadow:
+      0 0 8px rgba(255, 0, 24, 0.75),
+      0 0 22px rgba(122, 0, 16, 0.65),
+      0 8px 4px rgba(122, 0, 16, 0.38);
+    opacity: 0.78;
+    transform: rotate(-7deg) scale(1.16);
+    mix-blend-mode: screen;
+    z-index: 0;
+    animation: symbolsCrawl 9s ease-in-out infinite alternate;
   }
 
-  canvas {
-    border: 3px solid #4f5d66;
-    display: block;
-    background-color: #000;
+  .page {
+    width: min(1000px, calc(100% - 2rem));
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 0;
   }
 
-  #status {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #2f6f9f;
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    z-index: 2;
   }
 
-  #score {
-    margin-top: 10px;
-    font-size: 16px;
-    color: #555;
-  }
-
-  button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #4f5d66;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
+  .bomb-button {
+    position: relative;
+    width: 118px;
+    height: 118px;
+    border: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 30%, #626a70 0 10%, #1d2225 36%, #030404 100%),
+      #050505;
+    box-shadow:
+      0 28px 70px rgba(0, 0, 0, 0.9),
+      0 0 46px rgba(255, 23, 56, 0.45),
+      inset -10px -14px 28px rgba(0, 0, 0, 0.72);
     cursor: pointer;
-    font-size: 14px;
+    z-index: 5;
+    animation: floatBomb 2.8s ease-in-out infinite, dreadPulse 1.7s ease-in-out infinite alternate;
   }
 
-  button:hover {
-    background-color: #2f3e46;
+  .bomb-button::before {
+    content: "";
+    position: absolute;
+    width: 28px;
+    height: 22px;
+    left: 72px;
+    top: 4px;
+    border-radius: 8px 8px 3px 3px;
+    background: #171b1e;
+    transform: rotate(28deg);
   }
 
-  .instructions {
-    margin-top: 20px;
-    color: #666;
-    font-size: 14px;
+  .bomb-button::after {
+    content: "";
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    left: 92px;
+    top: -18px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff4bc 0 9%, #ffb703 14% 28%, #ff1738 38% 58%, transparent 64%);
+    filter: drop-shadow(0 0 16px #ff1738);
+    animation: fusePulse 0.8s ease-in-out infinite alternate;
   }
 
-  .instructions p {
-    margin: 5px 0;
+  .bomb-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow:
+      0 30px 80px rgba(0, 0, 0, 0.94),
+      0 0 62px rgba(255, 23, 56, 0.75);
+  }
+
+  .bomb-button span {
+    display: none;
+  }
+
+  .game-modal,
+  .jumpscare {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 50;
+  }
+
+  .game-modal.active,
+  .jumpscare.active {
+    display: flex;
+  }
+
+  .game-modal {
+    background:
+      radial-gradient(circle at 50% 44%, rgba(122, 0, 16, 0.22), transparent 26%),
+      rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
+
+  .game-modal::before {
+    content: "ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص\A ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص\A ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل\A م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن\A ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح\A ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع\A ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص\A ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع\A م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص\A ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح م ع ل ق ص ن ح";
+    position: absolute;
+    inset: -12vh -12vw;
+    color: rgba(255, 18, 48, 0.36);
+    font-family: "Traditional Arabic", "Amiri", "Times New Roman", serif;
+    font-size: clamp(2rem, 5vw, 5rem);
+    font-weight: 900;
+    line-height: 0.94;
+    letter-spacing: 0.25em;
+    white-space: pre-wrap;
+    word-break: break-all;
+    pointer-events: none;
+    text-shadow:
+      0 0 8px rgba(255, 0, 24, 0.78),
+      0 0 22px rgba(122, 0, 16, 0.68),
+      0 8px 4px rgba(122, 0, 16, 0.36);
+    opacity: 0.8;
+    transform: rotate(-7deg) scale(1.18);
+    mix-blend-mode: screen;
+    animation: symbolsCrawl 9s ease-in-out infinite alternate;
+  }
+
+  .game-modal > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .game-card {
+    width: min(100%, 470px);
+    border: 1px solid rgba(255, 23, 56, 0.34);
+    border-radius: 12px;
+    padding: 1.2rem;
+    background:
+      linear-gradient(135deg, rgba(16, 19, 22, 0.96) 0%, rgba(5, 6, 7, 0.98) 100%);
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.78), 0 0 34px rgba(255, 23, 56, 0.22);
+  }
+
+  .game-header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .game-header h2 {
+    margin: 0;
+    color: #f2f7f8;
+    font-size: 1.35rem;
+    text-shadow: 0 0 14px rgba(255, 23, 56, 0.45);
+  }
+
+  .game-header p {
+    display: none;
+  }
+
+  .icon-button {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    background: #160409;
+    color: #f2f7f8;
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: 800;
+  }
+
+  .status {
+    min-height: 28px;
+    margin: 0 0 0.85rem;
+    color: #d7e5ea;
+    font-weight: 800;
+    text-shadow: 0 0 12px rgba(255, 23, 56, 0.45);
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.7rem;
+    width: min(100%, 360px);
+    margin: 0 auto;
+    aspect-ratio: 1;
+    align-items: stretch;
+  }
+
+  .cell {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid rgba(255, 23, 56, 0.25);
+    border-radius: 8px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255, 23, 56, 0.08), transparent 58%),
+      #07090a;
+    color: #f2f7f8;
+    cursor: pointer;
+    font-size: clamp(2.4rem, 11vw, 4.8rem);
+    font-weight: 900;
+    line-height: 1;
+    font-family: "Segoe UI", Arial, sans-serif;
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.75), 0 8px 22px rgba(0, 0, 0, 0.45);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+
+  .cell:hover:not(:disabled) {
+    transform: translateY(-3px);
+    border-color: rgba(255, 23, 56, 0.8);
+    box-shadow: inset 0 0 26px rgba(122, 0, 16, 0.32), 0 0 22px rgba(255, 23, 56, 0.3);
+  }
+
+  .cell:disabled {
+    cursor: default;
+  }
+
+  .cell.player {
+    color: #bdefff;
+    text-shadow: 0 0 18px rgba(155, 231, 255, 0.8);
+  }
+
+  .cell.computer {
+    color: var(--danger);
+    text-shadow: 0 0 18px rgba(255, 23, 56, 0.86);
+  }
+
+  .game-actions {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .action-button {
+    flex: 1;
+    border: 0;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    background: linear-gradient(90deg, #7a0010 0%, #1b0308 100%);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 800;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 23, 56, 0.18);
+  }
+
+  .action-button.secondary {
+    background: #111517;
+    color: #d7e5ea;
+  }
+
+  .jumpscare {
+    background:
+      radial-gradient(circle at 50% 47%, rgba(255, 23, 56, 0.42), transparent 22%),
+      #010101;
+    color: #fff;
+    z-index: 100;
+    animation: scareShake 0.08s linear infinite;
+  }
+
+  .jumpscare.active {
+    display: grid;
+    place-items: center;
+  }
+
+  .scare-face {
+    width: min(92vw, 760px);
+    aspect-ratio: 1;
+    position: relative;
+    border-radius: 44% 56% 50% 50%;
+    background:
+      radial-gradient(circle at 34% 36%, #fff 0 3%, #ff1738 4% 9%, #080000 10% 15%, transparent 16%),
+      radial-gradient(circle at 66% 36%, #fff 0 3%, #ff1738 4% 9%, #080000 10% 15%, transparent 16%),
+      radial-gradient(ellipse at 50% 68%, #050000 0 13%, #ff1738 14% 16%, transparent 17%),
+      radial-gradient(circle at 50% 48%, #250006 0 36%, #090001 62%, #010101 100%);
+    box-shadow: 0 0 120px rgba(255, 0, 30, 0.95), inset 0 0 80px rgba(0, 0, 0, 0.86);
+    transform: scale(1.05);
+    overflow: hidden;
+  }
+
+  .scare-face img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    filter: contrast(1.55) saturate(1.35) brightness(0.78);
+    mix-blend-mode: screen;
+    transform: scale(1.08);
+    z-index: 2;
+  }
+
+  .scare-face::before {
+    content: "";
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    bottom: 23%;
+    height: 12%;
+    background:
+      repeating-linear-gradient(90deg, #f8f8f8 0 8px, #210005 8px 12px),
+      #fff;
+    clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.42));
+  }
+
+  .scare-face::after {
+    content: "";
+    position: absolute;
+    inset: 14% 20%;
+    background:
+      linear-gradient(110deg, transparent 0 45%, rgba(255, 23, 56, 0.85) 46% 49%, transparent 50%),
+      linear-gradient(70deg, transparent 0 58%, rgba(255, 23, 56, 0.72) 59% 61%, transparent 62%);
+    opacity: 0.9;
+  }
+
+  .scare-text {
+    position: absolute;
+    left: 50%;
+    bottom: 8vh;
+    transform: translateX(-50%);
+    width: min(92vw, 700px);
+    text-align: center;
+    color: #fff;
+    font-size: clamp(2.5rem, 10vw, 6rem);
+    font-weight: 1000;
+    text-shadow: 0 0 18px #ff001e;
+  }
+
+  @keyframes dreadPulse {
+    from {
+      filter: brightness(0.82);
+    }
+    to {
+      filter: brightness(1.15);
+    }
+  }
+
+  @keyframes symbolsCrawl {
+    from {
+      opacity: 0.52;
+      transform: rotate(-7deg) scale(1.16) translateY(-1.5vh);
+    }
+    to {
+      opacity: 0.86;
+      transform: rotate(-7deg) scale(1.2) translateY(1.5vh);
+    }
+  }
+
+  @keyframes floatBomb {
+    0%, 100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -14px;
+    }
+  }
+
+  @keyframes fusePulse {
+    from {
+      scale: 0.86;
+      opacity: 0.75;
+    }
+    to {
+      scale: 1.15;
+      opacity: 1;
+    }
+  }
+
+  @keyframes scareShake {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(8px, -6px);
+    }
+    50% {
+      transform: translate(-7px, 5px);
+    }
+    75% {
+      transform: translate(5px, 7px);
+    }
+  }
+
+  @media (max-width: 620px) {
+    .bomb-button {
+      width: 92px;
+      height: 92px;
+    }
+
+    .game-card {
+      padding: 1rem;
+    }
+
+    .game-actions {
+      flex-direction: column;
+    }
   }
 </style>
- 
 </head>
- 
+
 <body>
- 
-<h1>🐍 Geberit Snake  🏢</h1>
-<p>Hilf der Geberit-Schlange, ihre Produkte zu sammeln!</p>
+  <main class="page">
+    <section class="hero">
+      <button class="bomb-button" id="openGameButton" type="button" aria-label="Tic Tac Toe starten">
+        <span>PLAY</span>
+      </button>
+    </section>
+  </main>
 
-<div id="gameContainer">
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
-</div>
+  <div class="game-modal" id="gameModal" aria-hidden="true">
+    <div class="game-card" role="dialog" aria-modal="true" aria-labelledby="gameTitle">
+      <div class="game-header">
+        <div>
+          <h2 id="gameTitle">Tic Tac Toe</h2>
+          <p>Du bist X. Der Computer ist O.</p>
+        </div>
+        <button class="icon-button" id="closeGameButton" type="button" aria-label="Spiel schließen">×</button>
+      </div>
 
-<div id="status">Spiel aktiv</div>
-<div id="score">Punkte: 0</div>
+      <p class="status" id="gameStatus">Du bist dran.</p>
+      <div class="board" id="board"></div>
 
-<button onclick="resetGame()">Neu starten</button>
+      <div class="game-actions">
+        <button class="action-button" id="restartButton" type="button">Neu starten</button>
+        <button class="action-button secondary" id="closeGameButtonBottom" type="button">Schließen</button>
+      </div>
+    </div>
+  </div>
 
-<div class="instructions">
-  <p><strong>Steuerung:</strong></p>
-  <p>Pfeiltasten oder WASD zum Steuern</p>
-  <p>Sammle die Produkte (🟦) ohne die Wände zu berühren!</p>
-</div>
+  <div class="jumpscare" id="jumpscare" aria-hidden="true">
+    <div class="scare-face">
+      <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Evil_pixel_art_face_(300x300).png" alt="">
+    </div>
+    <div class="scare-text">VERLOREN!</div>
+  </div>
+
+  <audio
+    id="scareAudio"
+    preload="auto"
+    src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Nick121087_-_Demonic_Woman_Scream_(cc0)_(freesound).mp3">
+  </audio>
 
 <script>
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const statusDiv = document.getElementById('status');
-const scoreDiv = document.getElementById('score');
+  const boardElement = document.getElementById('board');
+  const gameModal = document.getElementById('gameModal');
+  const jumpscare = document.getElementById('jumpscare');
+  const statusElement = document.getElementById('gameStatus');
+  const openGameButton = document.getElementById('openGameButton');
+  const closeGameButton = document.getElementById('closeGameButton');
+  const closeGameButtonBottom = document.getElementById('closeGameButtonBottom');
+  const restartButton = document.getElementById('restartButton');
+  const scareAudio = document.getElementById('scareAudio');
 
-const gridSize = 20;
-const tileCount = canvas.width / gridSize;
+  const player = 'X';
+  const computer = 'O';
+  const winPatterns = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
 
-let snake = [{ x: 5, y: 5 }];
-let direction = { x: 1, y: 0 };
-let nextDirection = { x: 1, y: 0 };
-let food = { x: 10, y: 10 };
-let score = 0;
-let gameActive = true;
-let gameSpeed = 100;
-let lastMoveTime = 0;
+  let board = Array(9).fill('');
+  let gameOver = false;
+  let computerThinking = false;
+  let scareAudioContext = null;
 
-// Geberit Farben
-const snakeColor = '#4f5d66';
-const foodColor = '#2f6f9f';
-const backgroundColor = '#000';
-const borderColor = '#2f3e46';
+  function getScareAudioContext() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
 
-function generateFood() {
-  food = {
-    x: Math.floor(Math.random() * tileCount),
-    y: Math.floor(Math.random() * tileCount)
-  };
-
-  // Stelle sicher, dass Essen nicht auf der Schlange spawnt
-  if (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
-    generateFood();
-  }
-}
-
-function draw() {
-  // Hintergrund
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Gitter zeichnen
-  ctx.strokeStyle = '#222';
-  ctx.lineWidth = 0.5;
-  for (let i = 0; i <= tileCount; i++) {
-    ctx.beginPath();
-    ctx.moveTo(i * gridSize, 0);
-    ctx.lineTo(i * gridSize, canvas.height);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(0, i * gridSize);
-    ctx.lineTo(canvas.width, i * gridSize);
-    ctx.stroke();
-  }
-
-  // Schlange zeichnen
-  snake.forEach((segment, index) => {
-    if (index === 0) {
-      // Kopf
-      ctx.fillStyle = '#7fc3e8';
-      ctx.shadowColor = 'rgba(127, 195, 232, 0.5)';
-      ctx.shadowBlur = 10;
-    } else {
-      // Körper
-      ctx.fillStyle = snakeColor;
-      ctx.shadowColor = 'rgba(79, 93, 102, 0.3)';
-      ctx.shadowBlur = 5;
+    if (!scareAudioContext) {
+      scareAudioContext = new AudioContext();
     }
-    ctx.fillRect(
-      segment.x * gridSize + 1,
-      segment.y * gridSize + 1,
-      gridSize - 2,
-      gridSize - 2
-    );
+
+    if (scareAudioContext.state === 'suspended') {
+      scareAudioContext.resume();
+    }
+
+    return scareAudioContext;
+  }
+
+  function armScareSound() {
+    const audioContext = getScareAudioContext();
+    if (scareAudio) {
+      scareAudio.load();
+      scareAudio.volume = 0;
+      scareAudio.currentTime = 0;
+      scareAudio.play()
+        .then(() => {
+          scareAudio.pause();
+          scareAudio.currentTime = 0;
+          scareAudio.volume = 1;
+        })
+        .catch(() => {
+          scareAudio.volume = 1;
+        });
+    }
+
+    if (!audioContext) return;
+
+    const silentGain = audioContext.createGain();
+    const silentOscillator = audioContext.createOscillator();
+    silentGain.gain.setValueAtTime(0.00001, audioContext.currentTime);
+    silentOscillator.connect(silentGain);
+    silentGain.connect(audioContext.destination);
+    silentOscillator.start(audioContext.currentTime);
+    silentOscillator.stop(audioContext.currentTime + 0.03);
+  }
+
+  function openGame() {
+    armScareSound();
+    gameModal.classList.add('active');
+    gameModal.setAttribute('aria-hidden', 'false');
+    resetGame();
+  }
+
+  function closeGame() {
+    gameModal.classList.remove('active');
+    gameModal.setAttribute('aria-hidden', 'true');
+  }
+
+  function resetGame() {
+    board = Array(9).fill('');
+    gameOver = false;
+    computerThinking = false;
+    statusElement.textContent = 'Du bist dran.';
+    statusElement.style.color = '#3f6f8f';
+    renderBoard();
+  }
+
+  function renderBoard() {
+    boardElement.innerHTML = '';
+
+    board.forEach((value, index) => {
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'cell';
+      cell.textContent = value;
+      cell.setAttribute('aria-label', `Feld ${index + 1}`);
+
+      if (value === player) cell.classList.add('player');
+      if (value === computer) cell.classList.add('computer');
+
+      cell.disabled = Boolean(value) || gameOver || computerThinking;
+      cell.addEventListener('click', () => handlePlayerMove(index));
+      boardElement.appendChild(cell);
+    });
+  }
+
+  function handlePlayerMove(index) {
+    if (board[index] || gameOver || computerThinking) return;
+
+    board[index] = player;
+    renderBoard();
+
+    if (finishIfGameEnded()) return;
+
+    computerThinking = true;
+    statusElement.textContent = 'Computer denkt...';
+    renderBoard();
+
+    setTimeout(() => {
+      makeComputerMove();
+      computerThinking = false;
+      renderBoard();
+      finishIfGameEnded();
+
+      if (!gameOver) {
+        statusElement.textContent = 'Du bist dran.';
+      }
+    }, 450);
+  }
+
+  function makeComputerMove() {
+    const bestMove = findBestMove();
+    if (bestMove !== null) {
+      board[bestMove] = computer;
+    }
+  }
+
+  function findBestMove() {
+    const winningMove = findImmediateMove(computer);
+    if (winningMove !== null) return winningMove;
+
+    const blockingMove = findImmediateMove(player);
+    if (blockingMove !== null) return blockingMove;
+
+    if (!board[4]) return 4;
+
+    const corners = [0, 2, 6, 8].filter(index => !board[index]);
+    if (corners.length) return corners[Math.floor(Math.random() * corners.length)];
+
+    const openCells = getOpenCells();
+    return openCells.length ? openCells[Math.floor(Math.random() * openCells.length)] : null;
+  }
+
+  function findImmediateMove(mark) {
+    for (const pattern of winPatterns) {
+      const values = pattern.map(index => board[index]);
+      const markCount = values.filter(value => value === mark).length;
+      const emptyIndex = values.findIndex(value => value === '');
+
+      if (markCount === 2 && emptyIndex !== -1) {
+        return pattern[emptyIndex];
+      }
+    }
+
+    return null;
+  }
+
+  function getOpenCells() {
+    return board
+      .map((value, index) => value ? null : index)
+      .filter(index => index !== null);
+  }
+
+  function finishIfGameEnded() {
+    const winner = getWinner();
+
+    if (winner === player) {
+      gameOver = true;
+      statusElement.textContent = 'Du hast gewonnen!';
+      statusElement.style.color = '#1c8f5b';
+      renderBoard();
+      return true;
+    }
+
+    if (winner === computer) {
+      gameOver = true;
+      statusElement.textContent = 'Der Computer hat gewonnen.';
+      statusElement.style.color = '#ff334e';
+      renderBoard();
+      triggerJumpscare();
+      return true;
+    }
+
+    if (board.every(Boolean)) {
+      gameOver = true;
+      statusElement.textContent = 'Unentschieden.';
+      statusElement.style.color = '#5e6a70';
+      renderBoard();
+      return true;
+    }
+
+    return false;
+  }
+
+  function getWinner() {
+    for (const [a, b, c] of winPatterns) {
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        return board[a];
+      }
+    }
+
+    return null;
+  }
+
+  function triggerJumpscare() {
+    jumpscare.classList.add('active');
+    jumpscare.setAttribute('aria-hidden', 'false');
+    playScareSound();
+
+    setTimeout(() => {
+      jumpscare.classList.remove('active');
+      jumpscare.setAttribute('aria-hidden', 'true');
+    }, 1400);
+  }
+
+  function playScareSound() {
+    if (scareAudio) {
+      scareAudio.pause();
+      scareAudio.currentTime = 0;
+      scareAudio.volume = 1;
+      const audioPromise = scareAudio.play();
+
+      if (audioPromise) {
+        audioPromise.catch(() => playSyntheticScareSound());
+      }
+
+      return;
+    }
+
+    playSyntheticScareSound();
+  }
+
+  function playSyntheticScareSound() {
+    const audioContext = getScareAudioContext();
+    if (!audioContext) return;
+
+    const now = audioContext.currentTime;
+    const masterGain = audioContext.createGain();
+    const screamGain = audioContext.createGain();
+    const rumbleGain = audioContext.createGain();
+    const noiseGain = audioContext.createGain();
+    const screamFilter = audioContext.createBiquadFilter();
+    const noiseFilter = audioContext.createBiquadFilter();
+    const distortion = audioContext.createWaveShaper();
+
+    const distortionCurve = new Float32Array(256);
+    for (let i = 0; i < distortionCurve.length; i++) {
+      const x = (i * 2) / distortionCurve.length - 1;
+      distortionCurve[i] = Math.tanh(x * 5);
+    }
+
+    distortion.curve = distortionCurve;
+    distortion.oversample = '4x';
+    masterGain.gain.setValueAtTime(0.0001, now);
+    masterGain.gain.exponentialRampToValueAtTime(0.85, now + 0.035);
+    masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.15);
+
+    const scream = audioContext.createOscillator();
+    scream.type = 'sawtooth';
+    scream.frequency.setValueAtTime(920, now);
+    scream.frequency.exponentialRampToValueAtTime(1550, now + 0.16);
+    scream.frequency.exponentialRampToValueAtTime(640, now + 0.72);
+    scream.detune.setValueAtTime(-35, now);
+    scream.detune.linearRampToValueAtTime(55, now + 0.55);
+
+    const secondScream = audioContext.createOscillator();
+    secondScream.type = 'square';
+    secondScream.frequency.setValueAtTime(760, now);
+    secondScream.frequency.exponentialRampToValueAtTime(1320, now + 0.12);
+    secondScream.frequency.exponentialRampToValueAtTime(520, now + 0.62);
+
+    screamFilter.type = 'bandpass';
+    screamFilter.frequency.setValueAtTime(1350, now);
+    screamFilter.frequency.exponentialRampToValueAtTime(820, now + 0.85);
+    screamFilter.Q.setValueAtTime(8, now);
+
+    screamGain.gain.setValueAtTime(0.0001, now);
+    screamGain.gain.exponentialRampToValueAtTime(0.62, now + 0.025);
+    screamGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.95);
+
+    const rumble = audioContext.createOscillator();
+    rumble.type = 'triangle';
+    rumble.frequency.setValueAtTime(55, now);
+    rumble.frequency.exponentialRampToValueAtTime(24, now + 0.55);
+    rumbleGain.gain.setValueAtTime(0.0001, now);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.95, now + 0.02);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+
+    const noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 1.1, audioContext.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseData.length; i++) {
+      noiseData[i] = (Math.random() * 2 - 1) * (1 - i / noiseData.length);
+    }
+
+    const noise = audioContext.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.setValueAtTime(1200, now);
+    noiseFilter.frequency.exponentialRampToValueAtTime(420, now + 0.95);
+    noiseGain.gain.setValueAtTime(0.0001, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.5, now + 0.04);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 1.05);
+
+    scream.connect(screamFilter);
+    secondScream.connect(screamFilter);
+    screamFilter.connect(distortion);
+    distortion.connect(screamGain);
+    screamGain.connect(masterGain);
+
+    rumble.connect(rumbleGain);
+    rumbleGain.connect(masterGain);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(masterGain);
+    masterGain.connect(audioContext.destination);
+
+    scream.start(now);
+    secondScream.start(now);
+    rumble.start(now);
+    noise.start(now);
+
+    scream.stop(now + 1.05);
+    secondScream.stop(now + 0.9);
+    rumble.stop(now + 0.7);
+    noise.stop(now + 1.1);
+  }
+
+  openGameButton.addEventListener('click', openGame);
+  closeGameButton.addEventListener('click', closeGame);
+  closeGameButtonBottom.addEventListener('click', closeGame);
+  restartButton.addEventListener('click', resetGame);
+
+  gameModal.addEventListener('click', (event) => {
+    if (event.target === gameModal) {
+      closeGame();
+    }
   });
-  ctx.shadowBlur = 0;
 
-  // Essen zeichnen (Geberit Produkt)
-  ctx.fillStyle = foodColor;
-  ctx.shadowColor = 'rgba(47, 111, 159, 0.6)';
-  ctx.shadowBlur = 8;
-  ctx.fillRect(
-    food.x * gridSize + 3,
-    food.y * gridSize + 3,
-    gridSize - 6,
-    gridSize - 6
-  );
-  ctx.shadowBlur = 0;
-
-  // Text im Produkt
-  ctx.fillStyle = '#fff';
-  ctx.font = '10px Arial';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('G', food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2);
-}
-
-function update(currentTime) {
-  if (!gameActive) return;
-
-  if (currentTime - lastMoveTime > gameSpeed) {
-    direction = nextDirection;
-
-    const head = snake[0];
-    const newHead = {
-      x: head.x + direction.x,
-      y: head.y + direction.y
-    };
-
-    // Wand-Kollision
-    if (newHead.x < 0 || newHead.x >= tileCount || newHead.y < 0 || newHead.y >= tileCount) {
-      endGame('Du hast die Wand berührt! 💥');
-      return;
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeGame();
+      jumpscare.classList.remove('active');
+      jumpscare.setAttribute('aria-hidden', 'true');
     }
+  });
 
-    // Selbst-Kollision
-    if (snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
-      endGame('Du hast dich selbst berührt! 💥');
-      return;
-    }
-
-    snake.unshift(newHead);
-
-    // Essen gegessen
-    if (newHead.x === food.x && newHead.y === food.y) {
-      score += 10;
-      scoreDiv.textContent = `Punkte: ${score}`;
-      generateFood();
-      
-      // Schneller werden
-      gameSpeed = Math.max(50, gameSpeed - 2);
-    } else {
-      snake.pop();
-    }
-
-    lastMoveTime = currentTime;
-  }
-
-  draw();
-  requestAnimationFrame(update);
-}
-
-function endGame(message) {
-  gameActive = false;
-  statusDiv.textContent = message;
-  statusDiv.style.color = '#ff6b6b';
-}
-
-function resetGame() {
-  snake = [{ x: 5, y: 5 }];
-  direction = { x: 1, y: 0 };
-  nextDirection = { x: 1, y: 0 };
-  score = 0;
-  gameActive = true;
-  gameSpeed = 100;
-  lastMoveTime = 0;
-  scoreDiv.textContent = `Punkte: ${score}`;
-  statusDiv.textContent = 'Spiel aktiv';
-  statusDiv.style.color = '#2f6f9f';
-  generateFood();
-  draw();
-  requestAnimationFrame(update);
-}
-
-// Steuerung
-document.addEventListener('keydown', (e) => {
-  if (!gameActive) return;
-
-  switch(e.key) {
-    case 'ArrowUp':
-    case 'w':
-    case 'W':
-      if (direction.y === 0) nextDirection = { x: 0, y: -1 };
-      e.preventDefault();
-      break;
-    case 'ArrowDown':
-    case 's':
-    case 'S':
-      if (direction.y === 0) nextDirection = { x: 0, y: 1 };
-      e.preventDefault();
-      break;
-    case 'ArrowLeft':
-    case 'a':
-    case 'A':
-      if (direction.x === 0) nextDirection = { x: -1, y: 0 };
-      e.preventDefault();
-      break;
-    case 'ArrowRight':
-    case 'd':
-    case 'D':
-      if (direction.x === 0) nextDirection = { x: 1, y: 0 };
-      e.preventDefault();
-      break;
-  }
-});
-
-generateFood();
-draw();
-requestAnimationFrame(update);
+  renderBoard();
 </script>
- 
 </body>
 </html>
