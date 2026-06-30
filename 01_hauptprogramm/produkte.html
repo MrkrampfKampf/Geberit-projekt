@@ -490,6 +490,78 @@
             gap: 0.3rem;
         }
 
+        .recommendations-panel {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            width: min(330px, calc(100vw - 2rem));
+            display: none;
+            background: #fff;
+            border: 1px solid var(--geberit-border);
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(47, 63, 71, 0.16);
+            z-index: 1200;
+            overflow: hidden;
+        }
+
+        .recommendations-panel.active {
+            display: block;
+        }
+
+        .recommendations-title {
+            margin: 0;
+            padding: 0.75rem 0.85rem;
+            background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .recommendations-list {
+            display: grid;
+            gap: 0;
+        }
+
+        .recommendation-item {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 0.65rem;
+            align-items: center;
+            width: 100%;
+            border: 0;
+            border-top: 1px solid #e3ebef;
+            background: #fff;
+            padding: 0.65rem 0.75rem;
+            cursor: pointer;
+            text-align: left;
+            font: inherit;
+        }
+
+        .recommendation-item:hover {
+            background: #f4f8fa;
+        }
+
+        .recommendation-item img {
+            width: 56px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #eef3f6;
+        }
+
+        .recommendation-item strong {
+            display: block;
+            color: var(--geberit-dark);
+            font-size: 0.86rem;
+            line-height: 1.25;
+        }
+
+        .recommendation-item span {
+            display: block;
+            color: #6a777d;
+            font-size: 0.78rem;
+            margin-top: 0.15rem;
+        }
+
         footer {
             background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
             color: #000000;
@@ -533,6 +605,13 @@
                 align-items: stretch;
                 flex-direction: column;
             }
+
+            .recommendations-panel {
+                left: 0.75rem;
+                right: 0.75rem;
+                bottom: 0.75rem;
+                width: auto;
+            }
         }
     </style>
 </head>
@@ -572,6 +651,11 @@
             <div class="products-grid" id="productsContainer"></div>
         </section>
     </main>
+
+    <aside class="recommendations-panel" id="recommendationsPanel" aria-label="Empfohlene Produkte">
+        <h2 class="recommendations-title">Empfohlen</h2>
+        <div class="recommendations-list" id="recommendationsList"></div>
+    </aside>
 
     <div class="modal-backdrop" id="productModal" aria-hidden="true">
         <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -789,10 +873,14 @@
             modalPrice: document.getElementById('modalPrice'),
             modalArticle: document.getElementById('modalArticle'),
             modalImage: document.getElementById('modalImage'),
-            closeModalButton: document.getElementById('closeModal')
+            closeModalButton: document.getElementById('closeModal'),
+            recommendationsPanel: document.getElementById('recommendationsPanel'),
+            recommendationsList: document.getElementById('recommendationsList')
         };
 
         const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2235%22 fill=%22%23999%22 text-anchor=%22middle%22 font-family=%22Arial%22 dy=%22.3em%22%3E%5BBild%5D%3C/text%3E%3C/svg%3E';
+        const visitorStorageKey = 'geberitVisitorId';
+        const recommendationsStorageKey = 'geberitRecentProducts';
         let activeCategoryId = 'all';
 
         function buildCategories(productGroups = datenbank, wcProducts = originalProducts) {
@@ -850,6 +938,72 @@
             const normalizedProductName = productName.trim().toLowerCase();
             return categories[0].products.find(product => product.name.toLowerCase() === normalizedProductName)
                 || categories[0].products.find(product => product.name.toLowerCase().includes(normalizedProductName));
+        }
+
+        function getVisitorId() {
+            let visitorId = localStorage.getItem(visitorStorageKey);
+            if (!visitorId) {
+                visitorId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                localStorage.setItem(visitorStorageKey, visitorId);
+            }
+            return visitorId;
+        }
+
+        function getProductCategoryId(product) {
+            const category = categories.slice(1).find(item => item.products.some(entry => entry.name === product.name));
+            return category?.id || product.category || '';
+        }
+
+        function getProductCategoryLabel(product) {
+            const category = categories.slice(1).find(item => item.products.some(entry => entry.name === product.name));
+            return category?.label || product.category || '';
+        }
+
+        function getRecentProducts() {
+            try {
+                return JSON.parse(localStorage.getItem(recommendationsStorageKey)) || [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveRecentProduct(product) {
+            const item = {
+                name: product.name,
+                category: getProductCategoryLabel(product),
+                image: getProductImage(product),
+                price: getProductPrice(product)
+            };
+            const recentProducts = getRecentProducts().filter(entry => entry.name !== item.name);
+            recentProducts.unshift(item);
+            localStorage.setItem(recommendationsStorageKey, JSON.stringify(recentProducts.slice(0, 3)));
+            renderRecommendations();
+        }
+
+        function renderRecommendations() {
+            const recentProducts = getRecentProducts().slice(0, 3);
+            dom.recommendationsPanel.classList.toggle('active', recentProducts.length > 0);
+            dom.recommendationsList.innerHTML = recentProducts.map(product => `
+                <button class="recommendation-item" type="button" data-product-name="${encodeURIComponent(product.name)}">
+                    <img src="${product.image || placeholderImage}" alt="">
+                    <span>
+                        <strong>${product.name}</strong>
+                        <span>${product.category || product.price || 'Zuletzt angesehen'}</span>
+                    </span>
+                </button>
+            `).join('');
+        }
+
+        function saveProductClick(product) {
+            GeberitDatabase.saveProductClick({
+                visitor_id: getVisitorId(),
+                product_name: product.name,
+                category: getProductCategoryId(product),
+                page_path: window.location.pathname,
+                user_agent: navigator.userAgent
+            }).catch(error => {
+                console.warn('Produktklick konnte nicht in Supabase gespeichert werden.', error);
+            });
         }
 
         function createCategoryButtons() {
@@ -926,6 +1080,8 @@
         }
 
         function openModal(product) {
+            saveRecentProduct(product);
+            saveProductClick(product);
             dom.modalTitle.textContent = product.name;
             dom.modalDescription.textContent = getProductDescription(product);
             dom.modalPrice.textContent = `Preis: ${getProductPrice(product) || 'nicht angegeben'}`;
@@ -986,10 +1142,19 @@
                     openModal(selectedProduct);
                 }
             }
+            renderRecommendations();
             dom.searchInput.addEventListener('input', renderProducts);
         }
 
         initializeProducts();
+        dom.recommendationsList.addEventListener('click', (event) => {
+            const button = event.target.closest('.recommendation-item');
+            if (!button) return;
+            const selectedProduct = findProductByName(decodeURIComponent(button.dataset.productName));
+            if (selectedProduct) {
+                openModal(selectedProduct);
+            }
+        });
         if (dom.navSearchInput && dom.navSearchResults) {
             dom.navSearchInput.addEventListener('input', renderNavSearchResults);
             dom.navSearchInput.addEventListener('focus', renderNavSearchResults);

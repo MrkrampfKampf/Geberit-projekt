@@ -2,6 +2,7 @@ const GeberitDatabase = (() => {
     const SUPABASE_URL = 'https://dfqezgjgvevietewqrci.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_R__QyYodPo3dnVb9RJqqkg_UTAZXqyP';
     const PRODUCTS_TABLE = 'products';
+    const PRODUCT_CLICKS_TABLE = 'product_clicks';
 
     function isConfigured() {
         return !SUPABASE_URL.includes('HIER_DEINE')
@@ -10,6 +11,7 @@ const GeberitDatabase = (() => {
 
     function normalizeProduct(row) {
         return {
+            id: row.id,
             name: row.name,
             description: row.description || row.material || '',
             price: row.price || '',
@@ -17,6 +19,29 @@ const GeberitDatabase = (() => {
             image: row.image_url || '',
             material: row.material || '',
             category: row.category || 'wc'
+        };
+    }
+
+    async function getVisitorIp() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            if (!response.ok) {
+                return '';
+            }
+
+            const data = await response.json();
+            return data.ip || '';
+        } catch (error) {
+            console.warn('IP-Adresse konnte nicht geladen werden.', error);
+            return '';
+        }
+    }
+
+    function getHeaders(extraHeaders = {}) {
+        return {
+            apikey: SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            ...extraHeaders
         };
     }
 
@@ -28,10 +53,7 @@ const GeberitDatabase = (() => {
 
         const endpoint = `${SUPABASE_URL}/rest/v1/${PRODUCTS_TABLE}?select=*&active=eq.true&order=sort_order.asc`;
         const response = await fetch(endpoint, {
-            headers: {
-                apikey: SUPABASE_PUBLISHABLE_KEY,
-                Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
-            }
+            headers: getHeaders()
         });
 
         if (!response.ok) {
@@ -47,7 +69,35 @@ const GeberitDatabase = (() => {
         }, {});
     }
 
+    async function saveProductClick(clickData) {
+        if (!isConfigured()) {
+            return false;
+        }
+
+        const ipAddress = await getVisitorIp();
+
+        const endpoint = `${SUPABASE_URL}/rest/v1/${PRODUCT_CLICKS_TABLE}`;
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: getHeaders({
+                'Content-Type': 'application/json',
+                Prefer: 'return=minimal'
+            }),
+            body: JSON.stringify({
+                ...clickData,
+                ip_address: ipAddress || null
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Supabase Klickspeicherung Fehler: ${response.status} ${response.statusText}`);
+        }
+
+        return true;
+    }
+
     return {
-        loadProducts
+        loadProducts,
+        saveProductClick
     };
 })();
