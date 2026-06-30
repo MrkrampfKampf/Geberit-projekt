@@ -34,37 +34,57 @@
             padding: 12px 20px;
             display: flex;
             align-items: center;
+            gap: 0.8rem;
             z-index: 1000;
             box-shadow: 0 4px 14px rgba(47, 63, 71, 0.10);
         }
 
         .logo {
-            margin-right: auto;
+            margin-right: 0;
         }
 
         .logo img {
             height: 25px;
         }
 
-        nav > a {
-            position: relative;
-            color: #111;
-            text-decoration: none;
-            font-weight: 500;
-            margin-left: 28px;
-            padding: 0.25rem 0;
+        .cart-search {
+            width: min(420px, 48vw);
+            border: 1px solid #c3d5e0;
+            border-radius: 999px;
+            padding: 0.58rem 0.9rem;
+            color: var(--geberit-text);
+            background: #f8fbfc;
+            font: inherit;
+            outline: none;
         }
 
-        nav > a.active::after,
-        nav > a:hover::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: -6px;
-            height: 2px;
-            border-radius: 999px;
-            background: #111;
+        .cart-search:focus {
+            border-color: #7abde9;
+            box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.18);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-left: auto;
+        }
+
+        .currency-select {
+            border: 1px solid #c3d5e0;
+            border-radius: 10px;
+            padding: 0.58rem 0.75rem;
+            background: #fff;
+            color: var(--geberit-dark);
+            font: inherit;
+            font-weight: 800;
+        }
+
+        .small-link {
+            color: var(--geberit-dark);
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         main {
@@ -408,13 +428,20 @@
             }
 
             .logo {
-                width: 100%;
-                margin-bottom: 0.5rem;
+                width: auto;
+                margin-bottom: 0;
             }
 
-            nav > a {
+            .cart-search {
+                flex: 1;
+                min-width: 0;
+                width: auto;
+            }
+
+            .nav-actions {
+                width: 100%;
                 margin-left: 0;
-                margin-right: 18px;
+                justify-content: space-between;
             }
 
             .page-head {
@@ -466,11 +493,17 @@
                 <img src="../02_images/geberit-logo.png" alt="Geberit Logo">
             </a>
         </div>
-        <a href="Grundseite.html">Home</a>
-        <a href="&Uuml;ber-Uns.html">&Uuml;ber Geberit</a>
-        <a href="produkte.html">Produkte</a>
-        <a href="warenkorb.html" class="active">Warenkorb</a>
-        <a href="Grundseite.html#contact">Kontakt</a>
+        <input class="cart-search" id="cartSearch" type="search" placeholder="Warenkorb durchsuchen..." aria-label="Warenkorb durchsuchen" autocomplete="off">
+        <div class="nav-actions">
+            <select class="currency-select" id="currencySelect" aria-label="Waehrung auswaehlen">
+                <option value="EUR">EUR</option>
+                <option value="CHF">CHF</option>
+                <option value="USD">USD</option>
+                <option value="GBP">GBP</option>
+                <option value="TRY">TRY</option>
+            </select>
+            <a class="small-link" href="produkte.html">Produkte</a>
+        </div>
     </nav>
 
     <main>
@@ -526,8 +559,18 @@
         const visitorStorageKey = 'geberitVisitorId';
         const cartStorageKey = 'geberitCartItems';
         const discountStorageKey = 'geberitDiscountCode';
+        const currencyStorageKey = 'geberitCurrency';
+        const currencyRates = {
+            EUR: { rate: 1, locale: 'de-DE' },
+            CHF: { rate: 0.94, locale: 'de-CH' },
+            USD: { rate: 1.07, locale: 'en-US' },
+            GBP: { rate: 0.84, locale: 'en-GB' },
+            TRY: { rate: 35.1, locale: 'tr-TR' }
+        };
 
         const dom = {
+            cartSearch: document.getElementById('cartSearch'),
+            currencySelect: document.getElementById('currencySelect'),
             cartList: document.getElementById('cartList'),
             discountCode: document.getElementById('discountCode'),
             applyDiscount: document.getElementById('applyDiscount'),
@@ -571,6 +614,15 @@
             localStorage.setItem(discountStorageKey, code.trim().toUpperCase());
         }
 
+        function getSelectedCurrency() {
+            const storedCurrency = localStorage.getItem(currencyStorageKey) || 'EUR';
+            return currencyRates[storedCurrency] ? storedCurrency : 'EUR';
+        }
+
+        function setSelectedCurrency(currency) {
+            localStorage.setItem(currencyStorageKey, currencyRates[currency] ? currency : 'EUR');
+        }
+
         function parsePriceValue(priceText) {
             const normalized = String(priceText || '')
                 .replace(/\./g, '')
@@ -589,7 +641,9 @@
         }
 
         function formatCurrency(value) {
-            return value.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+            const currency = getSelectedCurrency();
+            const config = currencyRates[currency];
+            return (value * config.rate).toLocaleString(config.locale, { style: 'currency', currency });
         }
 
         function formatCurrencyForMail(value) {
@@ -631,9 +685,10 @@
         }
 
         function buildRequestMail(items, total) {
+            const currency = getSelectedCurrency();
             const lines = items.map(item => {
                 const lineTotal = parsePriceValue(item.price) * item.quantity;
-                return `- ${item.quantity}x ${normalizeForMail(item.name)} (${formatCurrencyForMail(lineTotal)})`;
+                return `- ${item.quantity}x ${normalizeForMail(item.name)} (${formatCurrencyForMail(lineTotal)} / Anzeige: ${formatCurrency(lineTotal)})`;
             });
             const body = [
                 'Hallo Geberit Team,',
@@ -641,7 +696,7 @@
                 'ich interessiere mich fuer folgende Produkte:',
                 ...lines,
                 '',
-                `Gesamt: ${formatCurrencyForMail(total)}`,
+                `Gesamt: ${formatCurrencyForMail(total)} / Anzeige: ${formatCurrency(total)} (${currency})`,
                 '',
                 'Viele Gruesse'
             ].join('\n');
@@ -668,12 +723,17 @@
 
         function renderCart() {
             const items = getCartItems();
+            const searchTerm = dom.cartSearch.value.trim().toLowerCase();
+            const visibleItems = searchTerm
+                ? items.filter(item => [item.name, item.category, item.price].filter(Boolean).join(' ').toLowerCase().includes(searchTerm))
+                : items;
             const discountCode = getDiscountCode();
             const discountPercent = getDiscountPercent(discountCode);
             const subtotal = items.reduce((sum, item) => sum + parsePriceValue(item.price) * item.quantity, 0);
             const total = subtotal * (1 - discountPercent / 100);
             const itemCount = getItemCount(items);
 
+            dom.currencySelect.value = getSelectedCurrency();
             dom.discountCode.value = discountCode;
             dom.subtotalValue.textContent = formatCurrency(subtotal);
             dom.discountValue.textContent = discountPercent ? `${discountPercent}%` : '0%';
@@ -700,7 +760,9 @@
 
             dom.cartList.innerHTML = items.length === 0
                 ? '<div class="empty-state"><strong>Dein Warenkorb ist leer.</strong><span>Waehle Produkte auf der Produktseite aus, dann erscheinen sie hier.</span><a href="produkte.html">Produkte ansehen</a></div>'
-                : items.map(item => {
+                : visibleItems.length === 0
+                    ? '<div class="empty-state"><strong>Nichts gefunden.</strong><span>Keine Produkte passen zu deiner Suche.</span></div>'
+                    : visibleItems.map(item => {
                     const lineTotal = parsePriceValue(item.price) * item.quantity;
                     return `
                         <article class="cart-item">
@@ -739,13 +801,13 @@
             if (item.quantity > 0) {
                 syncCartItem(item);
                 if (change > 0) {
-                    showToast(`✓ ${item.name} wurde hinzugefügt`);
+                    showToast(`${item.name} wurde hinzugefuegt`);
                 } else if (item.quantity > 0) {
-                    showToast(`✓ Menge reduziert`);
+                    showToast('Menge reduziert');
                 }
             } else {
                 removeCartItemFromDatabase(productName);
-                showToast(`✓ ${item.name} wurde entfernt`);
+                showToast(`${item.name} wurde entfernt`);
             }
 
             renderCart();
@@ -755,7 +817,7 @@
             const items = getCartItems();
             const item = items.find(i => i.name === productName);
             if (item) {
-                showToast(`✓ ${item.name} wurde entfernt`);
+                showToast(`${item.name} wurde entfernt`);
             }
             setCartItems(getCartItems().filter(item => item.name !== productName));
             removeCartItemFromDatabase(productName);
@@ -796,8 +858,15 @@
             renderCart();
         });
 
+        dom.cartSearch.addEventListener('input', renderCart);
+
+        dom.currencySelect.addEventListener('change', () => {
+            setSelectedCurrency(dom.currencySelect.value);
+            renderCart();
+        });
+
         dom.clearCart.addEventListener('click', () => {
-            showToast('✓ Warenkorb geleert');
+            showToast('Warenkorb geleert');
             setCartItems([]);
             GeberitDatabase.clearCartItems(getVisitorId())
                 .catch(error => console.warn('Warenkorb konnte nicht geleert werden.', error));
