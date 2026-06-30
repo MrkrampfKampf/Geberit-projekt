@@ -292,7 +292,7 @@
         }
 
         .category-title {
-            display: none;
+            display: block;
             margin: 0 0 1rem;
             color: var(--geberit-dark);
             font-size: 1.35rem;
@@ -300,7 +300,7 @@
         }
 
         .category-buttons {
-            display: none;
+            display: flex;
             gap: 0.8rem;
             justify-content: center;
             flex-wrap: wrap;
@@ -348,6 +348,21 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             appearance: none;
             -webkit-appearance: none;
+            position: relative;
+        }
+
+        .recommendation-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            z-index: 2;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
+            color: #fff;
+            padding: 0.3rem 0.65rem;
+            font-size: 0.78rem;
+            font-weight: 800;
+            box-shadow: 0 8px 16px rgba(47, 63, 71, 0.2);
         }
 
         .product-card:hover {
@@ -490,78 +505,6 @@
             gap: 0.3rem;
         }
 
-        .recommendations-panel {
-            position: fixed;
-            right: 1rem;
-            bottom: 1rem;
-            width: min(330px, calc(100vw - 2rem));
-            display: none;
-            background: #fff;
-            border: 1px solid var(--geberit-border);
-            border-radius: 12px;
-            box-shadow: 0 12px 30px rgba(47, 63, 71, 0.16);
-            z-index: 1200;
-            overflow: hidden;
-        }
-
-        .recommendations-panel.active {
-            display: block;
-        }
-
-        .recommendations-title {
-            margin: 0;
-            padding: 0.75rem 0.85rem;
-            background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
-            color: #fff;
-            font-size: 0.95rem;
-        }
-
-        .recommendations-list {
-            display: grid;
-            gap: 0;
-        }
-
-        .recommendation-item {
-            display: grid;
-            grid-template-columns: 56px 1fr;
-            gap: 0.65rem;
-            align-items: center;
-            width: 100%;
-            border: 0;
-            border-top: 1px solid #e3ebef;
-            background: #fff;
-            padding: 0.65rem 0.75rem;
-            cursor: pointer;
-            text-align: left;
-            font: inherit;
-        }
-
-        .recommendation-item:hover {
-            background: #f4f8fa;
-        }
-
-        .recommendation-item img {
-            width: 56px;
-            height: 44px;
-            object-fit: cover;
-            border-radius: 8px;
-            background: #eef3f6;
-        }
-
-        .recommendation-item strong {
-            display: block;
-            color: var(--geberit-dark);
-            font-size: 0.86rem;
-            line-height: 1.25;
-        }
-
-        .recommendation-item span {
-            display: block;
-            color: #6a777d;
-            font-size: 0.78rem;
-            margin-top: 0.15rem;
-        }
-
         footer {
             background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
             color: #000000;
@@ -606,12 +549,6 @@
                 flex-direction: column;
             }
 
-            .recommendations-panel {
-                left: 0.75rem;
-                right: 0.75rem;
-                bottom: 0.75rem;
-                width: auto;
-            }
         }
     </style>
 </head>
@@ -651,11 +588,6 @@
             <div class="products-grid" id="productsContainer"></div>
         </section>
     </main>
-
-    <aside class="recommendations-panel" id="recommendationsPanel" aria-label="Empfohlene Produkte">
-        <h2 class="recommendations-title">Empfohlen</h2>
-        <div class="recommendations-list" id="recommendationsList"></div>
-    </aside>
 
     <div class="modal-backdrop" id="productModal" aria-hidden="true">
         <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -873,9 +805,7 @@
             modalPrice: document.getElementById('modalPrice'),
             modalArticle: document.getElementById('modalArticle'),
             modalImage: document.getElementById('modalImage'),
-            closeModalButton: document.getElementById('closeModal'),
-            recommendationsPanel: document.getElementById('recommendationsPanel'),
-            recommendationsList: document.getElementById('recommendationsList')
+            closeModalButton: document.getElementById('closeModal')
         };
 
         const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2235%22 fill=%22%23999%22 text-anchor=%22middle%22 font-family=%22Arial%22 dy=%22.3em%22%3E%5BBild%5D%3C/text%3E%3C/svg%3E';
@@ -883,12 +813,28 @@
         const recommendationsStorageKey = 'geberitRecentProducts';
         let activeCategoryId = 'all';
 
-        function buildCategories(productGroups = datenbank, wcProducts = originalProducts) {
+        function mergeProducts(primaryProducts = [], fallbackProducts = []) {
+            const productsByName = new Map();
+            [...fallbackProducts, ...primaryProducts].forEach(product => {
+                if (product?.name) {
+                    productsByName.set(product.name.toLowerCase(), product);
+                }
+            });
+            return Array.from(productsByName.values());
+        }
+
+        function buildCategories(productGroups = {}) {
+            const localGroups = {
+                waschbecken: datenbank.waschbecken,
+                wc: [...originalProducts, ...datenbank.wc],
+                dusche: datenbank.dusche
+            };
+
             categories = [
                 { id: 'all', label: 'Alle Produkte', products: [] },
-                { id: 'waschbecken', label: 'Waschbecken', products: productGroups.waschbecken || [] },
-                { id: 'wc', label: 'WC-Systeme', products: [...wcProducts, ...(productGroups.wc || [])] },
-                { id: 'dusche', label: 'Duschen & Abläufe', products: productGroups.dusche || [] }
+                { id: 'waschbecken', label: 'Waschbecken', products: mergeProducts(productGroups.waschbecken, localGroups.waschbecken) },
+                { id: 'wc', label: 'WC-Systeme', products: mergeProducts(productGroups.wc, localGroups.wc) },
+                { id: 'dusche', label: 'Duschen & Abläufe', products: mergeProducts(productGroups.dusche, localGroups.dusche) }
             ];
             categories[0].products = categories.slice(1).flatMap(category => category.products);
             navSearchProducts = categories.slice(1).flatMap(category => {
@@ -977,21 +923,13 @@
             const recentProducts = getRecentProducts().filter(entry => entry.name !== item.name);
             recentProducts.unshift(item);
             localStorage.setItem(recommendationsStorageKey, JSON.stringify(recentProducts.slice(0, 3)));
-            renderRecommendations();
+            renderProducts();
         }
 
-        function renderRecommendations() {
-            const recentProducts = getRecentProducts().slice(0, 3);
-            dom.recommendationsPanel.classList.toggle('active', recentProducts.length > 0);
-            dom.recommendationsList.innerHTML = recentProducts.map(product => `
-                <button class="recommendation-item" type="button" data-product-name="${encodeURIComponent(product.name)}">
-                    <img src="${product.image || placeholderImage}" alt="">
-                    <span>
-                        <strong>${product.name}</strong>
-                        <span>${product.category || product.price || 'Zuletzt angesehen'}</span>
-                    </span>
-                </button>
-            `).join('');
+        function isRecommendedProduct(product) {
+            return getRecentProducts()
+                .slice(0, 3)
+                .some(entry => entry.name === product.name);
         }
 
         function saveProductClick(product) {
@@ -1028,6 +966,7 @@
             button.type = 'button';
             button.className = 'product-card';
             button.innerHTML = `
+                ${isRecommendedProduct(product) ? '<span class="recommendation-badge">Empfohlen</span>' : ''}
                 <img src="${getProductImage(product)}" alt="${product.name}" class="product-image">
                 <div class="product-info">
                     <h3>${product.name}</h3>
@@ -1121,7 +1060,7 @@
             try {
                 const databaseProducts = await GeberitDatabase.loadProducts();
                 if (databaseProducts && Object.keys(databaseProducts).length > 0) {
-                    buildCategories(databaseProducts, []);
+                    buildCategories(databaseProducts);
                 }
             } catch (error) {
                 console.warn('SQL-Produkte konnten nicht geladen werden. Lokale Produktdaten werden benutzt.', error);
@@ -1142,19 +1081,10 @@
                     openModal(selectedProduct);
                 }
             }
-            renderRecommendations();
             dom.searchInput.addEventListener('input', renderProducts);
         }
 
         initializeProducts();
-        dom.recommendationsList.addEventListener('click', (event) => {
-            const button = event.target.closest('.recommendation-item');
-            if (!button) return;
-            const selectedProduct = findProductByName(decodeURIComponent(button.dataset.productName));
-            if (selectedProduct) {
-                openModal(selectedProduct);
-            }
-        });
         if (dom.navSearchInput && dom.navSearchResults) {
             dom.navSearchInput.addEventListener('input', renderNavSearchResults);
             dom.navSearchInput.addEventListener('focus', renderNavSearchResults);
