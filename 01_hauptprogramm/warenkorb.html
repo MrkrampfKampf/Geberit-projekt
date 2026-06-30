@@ -94,6 +94,27 @@
             color: #5d6f77;
         }
 
+        .cart-status-card {
+            display: inline-grid;
+            gap: 0.1rem;
+            min-width: 240px;
+            border: 1px solid #c3d5e0;
+            border-radius: 12px;
+            padding: 0.8rem 0.95rem;
+            background: #fff;
+            box-shadow: 0 8px 20px rgba(47, 63, 71, 0.08);
+        }
+
+        .cart-status-card strong {
+            color: var(--geberit-dark);
+            font-size: 1rem;
+        }
+
+        .cart-status-card span {
+            color: #5d6f77;
+            font-size: 0.9rem;
+        }
+
         .eyebrow {
             display: inline-flex;
             margin-bottom: 0.35rem;
@@ -338,6 +359,47 @@
             margin: 0;
             color: #64737a;
             font-size: 0.86rem;
+            display: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--geberit-success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease;
+            z-index: 2000;
+            font-weight: 700;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        .toast.hide {
+            animation: slideOut 0.3s ease forwards;
         }
 
         @media (max-width: 800px) {
@@ -361,6 +423,11 @@
 
             .continue-link {
                 margin-top: 1rem;
+            }
+
+            .cart-status-card {
+                margin-top: 0.8rem;
+                width: 100%;
             }
 
             .cart-layout {
@@ -411,7 +478,10 @@
             <div>
                 <span class="eyebrow">Geberit Auswahl</span>
                 <h1>Warenkorb</h1>
-                <p>Produkte k&ouml;nnen nur &uuml;ber die Produktseite hinzugef&uuml;gt werden. Dein Warenkorb bleibt &uuml;ber IP-Adresse und Browser-ID gespeichert.</p>
+                <div class="cart-status-card">
+                    <strong id="cartStatusTitle">Noch keine Produkte</strong>
+                    <span id="cartStatusText">W&auml;hle Produkte auf der Produktseite aus.</span>
+                </div>
             </div>
             <a class="continue-link" href="produkte.html">Weiter einkaufen</a>
         </div>
@@ -447,7 +517,6 @@
                 <a class="summary-button primary" id="requestLink" href="mailto:info@geberit.com">Anfrage vorbereiten</a>
                 <button class="summary-button primary" id="clearCart" type="button">Warenkorb leeren</button>
                 <a class="summary-button secondary" href="produkte.html">Weitere Produkte ansehen</a>
-                <p class="note">Rabattcodes: GEBERIT10, SCHULE15, PRAKTIKUM20.</p>
             </aside>
         </div>
     </main>
@@ -467,6 +536,8 @@
             totalValue: document.getElementById('totalValue'),
             clearCart: document.getElementById('clearCart'),
             cartOverview: document.getElementById('cartOverview'),
+            cartStatusTitle: document.getElementById('cartStatusTitle'),
+            cartStatusText: document.getElementById('cartStatusText'),
             discountMessage: document.getElementById('discountMessage'),
             requestLink: document.getElementById('requestLink')
         };
@@ -521,6 +592,40 @@
             return value.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
         }
 
+        function formatCurrencyForMail(value) {
+            return `${value.toLocaleString('de-DE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })} EUR`;
+        }
+
+        function normalizeForMail(text) {
+            return String(text || '')
+                .replace(/ä/g, 'ae')
+                .replace(/ö/g, 'oe')
+                .replace(/ü/g, 'ue')
+                .replace(/Ä/g, 'Ae')
+                .replace(/Ö/g, 'Oe')
+                .replace(/Ü/g, 'Ue')
+                .replace(/ß/g, 'ss')
+                .replace(/[€]/g, 'EUR');
+        }
+
+        function showToast(message) {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
         function getItemCount(items) {
             return items.reduce((sum, item) => sum + item.quantity, 0);
         }
@@ -528,7 +633,7 @@
         function buildRequestMail(items, total) {
             const lines = items.map(item => {
                 const lineTotal = parsePriceValue(item.price) * item.quantity;
-                return `- ${item.quantity}x ${item.name} (${formatCurrency(lineTotal)})`;
+                return `- ${item.quantity}x ${normalizeForMail(item.name)} (${formatCurrencyForMail(lineTotal)})`;
             });
             const body = [
                 'Hallo Geberit Team,',
@@ -536,7 +641,7 @@
                 'ich interessiere mich fuer folgende Produkte:',
                 ...lines,
                 '',
-                `Gesamt: ${formatCurrency(total)}`,
+                `Gesamt: ${formatCurrencyForMail(total)}`,
                 '',
                 'Viele Gruesse'
             ].join('\n');
@@ -573,10 +678,14 @@
             dom.subtotalValue.textContent = formatCurrency(subtotal);
             dom.discountValue.textContent = discountPercent ? `${discountPercent}%` : '0%';
             dom.totalValue.textContent = formatCurrency(total);
-            dom.cartOverview.textContent = `${itemCount} Artikel`;
+            dom.cartOverview.textContent = itemCount ? `${itemCount} Artikel im Warenkorb` : 'Warenkorb leer';
+            dom.cartStatusTitle.textContent = itemCount ? `${itemCount} Artikel im Warenkorb` : 'Noch keine Produkte';
+            dom.cartStatusText.textContent = itemCount ? `${formatCurrency(total)} Gesamtwert` : 'Waehle Produkte auf der Produktseite aus.';
             dom.requestLink.href = items.length ? buildRequestMail(items, total) : 'mailto:info@geberit.com';
             dom.requestLink.style.pointerEvents = items.length ? 'auto' : 'none';
             dom.requestLink.style.opacity = items.length ? '1' : '0.55';
+            dom.clearCart.disabled = items.length === 0;
+            dom.clearCart.style.opacity = items.length ? '1' : '0.55';
 
             dom.discountMessage.className = 'discount-message';
             if (discountCode && discountPercent) {
@@ -629,14 +738,25 @@
 
             if (item.quantity > 0) {
                 syncCartItem(item);
+                if (change > 0) {
+                    showToast(`✓ ${item.name} wurde hinzugefügt`);
+                } else if (item.quantity > 0) {
+                    showToast(`✓ Menge reduziert`);
+                }
             } else {
                 removeCartItemFromDatabase(productName);
+                showToast(`✓ ${item.name} wurde entfernt`);
             }
 
             renderCart();
         }
 
         function removeItem(productName) {
+            const items = getCartItems();
+            const item = items.find(i => i.name === productName);
+            if (item) {
+                showToast(`✓ ${item.name} wurde entfernt`);
+            }
             setCartItems(getCartItems().filter(item => item.name !== productName));
             removeCartItemFromDatabase(productName);
             renderCart();
@@ -677,6 +797,7 @@
         });
 
         dom.clearCart.addEventListener('click', () => {
+            showToast('✓ Warenkorb geleert');
             setCartItems([]);
             GeberitDatabase.clearCartItems(getVisitorId())
                 .catch(error => console.warn('Warenkorb konnte nicht geleert werden.', error));

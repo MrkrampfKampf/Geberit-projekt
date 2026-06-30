@@ -89,6 +89,30 @@
             transform: scaleX(1);
         }
 
+        .cart-nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .cart-nav-count {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.35rem;
+            height: 1.35rem;
+            border-radius: 999px;
+            padding: 0 0.35rem;
+            background: var(--geberit-blue);
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 900;
+        }
+
+        .cart-nav-link.has-items .cart-nav-count {
+            display: inline-flex;
+        }
+
         .nav-search {
             position: relative;
             margin-left: 28px;
@@ -749,7 +773,7 @@
         <a href="Grundseite.html">Home</a>
         <a href="Über-Uns.html">Über Geberit</a>
         <a href="produkte.html" class="active">Produkte</a>
-        <a href="warenkorb.html">Warenkorb</a>
+        <a href="warenkorb.html" class="cart-nav-link" id="cartNavLink">Warenkorb <span class="cart-nav-count" id="cartNavCount">0</span></a>
         <a href="Grundseite.html#contact">Kontakt</a>
         <div class="nav-search" role="search">
             <input class="nav-search-input" type="search" placeholder="Suchen" aria-label="Produkte suchen" autocomplete="off">
@@ -995,7 +1019,9 @@
             modalArticle: document.getElementById('modalArticle'),
             modalImage: document.getElementById('modalImage'),
             closeModalButton: document.getElementById('closeModal'),
-            modalCartButton: document.getElementById('modalCartButton')
+            modalCartButton: document.getElementById('modalCartButton'),
+            cartNavLink: document.getElementById('cartNavLink'),
+            cartNavCount: document.getElementById('cartNavCount')
         };
 
         const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2235%22 fill=%22%23999%22 text-anchor=%22middle%22 font-family=%22Arial%22 dy=%22.3em%22%3E%5BBild%5D%3C/text%3E%3C/svg%3E';
@@ -1068,6 +1094,17 @@
 
         function setCartItems(items) {
             localStorage.setItem(cartStorageKey, JSON.stringify(items));
+        }
+
+        function getCartItemCount() {
+            return getCartItems().reduce((sum, item) => sum + (item.quantity || 0), 0);
+        }
+
+        function updateCartNavCount() {
+            const count = getCartItemCount();
+            if (!dom.cartNavLink || !dom.cartNavCount) return;
+            dom.cartNavCount.textContent = count;
+            dom.cartNavLink.classList.toggle('has-items', count > 0);
         }
 
         function getProductSearchText(product, categoryId) {
@@ -1180,6 +1217,7 @@
                 items.unshift(item);
             }
             setCartItems(items);
+            updateCartNavCount();
 
             GeberitDatabase.saveCartItem({
                 visitor_id: getVisitorId(),
@@ -1351,6 +1389,7 @@
         }
 
         initializeProducts();
+        updateCartNavCount();
         if (dom.navSearchInput && dom.navSearchResults) {
             dom.navSearchInput.addEventListener('input', renderNavSearchResults);
             dom.navSearchInput.addEventListener('focus', renderNavSearchResults);
