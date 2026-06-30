@@ -6,50 +6,64 @@
     <title>GeberitProdukte</title>
     <style>
 
-        .topright {
-        position: absolute;
-        top: 24px;
-        left: 16px;
-        }
-
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f8f9fa; 
         }
+        
         header {
-            background-color: #333;
+            background-color: #00427c; 
             color: #fff;
             padding: 1rem;
             text-align: center;
             height: 64px;
+            position: relative;
         }
+        
         nav {
-            background-color: #555;
+            background-color: #003360; 
             padding: 0.5rem;
+            text-align: center;
         }
+        
         nav a {
             color: #fff;
             margin: 0 1rem;
             text-decoration: none;
-            transform: (1,2);
+            display: inline-block;
         }
+        
         nav a:hover {
             text-decoration: underline;
-            color: #5596ff
+            color: #5596ff;
+            transform: (1.2);
         }
+        
         main {
-            max-width: 3000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            background-color: #fff;
+            max-width: 3000px; 
             padding: 2rem;
+            background-color: #fff;
             border-radius: 5px;
         }
+        
+        section {
+            background-color: #f0f4f8; 
+            padding: 10px 5px;
+            text-align: center; 
+            border-radius: 25px; 
+            margin-bottom: 1rem; 
+        }
+
+        section h2 {
+            color: #00427c; 
+            margin-top: 5px;
+        }
+
         footer {
-            background-color: #333;
+            background-color: #222;
             color: #fff;
             text-align: center;
             padding: 1rem;
@@ -57,55 +71,43 @@
         }
     </style>
 </head>
-<body >
+<body>
 
-    
     <header>
-    <div class="column topright">
-        <a href="startseite.html">
-            <img src="https://www.geberit.de/images/geberit_logo.svg" alt="Geberit Logo" width="120%" height="120%">
-        </a>
-    </div>
-    <h1>Über GEBERIT</h1>
+        <h1>Über GEBERIT</h1>
     </header>
 
     <nav>
-        <a href="startseite.html">Home</a>
+        <a href="Grundseite.html">Home</a>
         <a href="Über-Uns.html">Über Geberit</a>
         <a href="produkte.html">Produkte</a>
         <a href="#contact">Kontakt</a>
     </nav>
 
-    <main >
+    <main>
+        <section>
+            <h2>Wer sind wir?</h2>
+            <p>GEBERIT ist die marktführende Wassertechnik-Firma für Sanitäranlagen.</p>
+        </section>
 
-        <section style="background-color: rgb(240, 240, 240);
-                        padding: 10px 5px;
-                        text-align: center; 
-                        border-radius: 25px">
-            <h2>Wer sind wir ?</h2>
-            <p>GEBERIT ist die marktführende Wassertechnik Firma für sanitär anlagen.</p>
+        <section>
+            <h2>Was stellen wir her?</h2>
+            <p>Wir stellen zueinander passende Bad- und Sanitärprodukte her.</p>
         </section>
-    <br>
-        <section style="background-color: rgb(240, 240, 240); padding: 10px 5px; text-align: center; border-radius: 25px">
-            <h2>Was stellen wir her ?</h2>
-            <p>Wir stellen Zu einander Passende Bad und -sanitär Produkte her.</p>
-        </section>
-    <br>
-        <section style="background-color: rgb(240, 240, 240); padding: 10px 5px; text-align: center; border-radius: 25px">
+
+        <section>
             <h2>Unsere Werte</h2>
-            <p>Uns ist Qualität und einhaltlichkeit Wichtig.</p>
-        </section>
-    <br>
-        <section style="background-color: rgb(240, 240, 240); padding: 10px 5px; text-align: center; border-radius: 25px">
-            <h2>Was und unterscheidet uns von anderen</h2>
-            <p>Wir Stellen Sanitäranlagen vor und hinter der Wand her um passenheit zu garantieren.</p>
+            <p>Uns sind Qualität und Einheitlichkeit wichtig.</p>
         </section>
 
-
+        <section>
+            <h2>Was unterscheidet uns von anderen?</h2>
+            <p>Wir stellen Sanitäranlagen vor und hinter der Wand her, um Passgenauigkeit zu garantieren.</p>
+        </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 GEBERIT kontakt über e-mail: GEBERIT@e-mail.com</p>
+        <p>&copy; 2026 GEBERIT | Kontakt über E-Mail: GEBERIT@e-mail.com</p>
     </footer>
 </body>
 </html>
