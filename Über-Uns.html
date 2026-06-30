@@ -61,47 +61,6 @@
             transform: scale(1.14);
         }
 
-        .secret-bomb {
-            position: fixed;
-            right: 1.5rem;
-            bottom: 1.5rem;
-            width: 74px;
-            height: 74px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            background: radial-gradient(circle at 35% 30%, #59646b 0 12%, #1e2529 44%, #07090a 100%);
-            color: white;
-            font-size: 2.2rem;
-            text-decoration: none;
-            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28), 0 0 24px rgba(79, 195, 247, 0.35);
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(18px) scale(0.88);
-            transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-            z-index: 2000;
-        }
-
-        .secret-bomb.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0) scale(1);
-            animation: secretBombFloat 2.6s ease-in-out infinite;
-        }
-
-        .secret-bomb:hover {
-            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.34), 0 0 30px rgba(79, 195, 247, 0.55);
-        }
-
-        @keyframes secretBombFloat {
-            0%, 100% {
-                translate: 0 0;
-            }
-            50% {
-                translate: 0 -12px;
-            }
-        }
-
         nav > a {
             position: relative;
             color: white;
@@ -111,11 +70,32 @@
             padding: 0.25rem 0;
             transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
         }
+
+        nav > a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 3px;
+            border-radius: 999px;
+            background: #4fc3f7;
+            box-shadow: 0 0 12px rgba(79, 195, 247, 0.85);
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
         
-        nav a:hover {
-            text-decoration: underline;
-            color: #5596ff;
-            transform: (1.2);
+        nav > a:hover,
+        nav > a.active {
+            color: #4fc3f7;
+            text-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
+            transform: translateY(-1px);
+        }
+
+        nav > a:hover::after,
+        nav > a.active::after {
+            transform: scaleX(1);
         }
 
         main {
@@ -354,47 +334,42 @@
         <a href="#contact">Kontakt</a>
     </nav>
 
-    <a class="secret-bomb" id="secretBomb" href="Tictactoe.html" aria-hidden="true" aria-label="Tic Tac Toe öffnen">💣</a>
-
     <main>
         <section class="hero">
             <div class="hero-content">
-                <span class="eyebrow">Über Geberit</span>
-                <h1>Sanitärtechnik, die vor und hinter der Wand überzeugt.</h1>
-                <p>Geberit verbindet präzise Technik, langlebige Produkte und modernes Baddesign zu Lösungen, die zuverlässig funktionieren und im Alltag sauber aussehen.</p>
+                <h1>Über Geberit.</h1>
+                <p>Geberit ist marktführer in Sanitär Technik vor und hinter der Wand.</p>
             </div>
         </section>
 
         <section class="content-section">
             <div class="section-shell">
                 <div class="section-heading">
-                    <span class="section-badge">Wer wir sind</span>
-                    <h2>Ein starker Partner für moderne Badezimmer</h2>
-                    <p>Geberit steht für hochwertige Sanitärlösungen, die Planung, Montage und Nutzung einfacher machen. Das Ziel: Technik, Design und Qualität in einem durchdachten System.</p>
+                    <h2>Was unterscheidet uns von anderen?</h2>
+                    <p>Wir stellen Sanitäranlagen vor und hinter der Wand her, um ein abgestimmtes Klima zu garantieren.</p>
                 </div>
-                <div class="info-grid">
-                    <article class="info-card">
-                        <h3>Sanitärtechnik</h3>
-                        <p>Installationssysteme, Spültechnik und Rohrleitungslösungen sorgen für zuverlässige Funktion hinter der Wand.</p>
-                    </article>
-                    <article class="info-card">
-                        <h3>Badprodukte</h3>
-                        <p>WC-Systeme, Waschtische und Badserien verbinden klare Optik mit komfortabler Nutzung.</p>
-                    </article>
-                    <article class="info-card">
-                        <h3>Passgenaue Systeme</h3>
-                        <p>Produkte sind so aufeinander abgestimmt, dass sie technisch und optisch sauber zusammenarbeiten.</p>
-                    </article>
-                </div>
-            </div>
+
+        <section>
+            <h2>Wer sind wir?</h2>
+            <p>Geberit ist die Europäische marktführer in Wassertechnik Firma für Sanitäranlagen.</p>
+        </section>
+
+        <section>
+            <h2>Was stellen wir her?</h2>
+            <p>Wir stellen zueinander passende Bad- und Sanitärprodukte her.</p>
+        </section>
+
+        <section>
+            <h2>Unsere Werte</h2>
+            <p>Uns sind Qualität, Langlebigkeit der Teile, Einheitlichkeit, und Naturschutz wichtig.</p>
         </section>
 
         <section class="content-section alt">
             <div class="section-shell">
                 <div class="section-heading">
-                    <span class="section-badge">Unsere Werte</span>
+                    <span class="section-badge">Warum uns ?</span>
                     <h2>Qualität, Innovation und Verantwortung</h2>
-                    <p>Die Lösungen sind auf lange Lebensdauer, einfache Bedienung und einen bewussten Umgang mit Ressourcen ausgelegt.</p>
+                    <p>Wir legen wert auf einfache bedienung und Resources schonende nutzung.</p>
                 </div>
                 <div class="numbers">
                     <div class="number-card">
@@ -403,11 +378,11 @@
                     </div>
                     <div class="number-card">
                         <strong>2</strong>
-                        <span>Bereiche: vor und hinter der Wand</span>
+                        <span>Bereiche: vor und hinter der Wand um überraschungen zu vermeiden</span>
                     </div>
                     <div class="number-card">
                         <strong>1</strong>
-                        <span>durchgängiges System für Bad und Technik</span>
+                        <span>durchgängiges durchdachtes System für Bad und Technik</span>
                     </div>
                 </div>
             </div>
