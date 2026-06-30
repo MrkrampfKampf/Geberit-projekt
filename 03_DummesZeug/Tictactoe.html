@@ -214,6 +214,8 @@
     color: #f2f7f8;
     font-size: 1.35rem;
     text-shadow: 0 0 14px rgba(255, 23, 56, 0.45);
+    cursor: pointer;
+    user-select: none;
   }
 
   .game-header p {
@@ -318,18 +320,84 @@
     color: #d7e5ea;
   }
 
+  .heaven-portal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: min(86vw, 360px);
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.94), rgba(130, 220, 255, 0.64) 32%, rgba(255, 199, 255, 0.45) 62%, rgba(255, 255, 255, 0.12) 100%);
+    color: #12344a;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 1000;
+    font-size: 1.15rem;
+    box-shadow:
+      0 0 42px rgba(155, 231, 255, 0.92),
+      0 0 90px rgba(255, 255, 255, 0.62);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.72);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 130;
+  }
+
+  .heaven-portal.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+    animation: portalFloat 1.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes portalFloat {
+    from {
+      filter: hue-rotate(0deg);
+    }
+    to {
+      filter: hue-rotate(28deg);
+      translate: 0 -8px;
+    }
+  }
+
   .jumpscare {
     background:
-      radial-gradient(circle at 50% 47%, rgba(255, 23, 56, 0.42), transparent 22%),
-      #010101;
+      linear-gradient(180deg, rgba(4, 8, 12, 0.15) 0 42%, rgba(8, 10, 10, 0.78) 43% 100%),
+      linear-gradient(90deg, transparent 0 46%, rgba(255, 255, 255, 0.78) 47% 49%, transparent 50% 100%),
+      linear-gradient(105deg, #141d23 0 25%, #1f2a26 26% 40%, #070807 41% 100%);
     color: #fff;
     z-index: 100;
-    animation: scareShake 0.08s linear infinite;
+    overflow: hidden;
   }
 
   .jumpscare.active {
     display: grid;
     place-items: center;
+  }
+
+  .jumpscare::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 35% 34%, rgba(180, 220, 255, 0.24), transparent 18%),
+      linear-gradient(180deg, rgba(4, 10, 13, 0.2) 0 42%, transparent 43%),
+      repeating-linear-gradient(90deg, transparent 0 110px, rgba(255, 255, 255, 0.18) 112px 116px, transparent 118px 230px);
+    filter: blur(0.5px);
+    opacity: 1;
+  }
+
+  .jumpscare.scare-now {
+    background:
+      radial-gradient(circle at 50% 47%, rgba(255, 23, 56, 0.42), transparent 22%),
+      #010101;
+    animation: scareShake 0.08s linear infinite;
+  }
+
+  .jumpscare.scare-now::before {
+    opacity: 0;
   }
 
   .scare-face {
@@ -343,8 +411,15 @@
       radial-gradient(ellipse at 50% 68%, #050000 0 13%, #ff1738 14% 16%, transparent 17%),
       radial-gradient(circle at 50% 48%, #250006 0 36%, #090001 62%, #010101 100%);
     box-shadow: 0 0 120px rgba(255, 0, 30, 0.95), inset 0 0 80px rgba(0, 0, 0, 0.86);
-    transform: scale(1.05);
+    opacity: 0;
+    transform: scale(0.18);
     overflow: hidden;
+  }
+
+  .jumpscare.scare-now .scare-face {
+    opacity: 1;
+    transform: scale(1.18);
+    animation: faceImpact 0.16s steps(2, end) infinite;
   }
 
   .scare-face img {
@@ -395,6 +470,11 @@
     font-size: clamp(2.5rem, 10vw, 6rem);
     font-weight: 1000;
     text-shadow: 0 0 18px #ff001e;
+    opacity: 0;
+  }
+
+  .jumpscare.scare-now .scare-text {
+    opacity: 1;
   }
 
   @keyframes dreadPulse {
@@ -452,6 +532,15 @@
     }
   }
 
+  @keyframes faceImpact {
+    0%, 100% {
+      transform: scale(1.18) translate(0, 0);
+    }
+    50% {
+      transform: scale(1.27) translate(8px, -6px);
+    }
+  }
+
   @media (max-width: 620px) {
     .bomb-button {
       width: 92px;
@@ -500,7 +589,9 @@
 
   <div class="jumpscare" id="jumpscare" aria-hidden="true">
     <div class="scare-face">
-      <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Evil_pixel_art_face_(300x300).png" alt="">
+      <img
+        src="https://media.tenor.com/_EZawUzwCX8AAAAM/jeff-the-rizzler-jeff-the-killer.gif"
+        alt="">
     </div>
     <div class="scare-text">VERLOREN!</div>
   </div>
@@ -510,6 +601,17 @@
     preload="auto"
     src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Nick121087_-_Demonic_Woman_Scream_(cc0)_(freesound).mp3">
   </audio>
+
+  <audio
+    id="horrorMusic"
+    loop
+    preload="auto"
+    src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Daniel_Simion_-_Creepy_Background_Sound.ogg">
+  </audio>
+
+  <a class="heaven-portal" id="heavenPortal" href="brainrot-triple-t.html" aria-hidden="true">
+    TUNG TUNG TUNG SAHUR IM HIMMEL
+  </a>
 
 <script>
   const boardElement = document.getElementById('board');
@@ -521,6 +623,9 @@
   const closeGameButtonBottom = document.getElementById('closeGameButtonBottom');
   const restartButton = document.getElementById('restartButton');
   const scareAudio = document.getElementById('scareAudio');
+  const horrorMusic = document.getElementById('horrorMusic');
+  const gameTitle = document.getElementById('gameTitle');
+  const heavenPortal = document.getElementById('heavenPortal');
 
   const player = 'X';
   const computer = 'O';
@@ -539,6 +644,8 @@
   let gameOver = false;
   let computerThinking = false;
   let scareAudioContext = null;
+  let titleClickCount = 0;
+  let titleClickTimer;
 
   function getScareAudioContext() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -585,14 +692,30 @@
 
   function openGame() {
     armScareSound();
+    startHorrorMusic();
     gameModal.classList.add('active');
     gameModal.setAttribute('aria-hidden', 'false');
     resetGame();
   }
 
   function closeGame() {
-    gameModal.classList.remove('active');
-    gameModal.setAttribute('aria-hidden', 'true');
+    stopHorrorMusic();
+    window.location.href = '../01_hauptprogramm/Grundseite.html';
+  }
+
+  function startHorrorMusic() {
+    if (!horrorMusic) return;
+
+    horrorMusic.volume = 0.34;
+    horrorMusic.currentTime = 0;
+    horrorMusic.play().catch(() => {});
+  }
+
+  function stopHorrorMusic() {
+    if (!horrorMusic) return;
+
+    horrorMusic.pause();
+    horrorMusic.currentTime = 0;
   }
 
   function resetGame() {
@@ -733,13 +856,19 @@
 
   function triggerJumpscare() {
     jumpscare.classList.add('active');
+    jumpscare.classList.remove('scare-now');
     jumpscare.setAttribute('aria-hidden', 'false');
-    playScareSound();
+
+    setTimeout(() => {
+      jumpscare.classList.add('scare-now');
+      playScareSound();
+    }, 650);
 
     setTimeout(() => {
       jumpscare.classList.remove('active');
+      jumpscare.classList.remove('scare-now');
       jumpscare.setAttribute('aria-hidden', 'true');
-    }, 1400);
+    }, 2250);
   }
 
   function playScareSound() {
@@ -860,6 +989,21 @@
   closeGameButtonBottom.addEventListener('click', closeGame);
   restartButton.addEventListener('click', resetGame);
 
+  gameTitle.addEventListener('click', () => {
+    titleClickCount += 1;
+    clearTimeout(titleClickTimer);
+
+    if (titleClickCount >= 3) {
+      heavenPortal.classList.add('active');
+      heavenPortal.setAttribute('aria-hidden', 'false');
+      titleClickCount = 0;
+    }
+
+    titleClickTimer = setTimeout(() => {
+      titleClickCount = 0;
+    }, 1200);
+  });
+
   gameModal.addEventListener('click', (event) => {
     if (event.target === gameModal) {
       closeGame();
@@ -870,6 +1014,7 @@
     if (event.key === 'Escape') {
       closeGame();
       jumpscare.classList.remove('active');
+      jumpscare.classList.remove('scare-now');
       jumpscare.setAttribute('aria-hidden', 'true');
     }
   });

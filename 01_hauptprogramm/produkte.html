@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produkte - GeberitProdukte</title>
+    <style>
+        :root {
+            --geberit-blue: #3f6f8f;
+            --geberit-dark: #2f3f47;
+            --geberit-text: #23343b;
+            --geberit-border: #b8c3ca;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f7f9fb 0%, #eef4f7 100%);
+            color: var(--geberit-text);
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 14px rgba(47, 63, 71, 0.10);
+        }
+
+        .logo {
+            margin-right: auto;
+        }
+
+        .logo img {
+            height: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .logo a.logo-clicked img {
+            filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.85));
+            transform: scale(1.14);
+        }
+
+        nav > a {
+            position: relative;
+            color: #111;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 28px;
+            padding: 0.25rem 0;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav > a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 2px;
+            border-radius: 999px;
+            background: #111;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+
+        nav > a:hover,
+        nav > a.active {
+            color: #000;
+            transform: translateY(-1px);
+        }
+
+        nav > a:hover::after,
+        nav > a.active::after {
+            transform: scaleX(1);
+        }
+
+        .nav-search {
+            position: relative;
+            margin-left: 28px;
+        }
+
+        .nav-search-input {
+            width: 170px;
+            border: 1px solid #d5dde2;
+            border-radius: 999px;
+            padding: 0.4rem 0.8rem;
+            font: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .nav-search-input:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+        }
+
+        .nav-search-results {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(280px, 80vw);
+            display: none;
+            background: #fff;
+            border: 1px solid #dce5eb;
+            border-radius: 14px;
+            box-shadow: 0 18px 35px rgba(47, 63, 71, 0.18);
+            overflow: hidden;
+            z-index: 1200;
+        }
+
+        .nav-search-results.active {
+            display: block;
+        }
+
+        .nav-search-result {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.8rem;
+            color: #111;
+            text-decoration: none;
+            font-size: 0.88rem;
+            line-height: 1.3;
+        }
+
+        .nav-search-result:hover {
+            background: #f2f5f7;
+        }
+
+        .nav-search-result small {
+            display: block;
+            color: #66737a;
+            margin-top: 0.15rem;
+        }
+
+        .nav-search-thumb {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            object-fit: cover;
+            border: 1px solid #dce5eb;
+            border-radius: 10px;
+            background: #eef4f7;
+        }
+
+        .secret-bomb {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 35% 30%, #59646b 0 12%, #1e2529 44%, #07090a 100%);
+            color: white;
+            font-size: 2.8rem;
+            text-decoration: none;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 42px rgba(255, 42, 66, 0.45);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.78);
+            transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            z-index: 3001;
+        }
+
+        .secret-bomb.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+            animation: secretBombFloat 2.6s ease-in-out infinite;
+        }
+
+        .secret-bomb-backdrop {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(255, 42, 66, 0.16), transparent 18%),
+                radial-gradient(circle at 50% 50%, transparent 0 18%, rgba(0, 0, 0, 0.92) 48%),
+                rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 3000;
+        }
+
+        .secret-bomb-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @keyframes secretBombFloat {
+            0%, 100% {
+                translate: 0 0;
+            }
+            50% {
+                translate: 0 -12px;
+            }
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto 1.6rem;
+            padding: 1rem;
+        }
+
+        .hero {
+            margin-bottom: 0.9rem;
+        }
+
+        .hero-badge {
+            display: none;
+            background-color: #e8f0f5;
+            color: var(--geberit-blue);
+            padding: 0.28rem 0.6rem;
+            border: 1px solid #c3d5e0;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            margin-bottom: 0.55rem;
+        }
+
+        .hero h1 {
+            display: none;
+            margin: 0 0 0.35rem;
+            font-size: 1.6rem;
+            color: var(--geberit-dark);
+            letter-spacing: 0;
+        }
+
+        .hero p {
+            display: none;
+            margin: 0;
+            color: #5e6a70;
+        }
+
+        .search-panel {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .search-panel label {
+            color: var(--geberit-dark);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .search-panel input {
+            width: 100%;
+            border: 1px solid #c5d1d8;
+            border-radius: 10px;
+            padding: 0.7rem 0.85rem;
+            color: var(--geberit-text);
+            font: inherit;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-panel input:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.18);
+        }
+
+        .category-section {
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .category-title {
+            display: none;
+            margin: 0 0 1rem;
+            color: var(--geberit-dark);
+            font-size: 1.35rem;
+            text-align: center;
+        }
+
+        .category-buttons {
+            display: none;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .category-button {
+            border: 1px solid #c3d5e0;
+            border-radius: 10px;
+            background: #e8f0f5;
+            color: var(--geberit-blue);
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 800;
+            box-shadow: 0 6px 14px rgba(47, 63, 71, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .category-button:hover,
+        .category-button.active {
+            background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(47, 63, 71, 0.14), 0 0 18px rgba(79, 195, 247, 0.18);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            animation: fadeIn 0.35s ease-out;
+        }
+
+        .product-card {
+            border: 1px solid var(--geberit-border);
+            border-radius: 14px;
+            padding: 0;
+            background-color: #fff;
+            text-align: left;
+            width: 100%;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(47, 63, 71, 0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(79, 195, 247, 0.7);
+            box-shadow: 0 14px 28px rgba(47, 63, 71, 0.13), 0 0 20px rgba(79, 195, 247, 0.18);
+            background-color: #f8fbfd;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            background-color: #ece7df;
+            display: block;
+        }
+
+        .product-info {
+            padding: 0.9rem;
+        }
+
+        .product-card h3 {
+            min-height: 3rem;
+            margin: 0 0 0.45rem;
+            color: var(--geberit-dark);
+            font-size: 1rem;
+        }
+
+        .product-card p {
+            color: #5f6b70;
+            margin: 0.2rem 0;
+            font-size: 0.9rem;
+        }
+
+        .material-tag {
+            display: inline-block;
+            background-color: #e8f0f5;
+            color: var(--geberit-blue);
+            border: 1px solid #c3d5e0;
+            border-radius: 999px;
+            padding: 0.24rem 0.55rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin: 0.15rem 0 0.55rem;
+        }
+
+        .price {
+            font-weight: bold;
+            color: var(--geberit-blue);
+            margin-top: 0.5rem;
+        }
+
+        .empty-state {
+            display: none;
+            margin: 1rem 0 0;
+            padding: 1rem;
+            border: 1px solid #c9d4db;
+            border-radius: 14px;
+            background: #fff;
+            color: #5e6a70;
+            box-shadow: 0 8px 20px rgba(47, 63, 71, 0.06);
+        }
+
+        .empty-state.active {
+            display: block;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.62);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 2000;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border: 1px solid #c2cfd6;
+            border-radius: 16px;
+            width: min(100%, 760px);
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1rem;
+            position: relative;
+            box-shadow: 0 16px 40px rgba(47, 63, 71, 0.16);
+        }
+
+        .modal-content {
+            display: grid;
+            grid-template-columns: minmax(230px, 320px) 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            border: 1px solid #dce5eb;
+            background-color: #f1f5f7;
+            border-radius: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            border: none;
+            background: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--geberit-dark);
+        }
+
+        .modal h3 {
+            margin: 0 0 0.55rem;
+            color: var(--geberit-dark);
+            font-size: 1.2rem;
+            padding-right: 1.8rem;
+        }
+
+        .modal p {
+            margin: 0.25rem 0 0;
+            color: #53656d;
+        }
+
+        .modal .meta {
+            margin-top: 0.9rem;
+            font-weight: bold;
+            color: var(--geberit-blue);
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        footer {
+            background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
+            color: #000000;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 700px) {
+            nav {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+
+            .logo {
+                width: 100%;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .modal-content {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-image {
+                height: 210px;
+            }
+
+            .search-panel {
+                align-items: stretch;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="Grundseite.html#home">
+                <img src="../02_images/geberit-logo.png" alt="Geberit Logo">
+            </a>
+        </div>
+        <a href="Grundseite.html">Home</a>
+        <a href="Über-Uns.html">Über Geberit</a>
+        <a href="produkte.html" class="active">Produkte</a>
+        <a href="Grundseite.html#contact">Kontakt</a>
+        <div class="nav-search" role="search">
+            <input class="nav-search-input" type="search" placeholder="Suchen" aria-label="Produkte suchen" autocomplete="off">
+            <div class="nav-search-results" aria-label="Suchvorschläge"></div>
+        </div>
+    </nav>
+
+    <a class="secret-bomb" id="secretBomb" href="../03_DummesZeug/Tictactoe.html" aria-hidden="true" aria-label="Tic Tac Toe öffnen">💣</a>
+    <div class="secret-bomb-backdrop" id="secretBombBackdrop" aria-hidden="true"></div>
+
+    <main>
+        <section class="hero">
+            <p>Alle Produktdaten aus beiden Produktseiten sind in einer Übersicht zusammengeführt.</p>
+            <div class="search-panel">
+                <label for="productSearch">Suche</label>
+                <input type="search" id="productSearch" placeholder="Produkt suchen..." autocomplete="off">
+            </div>
+        </section>
+
+        <section class="category-section" id="services">
+            <h2 class="category-title" id="categoryTitle">Alle Produkte</h2>
+            <div class="category-buttons" id="categoryButtons"></div>
+            <p class="empty-state" id="emptyState">Kein Produkt passt zu deiner Suche.</p>
+            <div class="products-grid" id="productsContainer"></div>
+        </section>
+    </main>
+
+    <div class="modal-backdrop" id="productModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button class="modal-close" id="closeModal" aria-label="Produktdetails schließen">×</button>
+            <div class="modal-content">
+                <img id="modalImage" class="modal-image" src="" alt="">
+                <div>
+                    <h3 id="modalTitle"></h3>
+                    <p id="modalDescription"></p>
+                    <div class="meta">
+                        <span id="modalPrice"></span>
+                        <span id="modalArticle"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Geberit Produktübersicht</p>
+    </footer>
+
+    <script src="../04_Datenbank/db-config.js"></script>
+    <script>
+        const originalProducts = [
+            {
+                name: 'Geberit Sigma20 Betätigungsplatte für 2-Mengen-Spülung',
+                description: 'Saubere und moderne Bedienung für eine praktische 2-Mengen-Spülung mit ansprechender Optik im WC-Bereich.',
+                price: 'ab € 135',
+                articleNumber: 'ART-115882161',
+                image: 'https://www.baedermaxx.at/media/image/4f/e6/82/Geberit-Sigma20-Bet-tigungsplatte-f-r-2-Mengen-Sp-lung-schwarzchrom-hochglanzschwarz_1_600x600@2x.webp'
+            },
+            {
+                name: 'Geberit Delta50 Betätigungsplatte für 2-Mengen-Spülung',
+                description: 'Komfortable und einfache Bedienung für eine moderne Spülung mit zeitgemäßem Design.',
+                price: 'ab € 61',
+                articleNumber: 'ART-115135465',
+                image: 'https://www.baedermaxx.at/media/image/36/26/82/Geberit-Delta50-Bet-tigungsplatte-f-r-2-Mengen-Sp-lung-mattchrom_1_600x600@2x.webp'
+            },
+            {
+                name: 'Geberit AquaClean Mera',
+                description: 'Eine hochwertige Dusch-WC-Lösung mit komfortabler Technik und angenehmer Nutzung im Alltag.',
+                price: 'ab € 3.660',
+                articleNumber: 'ART-146210111',
+                image: 'https://www.baedermaxx.at/media/image/b4/1f/60/Geberit-AquaClean-Mera-Comfort-Wand-Dusch-WC-Komplettanlage_600x600@2x.webp'
+            },
+            {
+                name: 'Geberit Monolith Sanitärmodul für Wand-WC',
+                description: 'Ein modernes Sanitärmodul für Wand-WCs mit sauberer Optik und gut durchdachter Installation.',
+                price: 'ab € 1150',
+                articleNumber: 'ART-131031SI5',
+                image: 'https://www.baedermaxx.at/media/image/2a/71/g0/Geberit-Monolith-Sanit-rmodul-f-r-Wand-WC-114cm-131031SI5_600x600@2x.webp'
+            },
+            {
+                name: 'Geberit Renova WC-Sitz mit Sitzring für Kinder, mit Absenkautomatik',
+                description: 'Praktischer WC-Sitz mit angenehmer Nutzung, einfacher Bedienung und kindersicherem Komfort.',
+                price: 'ab € 209',
+                articleNumber: 'ART-500981011',
+                image: 'https://www.baedermaxx.at/media/image/8b/75/dc/Geberit-Renova-WC-Sitz-mit-Sitzring-f-r-Kinder-mit-Absenkautomatik-weiss-500981011_600x600@2x.webp'
+            },
+            {
+                name: 'Geberit Duofix Montageelement für Wand-WC mit UP-Spülkasten Sigma UP320',
+                description: 'Robuste Montage für Wand-WCs mit durchdachtem Spülkastensystem und zuverlässiger Funktion.',
+                price: 'ab € 325',
+                articleNumber: 'ART-111311006',
+                image: 'https://www.baedermaxx.at/media/image/bd/f2/da/Geberit-Duofix-Montageelement-f-r-Wand-WC-mit-UP-Sp-lkasten-UP320-BH-112cm-111-311-00-5_1_600x600@2x.webp'
+            }
+        ];
+
+        const datenbank = {
+            waschbecken: [
+                {
+                    name: "Geberit ONE Möbelwaschtisch",
+                    preis: "383,28€",
+                    material: "Sanitärkeramik KeraTect",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_2226616_20210914_112611.jpeg___/Geberit-One-Moebel-Waschtisch-505002001-60-cm,-Hahnloch-mittig,-ohne-Ueberlauf,-weiss-KeraTect-Blende-weiss.jpeg"
+                },
+                {
+                    name: "Geberit iCon Light Waschtisch",
+                    preis: "369,54€",
+                    material: "Feuerton Spezialglasur",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_1889931_20200923_165731.jpeg___/Geberit-iCon-light-Waschtisch-501837001-120x48cm,-Hahnloch-links-rechts,-mit-Ueberlauf,-weiss.jpeg"
+                },
+                {
+                    name: "Geberit VariForm Aufsatzwaschbecken",
+                    preis: "209,65€",
+                    material: "Sanitärkeramik (Oval)",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_508719_20170925_152956.jpeg___/Geberit-VariForm-Aufsatzwaschtisch-500779002-55x40cm,-ohne-Hahnloch,-Ueberlauf,-rechteckig,-weiss-KeraTect.jpeghttps://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=400"
+                },
+                {
+                    name: "Geberit Acanto Kompaktwaschtisch",
+                    preis: "250,53€",
+                    material: "Sanitärkeramik mit Ablage",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_522616_20200619_124631.jpeg___/Geberit-Acanto-Compact-Waschtisch-500632012-weiss,-mit-Ueberlauf,-75-x-42-cm.jpeg"
+                },
+                {
+                    name: "Geberit Renova Plan Waschtisch",
+                    preis: "231,03€",
+                    material: "Klassische Sanitärkeramik",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_1947096_20201020_093820.jpeg___/Geberit-One-Waschtisch-Platte-505314001-105-x-3-x-47-cm,-weiss-lackiert-hochglaenzend,-Ausschnitt-rechts.jpeg"
+                },
+                {
+                    name: "Geberit Smyle Waschtisch eckig",
+                    preis: "268,57€",
+                    material: "Sanitärkeramik",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_387294_20180920_102239.jpeg___/Geberit-Smyle-Square-Waschtisch-500253011-weiss,-120x48cm,-mit-Hahnloch-und-Ueberlauf.jpeg"
+                }
+            ],
+            wc: [
+                {
+                    name: "Geberit AquaClean Mera Luxus-Dusch-WC",
+                    preis: "3.805,32€",
+                    material: "Sanitärkeramik & High-End ABS",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit__bildfarbe_645b5caad7830aaf9d7ee7257678980c_screenshot_2026-01-22_083051.png___/Geberit-AquaClean-Alba-Dusch-WC-spuelrandlos-146350011-weiss-KeraTect,-Komplettanlage.png"
+                },
+                {
+                    name: "Geberit AquaClean Tuma Comfort",
+                    preis: "1.924,36€",
+                    material: "Sanitärkeramik / KeraTect",
+                    bild: "https://images.emero.de/products/ge/568x568/geberit-aquaclean-tuma-wand-dusch-wc-comfort-mit-wc-sitz-l-55-b-35-cm-mit-schmutzabweisender-oberflaeche-weiss--ge-146290111_7a.jpg"
+                },
+                {
+                    name: "Geberit iCon Wand-WC Rimfree",
+                    preis: "372,15€",
+                    material: "Spülrandlose Keramik",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_milieu_gemi_cs1038062228.jpeg___/Geberit-iCon-WC-Set-Wand-Tiefspuel-WC-501664008-36x53cm,--geschlossene-Form,-rimfree,-mit-WC-Sitz,-weiss-KeraTect.jpeg"
+                },
+                {
+                    name: "Geberit Acanto Wand-WC TurboFlush",
+                    preis: "389,00€",
+                    material: "Sanitärkeramik geschlossen",
+                    bild: "https://cdn.idealo.com/folder/Product/202386/6/202386670/s1_produktbild_gross/geberit-acanto-set-wand-wc-502774001.jpg"
+                },
+                {
+                    name: "Geberit ONE Premium Wand-WC",
+                    preis: "1.589,36€",
+                    material: "Premium-Keramik",
+                    bild: "https://www.baedermaxx.at/media/image/c2/83/16/Geberit_ONE_WC_Detail_1.jpg"
+                },
+                {
+                    name: "Geberit Renova Wand-WC",
+                    preis: "391,56€",
+                    material: "Klassische Sanitärkeramik",
+                    bild: "https://img.reuter.de/products/ge/ge-renovaplan-wand-milieu_0.jpg"
+                }
+            ],
+            dusche: [
+                {
+                    name: "Geberit CleanLine Edelstahl-Duschrinne",
+                    preis: "363,32€",
+                    material: "Edelstahl matt / poliert",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_milieu_gemi_cs29337358.jpeg___/Geberit-CleanLine-50-Duschrinne-154448KS2-30-110-x-3-cm,-Edelstahl-gebuerstet,-bodeneben.jpeg"
+                },
+                {
+                    name: "Geberit Olona Design-Duschfläche",
+                    preis: "631,59€",
+                    material: "Stein-Harz-Mineralwerkstoff",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_4077617_20240426_065545.jpeg___/Geberit-Olona-Rechteckduschwanne-550919001-weiss-matt,-140-x-90-x-4-cm.jpeg"
+                },
+                {
+                    name: "Geberit Setaplano Duschfläche",
+                    preis: "216,33€",
+                    material: "Mineralwerkstoff porenfrei",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_1583848_20200928_144329.jpeg___/Geberit-Setaplano-Duschbodenablauf-154055001-o-50-mm,-fuer-Estrichhoehe-am-Einlauf-114-215mm.jpeg"
+                },
+                {
+                    name: "Geberit Wandablauf für Dusche",
+                    preis: "307,44€",
+                    material: "Edelstahl / Kunststoff",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_145284_20170925_163001.jpeg___/Geberit-Kombifix-Element-fuer-Dusche-457534001-mit-Wandablauf,-d50.jpeg"
+                },
+                {
+                    name: "Geberit Wandablauf Duofix Dusch-Element",
+                    preis: "271,93€",
+                    material: "Stahlrahmen / EPS-Träger",
+                    bild: "https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_4257439_20240626_111341.jpeg___/Geberit-Duofix-Dusch-Element-111591002-BH-50-cm,-mit-Wandablauf,-d=-50mm.jpeg"
+                },
+                {
+                    name: "Geberit Wandablauf Duofix Dusch-Element",
+                    preis: "31,98€",
+                    material: "Verchromtes Messing",
+                    bild: "https://m.media-amazon.com/images/I/51yFuwssmYL._AC_SX679_.jpg"
+                }
+            ]
+        };
+
+        let categories = [
+            { id: 'all', label: 'Alle Produkte', products: [] },
+            { id: 'waschbecken', label: 'Waschbecken', products: datenbank.waschbecken },
+            { id: 'wc', label: 'WC-Systeme', products: [...originalProducts, ...datenbank.wc] },
+            { id: 'dusche', label: 'Duschen & Abläufe', products: datenbank.dusche }
+        ];
+
+        categories[0].products = categories.slice(1).flatMap(category => category.products);
+
+        let navSearchProducts = categories.slice(1).flatMap(category => {
+            return category.products.map(product => ({
+                name: product.name,
+                category: category.label,
+                image: product.image || product.bild
+            }));
+        });
+
+        const dom = {
+            navSearchInput: document.querySelector('.nav-search-input'),
+            navSearchResults: document.querySelector('.nav-search-results'),
+            categoryButtons: document.getElementById('categoryButtons'),
+            categoryTitle: document.getElementById('categoryTitle'),
+            container: document.getElementById('productsContainer'),
+            searchInput: document.getElementById('productSearch'),
+            emptyState: document.getElementById('emptyState'),
+            modal: document.getElementById('productModal'),
+            modalTitle: document.getElementById('modalTitle'),
+            modalDescription: document.getElementById('modalDescription'),
+            modalPrice: document.getElementById('modalPrice'),
+            modalArticle: document.getElementById('modalArticle'),
+            modalImage: document.getElementById('modalImage'),
+            closeModalButton: document.getElementById('closeModal')
+        };
+
+        const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2235%22 fill=%22%23999%22 text-anchor=%22middle%22 font-family=%22Arial%22 dy=%22.3em%22%3E%5BBild%5D%3C/text%3E%3C/svg%3E';
+        let activeCategoryId = 'all';
+
+        function buildCategories(productGroups = datenbank, wcProducts = originalProducts) {
+            categories = [
+                { id: 'all', label: 'Alle Produkte', products: [] },
+                { id: 'waschbecken', label: 'Waschbecken', products: productGroups.waschbecken || [] },
+                { id: 'wc', label: 'WC-Systeme', products: [...wcProducts, ...(productGroups.wc || [])] },
+                { id: 'dusche', label: 'Duschen & Abläufe', products: productGroups.dusche || [] }
+            ];
+            categories[0].products = categories.slice(1).flatMap(category => category.products);
+            navSearchProducts = categories.slice(1).flatMap(category => {
+                return category.products.map(product => ({
+                    name: product.name,
+                    category: category.label,
+                    image: product.image || product.bild || placeholderImage
+                }));
+            });
+        }
+
+        function getCategoryLabel(categoryId) {
+            return categories.find(category => category.id === categoryId)?.label || '';
+        }
+
+        function getProductImage(product) {
+            return product.image || product.bild || placeholderImage;
+        }
+
+        function getProductPrice(product) {
+            return product.price || product.preis || '';
+        }
+
+        function getProductDescription(product) {
+            return product.description || product.material || '';
+        }
+
+        function getProductArticle(product) {
+            return product.articleNumber || '';
+        }
+
+        function getProductSearchText(product, categoryId) {
+            return [
+                product.name,
+                product.description,
+                product.price,
+                product.articleNumber,
+                product.preis,
+                product.material,
+                product.bild,
+                product.image,
+                getCategoryLabel(categoryId)
+            ].filter(Boolean).join(' ').toLowerCase();
+        }
+
+        function findProductByName(productName) {
+            const normalizedProductName = productName.trim().toLowerCase();
+            return categories[0].products.find(product => product.name.toLowerCase() === normalizedProductName)
+                || categories[0].products.find(product => product.name.toLowerCase().includes(normalizedProductName));
+        }
+
+        function createCategoryButtons() {
+            dom.categoryButtons.innerHTML = '';
+
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'category-button';
+                button.id = `btn-${category.id}`;
+                button.textContent = `${category.label} (${category.products.length})`;
+                button.addEventListener('click', () => {
+                    activeCategoryId = category.id;
+                    renderProducts();
+                });
+                dom.categoryButtons.appendChild(button);
+            });
+        }
+
+        function createProductCard(product) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'product-card';
+            button.innerHTML = `
+                <img src="${getProductImage(product)}" alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    ${product.material ? `<span class="material-tag">${product.material}</span>` : ''}
+                    <p>${getProductDescription(product)}</p>
+                    <p class="price">${getProductPrice(product)}</p>
+                </div>
+            `;
+            button.addEventListener('click', () => openModal(product));
+            return button;
+        }
+
+        function renderProducts() {
+            const activeCategory = categories.find(category => category.id === activeCategoryId) || categories[0];
+            const searchTerm = dom.searchInput.value.trim().toLowerCase();
+            const visibleProducts = activeCategory.products.filter(product => {
+                return !searchTerm || getProductSearchText(product, activeCategory.id).includes(searchTerm);
+            });
+
+            document.querySelectorAll('.category-button').forEach(button => button.classList.remove('active'));
+            document.getElementById(`btn-${activeCategory.id}`)?.classList.add('active');
+            dom.categoryTitle.textContent = activeCategory.label;
+            dom.container.innerHTML = '';
+            visibleProducts.forEach(product => dom.container.appendChild(createProductCard(product)));
+            dom.emptyState.classList.toggle('active', visibleProducts.length === 0);
+        }
+
+        function renderNavSearchResults() {
+            const searchTerm = dom.navSearchInput.value.trim().toLowerCase();
+            const matches = navSearchProducts
+                .filter(product => product.name.toLowerCase().includes(searchTerm) || product.category.toLowerCase().includes(searchTerm))
+                .slice(0, 5);
+
+            if (searchTerm.length < 2 || matches.length === 0) {
+                dom.navSearchResults.classList.remove('active');
+                dom.navSearchResults.innerHTML = '';
+                return;
+            }
+
+            dom.navSearchResults.innerHTML = matches.map(product => `
+                <a class="nav-search-result" href="produkte.html?produkt=${encodeURIComponent(product.name)}#services">
+                    <img class="nav-search-thumb" src="${product.image}" alt="">
+                    <span>
+                        ${product.name}
+                        <small>${product.category}</small>
+                    </span>
+                </a>
+            `).join('');
+            dom.navSearchResults.classList.add('active');
+        }
+
+        function openModal(product) {
+            dom.modalTitle.textContent = product.name;
+            dom.modalDescription.textContent = getProductDescription(product);
+            dom.modalPrice.textContent = `Preis: ${getProductPrice(product) || 'nicht angegeben'}`;
+            dom.modalArticle.textContent = getProductArticle(product)
+                ? `Artikelnummer: ${getProductArticle(product)}`
+                : '';
+            dom.modalArticle.style.display = getProductArticle(product) ? '' : 'none';
+            dom.modalImage.src = getProductImage(product);
+            dom.modalImage.alt = product.name;
+            dom.modal.classList.add('active');
+            dom.modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            dom.modal.classList.remove('active');
+            dom.modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('produkt')) {
+                params.delete('produkt');
+                const nextUrl = params.toString()
+                    ? `${window.location.pathname}?${params.toString()}${window.location.hash}`
+                    : `${window.location.pathname}${window.location.hash}`;
+                window.history.replaceState({}, '', nextUrl);
+            }
+        }
+
+        function handleBackdropClick(event) {
+            if (event.target === dom.modal) {
+                closeModal();
+            }
+        }
+
+        async function initializeProducts() {
+            try {
+                const databaseProducts = await GeberitDatabase.loadProducts();
+                if (databaseProducts && Object.keys(databaseProducts).length > 0) {
+                    buildCategories(databaseProducts, []);
+                }
+            } catch (error) {
+                console.warn('SQL-Produkte konnten nicht geladen werden. Lokale Produktdaten werden benutzt.', error);
+            }
+
+            createCategoryButtons();
+            const params = new URLSearchParams(window.location.search);
+            const initialProductName = params.get('produkt');
+            const initialSearchTerm = params.get('suche');
+            if (initialProductName || initialSearchTerm) {
+                dom.searchInput.value = initialProductName || initialSearchTerm;
+                activeCategoryId = 'all';
+            }
+            renderProducts();
+            if (initialProductName) {
+                const selectedProduct = findProductByName(initialProductName);
+                if (selectedProduct) {
+                    openModal(selectedProduct);
+                }
+            }
+            dom.searchInput.addEventListener('input', renderProducts);
+        }
+
+        initializeProducts();
+        if (dom.navSearchInput && dom.navSearchResults) {
+            dom.navSearchInput.addEventListener('input', renderNavSearchResults);
+            dom.navSearchInput.addEventListener('focus', renderNavSearchResults);
+            dom.navSearchInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    if (dom.navSearchInput.value.trim().toLowerCase() === 'rr') {
+                        window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+                        return;
+                    }
+
+                    const firstResult = dom.navSearchResults.querySelector('a');
+                    if (firstResult) firstResult.click();
+                }
+            });
+            dom.navSearchInput.addEventListener('blur', () => {
+                setTimeout(() => dom.navSearchResults.classList.remove('active'), 160);
+            });
+        }
+        dom.closeModalButton.addEventListener('click', closeModal);
+        dom.modal.addEventListener('click', handleBackdropClick);
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        const logoLink = document.querySelector('.logo a');
+        const secretBomb = document.getElementById('secretBomb');
+        const secretBombBackdrop = document.getElementById('secretBombBackdrop');
+        let logoClickCount = 0;
+        let logoClickTimer;
+
+        if (logoLink && secretBomb && secretBombBackdrop) {
+            logoLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                logoClickCount += 1;
+                clearTimeout(logoClickTimer);
+
+                logoLink.classList.add('logo-clicked');
+                setTimeout(() => logoLink.classList.remove('logo-clicked'), 180);
+
+                if (logoClickCount >= 3) {
+                    secretBombBackdrop.classList.add('active');
+                    secretBomb.classList.add('active');
+                    secretBombBackdrop.setAttribute('aria-hidden', 'false');
+                    secretBomb.setAttribute('aria-hidden', 'false');
+                    logoClickCount = 0;
+                    return;
+                }
+
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0;
+                    window.location.href = logoLink.href;
+                }, 360);
+            });
+        }
+    </script>
+</body>
+</html>

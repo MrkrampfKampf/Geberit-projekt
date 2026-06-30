@@ -1,0 +1,1170 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Über Geberit</title>
+    <style>
+        :root {
+            --geberit-blue: #3f6f8f;
+            --geberit-blue-light: #4fc3f7;
+            --geberit-dark: #2f3f47;
+            --geberit-text: #23343b;
+            --geberit-border: #c9d4db;
+            --geberit-soft: #eef4f7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f7f9fb 0%, #eef4f7 100%);
+            color: var(--geberit-text);
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 18px rgba(47, 63, 71, 0.10);
+        }
+
+        .logo {
+            margin-right: auto;
+        }
+
+        .logo img {
+            height: 25px;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(79, 195, 247, 0.75));
+        }
+
+        .logo a.logo-clicked img {
+            filter: drop-shadow(0 0 10px rgba(79, 195, 247, 0.85));
+            transform: scale(1.14);
+        }
+
+        .secret-bomb {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 1.5rem;
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 35% 30%, #59646b 0 12%, #1e2529 44%, #07090a 100%);
+            color: white;
+            font-size: 2.2rem;
+            text-decoration: none;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28), 0 0 24px rgba(79, 195, 247, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(18px) scale(0.88);
+            transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            z-index: 2000;
+        }
+
+        .secret-bomb.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+            animation: secretBombFloat 2.6s ease-in-out infinite;
+        }
+
+        .secret-bomb:hover {
+            box-shadow: 0 20px 42px rgba(0, 0, 0, 0.34), 0 0 30px rgba(79, 195, 247, 0.55);
+        }
+
+        @keyframes secretBombFloat {
+            0%, 100% {
+                translate: 0 0;
+            }
+            50% {
+                translate: 0 -12px;
+            }
+        }
+
+        nav > a {
+            position: relative;
+            color: #111;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 28px;
+            padding: 0.25rem 0;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav > a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 2px;
+            border-radius: 999px;
+            background: #111;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+        
+        nav > a:hover,
+        nav > a.active {
+            text-decoration: none;
+            color: #000;
+            transform: translateY(-1px);
+        }
+
+        nav > a:hover::after,
+        nav > a.active::after {
+            transform: scaleX(1);
+        }
+
+        .nav-search {
+            position: relative;
+            margin-left: 28px;
+        }
+
+        .nav-search-input {
+            width: 170px;
+            border: 1px solid #d5dde2;
+            border-radius: 999px;
+            padding: 0.4rem 0.8rem;
+            font: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .nav-search-input:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+        }
+
+        .nav-search-results {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(280px, 80vw);
+            display: none;
+            background: #fff;
+            border: 1px solid #dce5eb;
+            border-radius: 14px;
+            box-shadow: 0 18px 35px rgba(47, 63, 71, 0.18);
+            overflow: hidden;
+            z-index: 1200;
+        }
+
+        .nav-search-results.active {
+            display: block;
+        }
+
+        .nav-search-result {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.65rem 0.8rem;
+            color: #111;
+            text-decoration: none;
+            font-size: 0.88rem;
+            line-height: 1.3;
+        }
+
+        .nav-search-result:hover {
+            background: #f2f5f7;
+        }
+
+        .nav-search-result small {
+            display: block;
+            color: #66737a;
+            margin-top: 0.15rem;
+        }
+
+        .nav-search-thumb {
+            width: 44px;
+            height: 44px;
+            flex: 0 0 44px;
+            object-fit: cover;
+            border: 1px solid #dce5eb;
+            border-radius: 10px;
+            background: #eef4f7;
+        }
+
+        main {
+            background: #fff;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 58vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+            padding: 5rem 1.2rem;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(47, 63, 71, 0.88) 0%, rgba(47, 63, 71, 0.58) 48%, rgba(47, 63, 71, 0.28) 100%),
+                url("../02_images/img-teaser-master-16-9.jpg");
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.02);
+            z-index: 0;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            height: 130px;
+            background: linear-gradient(0deg, #ffffff 0%, rgba(255,255,255,0) 100%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 999px;
+            padding: 0.3rem 0.7rem;
+            background: rgba(255, 255, 255, 0.12);
+            color: #dff6ff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 0 18px rgba(79, 195, 247, 0.25);
+        }
+
+        .hero h1 {
+            margin: 1rem 0 0.8rem;
+            max-width: 720px;
+            font-size: clamp(2.2rem, 5vw, 4.4rem);
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+
+        .hero p {
+            max-width: 720px;
+            margin: 0;
+            color: #eef8fb;
+            font-size: 1.12rem;
+        }
+
+        .content-section {
+            padding: 4rem 1.2rem;
+        }
+
+        .content-section.alt {
+            background: linear-gradient(135deg, #f8fbfd 0%, #eef4f7 100%);
+        }
+
+        .section-shell {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            max-width: 740px;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background-color: #e8f0f5;
+            color: var(--geberit-blue);
+            padding: 0.28rem 0.6rem;
+            border: 1px solid #c3d5e0;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 0.45rem;
+            font-size: 1.85rem;
+            color: var(--geberit-dark);
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: #5e6a70;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-card {
+            min-height: 220px;
+            padding: 0;
+            border: 0;
+            border-radius: 14px;
+            background: transparent;
+            box-shadow: none;
+            cursor: pointer;
+            perspective: 1000px;
+            transition: transform 0.25s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card-inner {
+            position: relative;
+            min-height: 220px;
+            transform-style: preserve-3d;
+            transition: transform 0.55s ease;
+        }
+
+        .info-card.is-flipped .info-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .info-card-front,
+        .info-card-back {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 220px;
+            overflow: hidden;
+            backface-visibility: hidden;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid var(--geberit-border);
+            border-radius: 14px;
+            padding: 1.15rem;
+            box-shadow: 0 8px 22px rgba(47, 63, 71, 0.08);
+            transition: box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .info-card:hover .info-card-front,
+        .info-card:hover .info-card-back,
+        .info-card.is-flipped .info-card-front,
+        .info-card.is-flipped .info-card-back {
+            border-color: rgba(79, 195, 247, 0.7);
+            box-shadow: 0 16px 36px rgba(47, 63, 71, 0.14), 0 0 22px rgba(79, 195, 247, 0.22);
+        }
+
+        .info-card-back {
+            padding: 0;
+            background: var(--geberit-dark);
+            color: #fff;
+            transform: rotateY(180deg);
+        }
+
+        .info-card-back img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.68) saturate(1.08);
+            transform: scale(1.02);
+        }
+
+        .info-card-back-content {
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+            padding: 1rem;
+            background: linear-gradient(0deg, rgba(18, 34, 43, 0.9), rgba(18, 34, 43, 0.1));
+        }
+
+        .info-card-back-content strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #fff;
+            font-size: 1.05rem;
+        }
+
+        .info-card-back-content span {
+            color: #e8f6fb;
+            font-size: 0.94rem;
+            line-height: 1.35;
+        }
+
+        .info-card-front h3 {
+            margin: 0 0 0.45rem;
+            color: var(--geberit-dark);
+            font-size: 1.05rem;
+        }
+
+        .info-card-front p {
+            margin: 0;
+            color: #5f6b70;
+        }
+
+        .split-feature {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .split-feature.reverse {
+            grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1fr);
+        }
+
+        .feature-copy h2 {
+            margin: 0 0 0.8rem;
+            color: var(--geberit-dark);
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            line-height: 1.15;
+        }
+
+        .feature-copy p {
+            margin: 0 0 1rem;
+            color: #526168;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 0.7rem;
+            margin-top: 1.1rem;
+        }
+
+        .feature-list span {
+            display: block;
+            border-left: 4px solid var(--geberit-blue);
+            padding: 0.55rem 0 0.55rem 0.85rem;
+            color: var(--geberit-dark);
+            background: #f5f9fb;
+            font-weight: 700;
+        }
+
+        .feature-media {
+            min-height: 360px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 42px rgba(47, 63, 71, 0.18);
+            background: #dfe8ed;
+        }
+
+        .feature-media img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 360px;
+            object-fit: cover;
+        }
+
+        .compare-section {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+            gap: 2.4rem;
+            align-items: center;
+        }
+
+        .before-after {
+            --compare-position: 50%;
+            position: relative;
+            width: 100%;
+            min-width: 0;
+            min-height: 0;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 0;
+            background: #dfe8ed;
+            box-shadow: 0 18px 44px rgba(47, 63, 71, 0.16);
+            touch-action: none;
+            user-select: none;
+        }
+
+        .compare-layer {
+            position: absolute;
+            inset: 0;
+        }
+
+        .compare-layer img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .compare-after {
+            clip-path: inset(0 0 0 var(--compare-position));
+        }
+
+        .compare-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: var(--compare-position);
+            width: 2px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 1px rgba(47, 63, 71, 0.08), 0 0 20px rgba(255, 255, 255, 0.55);
+            transform: translateX(-50%);
+        }
+
+        .compare-handle {
+            position: absolute;
+            top: 50%;
+            left: var(--compare-position);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            place-items: center;
+            width: 72px;
+            height: 50px;
+            border: 0;
+            background: #fff;
+            color: #111;
+            box-shadow: 0 10px 24px rgba(47, 63, 71, 0.18);
+            cursor: ew-resize;
+            transform: translate(-50%, -50%);
+            font-size: 1.55rem;
+            line-height: 1;
+        }
+
+        .compare-handle:focus-visible {
+            outline: 3px solid rgba(79, 195, 247, 0.75);
+            outline-offset: 3px;
+        }
+
+        .compare-label {
+            position: absolute;
+            bottom: 1rem;
+            padding: 0.35rem 0.7rem;
+            background: rgba(255, 255, 255, 0.86);
+            color: var(--geberit-dark);
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .compare-label.before {
+            left: 1rem;
+        }
+
+        .compare-label.after {
+            right: 1rem;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .topic-card {
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: linear-gradient(160deg, rgba(47, 63, 71, 0.08), rgba(63, 111, 143, 0.14));
+            border: 1px solid var(--geberit-border);
+            border-radius: 14px;
+            padding: 1.1rem;
+            color: var(--geberit-dark);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--geberit-blue);
+            box-shadow: 0 0 0 3px rgba(63, 111, 143, 0.16), 0 16px 34px rgba(47, 63, 71, 0.13);
+        }
+
+        .topic-card h3 {
+            margin: 0 0 0.45rem;
+            font-size: 1.15rem;
+        }
+
+        .topic-card p {
+            margin: 0;
+            color: #5f6b70;
+        }
+
+        .numbers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .number-card {
+            background: linear-gradient(135deg, #3f6f8f 0%, #2f3f47 100%);
+            color: white;
+            border-radius: 14px;
+            padding: 1.2rem;
+            box-shadow: 0 12px 30px rgba(47, 63, 71, 0.18), 0 0 24px rgba(79, 195, 247, 0.18);
+        }
+
+        .number-card strong {
+            display: block;
+            font-size: 2rem;
+            line-height: 1;
+            color: #dff6ff;
+        }
+
+        .number-card span {
+            display: block;
+            margin-top: 0.45rem;
+            color: #eef8fb;
+        }
+
+        .contact-panel {
+            background: #ffffff;
+            border: 1px solid var(--geberit-border);
+            border-radius: 14px;
+            padding: 1.2rem;
+            box-shadow: 0 10px 28px rgba(47, 63, 71, 0.09);
+            max-width: 560px;
+        }
+
+        .contact-panel p {
+            margin: 0.25rem 0;
+            color: #5f6b70;
+        }
+
+        .contact-panel a {
+            color: var(--geberit-blue);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .contact-panel a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
+            color: #000000;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        @media (max-width: 720px) {
+            nav {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: 0.4rem 0;
+            }
+
+            .logo {
+                width: 100%;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            nav > a {
+                margin-left: 18px;
+            }
+
+            .hero {
+                min-height: 66vh;
+                padding: 4rem 1rem;
+            }
+
+            .split-feature,
+            .split-feature.reverse,
+            .compare-section {
+                grid-template-columns: 1fr;
+            }
+
+            .before-after {
+                min-height: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="Grundseite.html#home">
+                <img src="../02_images/geberit-logo.png" alt="Geberit Logo">
+            </a>
+        </div>
+        <a href="Grundseite.html">Home</a>
+        <a href="Über-Uns.html" class="active">Über Geberit</a>
+        <a href="produkte.html">Produkte</a>
+        <a href="#contact">Kontakt</a>
+        <div class="nav-search" role="search">
+            <input class="nav-search-input" type="search" placeholder="Suchen" aria-label="Produkte suchen" autocomplete="off">
+            <div class="nav-search-results" aria-label="Suchvorschläge"></div>
+        </div>
+    </nav>
+
+    <a class="secret-bomb" id="secretBomb" href="../03_DummesZeug/Tictactoe.html" aria-hidden="true" aria-label="Tic Tac Toe öffnen">💣</a>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">Über Geberit</span>
+                <h1>Sanitärtechnik, die vor und hinter der Wand überzeugt.</h1>
+                <p>Geberit verbindet präzise Technik, langlebige Produkte und modernes Baddesign zu Lösungen, die zuverlässig funktionieren und im Alltag sauber aussehen.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <span class="section-badge">Wer wir sind</span>
+                    <h2>Ein starker Partner für moderne Badezimmer</h2>
+                    <p>Geberit steht für hochwertige Sanitärlösungen, die Planung, Montage und Nutzung einfacher machen. Das Ziel: Technik, Design und Qualität in einem durchdachten System.</p>
+                </div>
+                <div class="info-grid">
+                    <article class="info-card" data-flip-card tabindex="0" aria-label="Karte Sanitärtechnik öffnen">
+                        <div class="info-card-inner">
+                            <div class="info-card-front">
+                                <h3>Sanitärtechnik</h3>
+                                <p>Installationssysteme, Spültechnik und Rohrleitungslösungen sorgen für zuverlässige Funktion hinter der Wand.</p>
+                            </div>
+                            <div class="info-card-back">
+                                <img src="../02_images/product-portfolio-01.jpg" alt="Geberit Installationssysteme hinter der Wand">
+                                <div class="info-card-back-content">
+                                    <strong>Hinter der Wand</strong>
+                                    <span>Montageelemente, Spülkästen und Rohrleitungen bilden die technische Basis im Bad.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="info-card" data-flip-card tabindex="0" aria-label="Karte Badprodukte öffnen">
+                        <div class="info-card-inner">
+                            <div class="info-card-front">
+                                <h3>Badprodukte</h3>
+                                <p>WC-Systeme, Waschtische und Badserien verbinden klare Optik mit komfortabler Nutzung.</p>
+                            </div>
+                            <div class="info-card-back">
+                                <img src="../02_images/product-portfolio-02.jpg" alt="Modernes Badezimmer mit Geberit Produkten">
+                                <div class="info-card-back-content">
+                                    <strong>Vor der Wand</strong>
+                                    <span>WC, Waschtisch, Dusche und Möbel wirken als ruhiges, modernes Badezimmer zusammen.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="info-card" data-flip-card tabindex="0" aria-label="Karte Passgenaue Systeme öffnen">
+                        <div class="info-card-inner">
+                            <div class="info-card-front">
+                                <h3>Passgenaue Systeme</h3>
+                                <p>Produkte sind so aufeinander abgestimmt, dass sie technisch und optisch sauber zusammenarbeiten.</p>
+                            </div>
+                            <div class="info-card-back">
+                                <img src="../02_images/01_fill-valve-type-383_2025.jpg" alt="Geberit Füllventil Type 383 im technischen Test">
+                                <div class="info-card-back-content">
+                                    <strong>Alles abgestimmt</strong>
+                                    <span>Einzelne Komponenten werden getestet, damit Installation, Spültechnik und Nutzung zuverlässig zusammenspielen.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section alt">
+            <div class="section-shell compare-section">
+                <div class="before-after" data-compare-slider aria-label="Vorher Nachher Vergleich Geberit Badezimmer">
+                    <div class="compare-layer compare-before">
+                        <img src="../02_images/product-portfolio-01.jpg" alt="Davor: Geberit Installationssystem hinter der Wand">
+                    </div>
+                    <div class="compare-layer compare-after">
+                        <img src="../02_images/product-portfolio-02.jpg" alt="Danach: fertiges Badezimmer mit Geberit Lösung">
+                    </div>
+                    <div class="compare-divider" aria-hidden="true"></div>
+                    <button class="compare-handle" type="button" role="slider" aria-label="Vorher Nachher Regler" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+                        <span aria-hidden="true">&lsaquo;</span>
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </button>
+                    <span class="compare-label before">Davor</span>
+                    <span class="compare-label after">Danach</span>
+                </div>
+                <div class="feature-copy">
+                    <span class="section-badge">Mastering Water</span>
+                    <h2>Kompetenz vor und hinter der Wand</h2>
+                    <p>Das Angebotsspektrum von Geberit reicht von Installations- und Spülsystemen über Rohrleitungssysteme bis zu kompletten Badezimmerlösungen.</p>
+                    <div class="feature-list">
+                        <span>Technik hinter der Wand: zuverlässig, leise und wartungsfreundlich</span>
+                        <span>Design vor der Wand: klare Formen für moderne Badezimmer</span>
+                        <span>Ein Systemgedanke von Wasserführung bis Komfort</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-shell split-feature reverse">
+                <div class="feature-media">
+                    <img src="../02_images/01_fill-valve-type-383_2025.jpg" alt="Geberit Füllventil Type 383 mit Wasser im transparenten Spülkasten">
+                </div>
+                <div class="feature-copy">
+                    <span class="section-badge">Innovation</span>
+                    <h2>Füllventil Type 383: leiser, kompakter, wartungsfreundlicher.</h2>
+                    <p>Das Type 383 steht beispielhaft für moderne Geberit-Entwicklung: Es arbeitet deutlich leiser als der Vorgänger, lässt sich kompakt einbauen und ist auf lange Nutzungsdauer ausgelegt.</p>
+                    <div class="feature-list">
+                        <span>Um 50 Prozent reduzierte Füllgeräusche gegenüber dem Vorgängermodell</span>
+                        <span>Rückwärtskompatibel für Geberit Spülkästen der letzten 50 Jahre</span>
+                        <span>40 Prozent weniger Material und 10 Prozent recycelter Kunststoff</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section alt">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <span class="section-badge">Unsere Werte</span>
+                    <h2>Qualität, Innovation und Verantwortung</h2>
+                    <p>Die Lösungen sind auf lange Lebensdauer, einfache Bedienung und einen bewussten Umgang mit Ressourcen ausgelegt.</p>
+                </div>
+                <div class="numbers">
+                    <div class="number-card">
+                        <strong data-count-to="150" data-count-suffix="+">0+</strong>
+                        <span>Jahre Erfahrung im Sanitärbereich</span>
+                    </div>
+                    <div class="number-card">
+                        <strong data-count-to="2">0</strong>
+                        <span>Bereiche: vor und hinter der Wand</span>
+                    </div>
+                    <div class="number-card">
+                        <strong data-count-to="1">0</strong>
+                        <span>durchgängiges System für Bad und Technik</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <span class="section-badge">Themen</span>
+                    <h2>Was Geberit besonders macht</h2>
+                    <p>Wie auf der Geberit-Seite stehen Produktkompetenz, Nachhaltigkeit, Referenzen und Wissen im Mittelpunkt.</p>
+                </div>
+                <div class="topic-grid">
+                    <article class="topic-card">
+                        <h3>Nachhaltigkeit</h3>
+                        <p>Produkte sollen Ressourcen schonen, lange halten und im Alltag effizient funktionieren.</p>
+                    </article>
+                    <article class="topic-card">
+                        <h3>Know-how</h3>
+                        <p>Technisches Wissen rund um Wasser, Hygiene und Installation fließt direkt in die Produkte ein.</p>
+                    </article>
+                    <article class="topic-card">
+                        <h3>Referenzen</h3>
+                        <p>Geberit-Lösungen werden in Wohnbau, Hotels, öffentlichen Gebäuden und modernen Badprojekten eingesetzt.</p>
+                    </article>
+                    <article class="topic-card">
+                        <h3>Neue Produkte</h3>
+                        <p>Weiterentwicklungen wie effiziente Ventile zeigen, wie kleine Details den Unterschied machen.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" id="contact">
+            <div class="section-shell">
+                <div class="section-heading">
+                    <span class="section-badge">Kontakt</span>
+                    <h2>Kontakt aufnehmen</h2>
+                    <p>Für Fragen zu Produkten, Technik oder Beratung steht Geberit als Ansprechpartner zur Verfügung.</p>
+                </div>
+                <div class="contact-panel">
+                    <p><strong>E-Mail:</strong> <a href="mailto:info@geberit.com">info@geberit.com</a></p>
+                    <p><strong>Telefon:</strong> +49 30 12345-0</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Geberit | Alle Rechte vorbehalten.</p>
+    </footer>
+    <script>
+        const navLinks = document.querySelectorAll('nav > a');
+        const navSearchInput = document.querySelector('.nav-search-input');
+        const navSearchResults = document.querySelector('.nav-search-results');
+        const navSearchFallbackImage = '../02_images/img-teaser-master-16-9.jpg';
+        const navSearchProducts = [
+            { name: 'Geberit Sigma20 Betätigungsplatte', category: 'WC-Systeme' },
+            { name: 'Geberit Delta50 Betätigungsplatte', category: 'WC-Systeme' },
+            { name: 'Geberit AquaClean Mera', category: 'WC-Systeme' },
+            { name: 'Geberit Monolith Sanitärmodul', category: 'WC-Systeme' },
+            { name: 'Geberit Duofix Montageelement', category: 'WC-Systeme' },
+            { name: 'Geberit Renova WC-Sitz', category: 'WC-Systeme' },
+            { name: 'Geberit AquaClean Mera Luxus-Dusch-WC', category: 'WC-Systeme' },
+            { name: 'Geberit AquaClean Tuma Comfort', category: 'WC-Systeme' },
+            { name: 'Geberit iCon Wand-WC Rimfree', category: 'WC-Systeme' },
+            { name: 'Geberit Acanto Wand-WC TurboFlush', category: 'WC-Systeme' },
+            { name: 'Geberit ONE Premium Wand-WC', category: 'WC-Systeme' },
+            { name: 'Geberit Renova Wand-WC', category: 'WC-Systeme' },
+            { name: 'Geberit ONE Möbelwaschtisch', category: 'Waschbecken' },
+            { name: 'Geberit iCon Light Waschtisch', category: 'Waschbecken' },
+            { name: 'Geberit VariForm Aufsatzwaschbecken', category: 'Waschbecken' },
+            { name: 'Geberit Acanto Kompaktwaschtisch', category: 'Waschbecken' },
+            { name: 'Geberit Renova Plan Waschtisch', category: 'Waschbecken' },
+            { name: 'Geberit Smyle Waschtisch eckig', category: 'Waschbecken' },
+            { name: 'Geberit CleanLine Edelstahl-Duschrinne', category: 'Duschen & Abläufe' },
+            { name: 'Geberit Olona Design-Duschfläche', category: 'Duschen & Abläufe' },
+            { name: 'Geberit Setaplano Duschfläche', category: 'Duschen & Abläufe' },
+            { name: 'Geberit Wandablauf für Dusche', category: 'Duschen & Abläufe' },
+            { name: 'Geberit Wandablauf Duofix Dusch-Element', category: 'Duschen & Abläufe' }
+        ];
+        const navSearchImageByName = {
+            'Geberit Sigma20 Betätigungsplatte': 'https://www.baedermaxx.at/media/image/4f/e6/82/Geberit-Sigma20-Bet-tigungsplatte-f-r-2-Mengen-Sp-lung-schwarzchrom-hochglanzschwarz_1_600x600@2x.webp',
+            'Geberit Delta50 Betätigungsplatte': 'https://www.baedermaxx.at/media/image/36/26/82/Geberit-Delta50-Bet-tigungsplatte-f-r-2-Mengen-Sp-lung-mattchrom_1_600x600@2x.webp',
+            'Geberit AquaClean Mera': 'https://www.baedermaxx.at/media/image/b4/1f/60/Geberit-AquaClean-Mera-Comfort-Wand-Dusch-WC-Komplettanlage_600x600@2x.webp',
+            'Geberit Monolith Sanitärmodul': 'https://www.baedermaxx.at/media/image/2a/71/g0/Geberit-Monolith-Sanit-rmodul-f-r-Wand-WC-114cm-131031SI5_600x600@2x.webp',
+            'Geberit Duofix Montageelement': 'https://www.baedermaxx.at/media/image/bd/f2/da/Geberit-Duofix-Montageelement-f-r-Wand-WC-mit-UP-Sp-lkasten-UP320-BH-112cm-111-311-00-5_1_600x600@2x.webp',
+            'Geberit Renova WC-Sitz': 'https://www.baedermaxx.at/media/image/8b/75/dc/Geberit-Renova-WC-Sitz-mit-Sitzring-f-r-Kinder-mit-Absenkautomatik-weiss-500981011_600x600@2x.webp',
+            'Geberit AquaClean Mera Luxus-Dusch-WC': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit__bildfarbe_645b5caad7830aaf9d7ee7257678980c_screenshot_2026-01-22_083051.png___/Geberit-AquaClean-Alba-Dusch-WC-spuelrandlos-146350011-weiss-KeraTect,-Komplettanlage.png',
+            'Geberit AquaClean Tuma Comfort': 'https://images.emero.de/products/ge/568x568/geberit-aquaclean-tuma-wand-dusch-wc-comfort-mit-wc-sitz-l-55-b-35-cm-mit-schmutzabweisender-oberflaeche-weiss--ge-146290111_7a.jpg',
+            'Geberit iCon Wand-WC Rimfree': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_milieu_gemi_cs1038062228.jpeg___/Geberit-iCon-WC-Set-Wand-Tiefspuel-WC-501664008-36x53cm,--geschlossene-Form,-rimfree,-mit-WC-Sitz,-weiss-KeraTect.jpeg',
+            'Geberit Acanto Wand-WC TurboFlush': 'https://cdn.idealo.com/folder/Product/202386/6/202386670/s1_produktbild_gross/geberit-acanto-set-wand-wc-502774001.jpg',
+            'Geberit ONE Premium Wand-WC': 'https://www.baedermaxx.at/media/image/c2/83/16/Geberit_ONE_WC_Detail_1.jpg',
+            'Geberit Renova Wand-WC': 'https://img.reuter.de/products/ge/ge-renovaplan-wand-milieu_0.jpg',
+            'Geberit ONE Möbelwaschtisch': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_2226616_20210914_112611.jpeg___/Geberit-One-Moebel-Waschtisch-505002001-60-cm,-Hahnloch-mittig,-ohne-Ueberlauf,-weiss-KeraTect-Blende-weiss.jpeg',
+            'Geberit iCon Light Waschtisch': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_1889931_20200923_165731.jpeg___/Geberit-iCon-light-Waschtisch-501837001-120x48cm,-Hahnloch-links-rechts,-mit-Ueberlauf,-weiss.jpeg',
+            'Geberit VariForm Aufsatzwaschbecken': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_508719_20170925_152956.jpeg___/Geberit-VariForm-Aufsatzwaschtisch-500779002-55x40cm,-ohne-Hahnloch,-Ueberlauf,-rechteckig,-weiss-KeraTect.jpeg',
+            'Geberit Acanto Kompaktwaschtisch': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_522616_20200619_124631.jpeg___/Geberit-Acanto-Compact-Waschtisch-500632012-weiss,-mit-Ueberlauf,-75-x-42-cm.jpeg',
+            'Geberit Renova Plan Waschtisch': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_1947096_20201020_093820.jpeg___/Geberit-One-Waschtisch-Platte-505314001-105-x-3-x-47-cm,-weiss-lackiert-hochglaenzend,-Ausschnitt-rechts.jpeg',
+            'Geberit Smyle Waschtisch eckig': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_387294_20180920_102239.jpeg___/Geberit-Smyle-Square-Waschtisch-500253011-weiss,-120x48cm,-mit-Hahnloch-und-Ueberlauf.jpeg',
+            'Geberit CleanLine Edelstahl-Duschrinne': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_milieu_gemi_cs29337358.jpeg___/Geberit-CleanLine-50-Duschrinne-154448KS2-30-110-x-3-cm,-Edelstahl-gebuerstet,-bodeneben.jpeg',
+            'Geberit Olona Design-Duschfläche': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_4077617_20240426_065545.jpeg___/Geberit-Olona-Rechteckduschwanne-550919001-weiss-matt,-140-x-90-x-4-cm.jpeg',
+            'Geberit Setaplano Duschfläche': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_1583848_20200928_144329.jpeg___/Geberit-Setaplano-Duschbodenablauf-154055001-o-50-mm,-fuer-Estrichhoehe-am-Einlauf-114-215mm.jpeg',
+            'Geberit Wandablauf für Dusche': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_145284_20170925_163001.jpeg___/Geberit-Kombifix-Element-fuer-Dusche-457534001-mit-Wandablauf,-d50.jpeg',
+            'Geberit Wandablauf Duofix Dusch-Element': 'https://www.obadis.com/media/catalog/product/cache/207e23213cf636ccdef205098cf3c8a3/k/a/kataloge_geberit_vgabild_geb_w_4257439_20240626_111341.jpeg___/Geberit-Duofix-Dusch-Element-111591002-BH-50-cm,-mit-Wandablauf,-d=-50mm.jpeg'
+        };
+        navSearchProducts.forEach(product => {
+            product.image = navSearchImageByName[product.name] || navSearchFallbackImage;
+        });
+        const logoLink = document.querySelector('.logo a');
+        const secretBomb = document.getElementById('secretBomb');
+        let logoClickCount = 0;
+        let logoClickTimer;
+
+        function updateActiveNavLink() {
+            const currentHash = window.location.hash;
+
+            navLinks.forEach((link) => {
+                const href = link.getAttribute('href');
+                const isContactLink = currentHash === '#contact' && href === '#contact';
+                const isPageLink = !currentHash && href === 'Über-Uns.html';
+
+                link.classList.toggle('active', isContactLink || isPageLink);
+            });
+        }
+
+        updateActiveNavLink();
+        window.addEventListener('hashchange', updateActiveNavLink);
+
+        function renderNavSearchResults() {
+            const searchTerm = navSearchInput.value.trim().toLowerCase();
+            const matches = navSearchProducts
+                .filter(product => product.name.toLowerCase().includes(searchTerm) || product.category.toLowerCase().includes(searchTerm))
+                .slice(0, 5);
+
+            if (searchTerm.length < 2 || matches.length === 0) {
+                navSearchResults.classList.remove('active');
+                navSearchResults.innerHTML = '';
+                return;
+            }
+
+            navSearchResults.innerHTML = matches.map(product => `
+                <a class="nav-search-result" href="produkte.html?produkt=${encodeURIComponent(product.name)}#services">
+                    <img class="nav-search-thumb" src="${product.image || navSearchFallbackImage}" alt="">
+                    <span>
+                        ${product.name}
+                        <small>${product.category}</small>
+                    </span>
+                </a>
+            `).join('');
+            navSearchResults.classList.add('active');
+        }
+
+        if (navSearchInput && navSearchResults) {
+            navSearchInput.addEventListener('input', renderNavSearchResults);
+            navSearchInput.addEventListener('focus', renderNavSearchResults);
+            navSearchInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    if (navSearchInput.value.trim().toLowerCase() === 'rr') {
+                        window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+                        return;
+                    }
+
+                    const firstResult = navSearchResults.querySelector('a');
+                    if (firstResult) firstResult.click();
+                }
+            });
+            navSearchInput.addEventListener('blur', () => {
+                setTimeout(() => navSearchResults.classList.remove('active'), 160);
+            });
+        }
+
+        document.querySelectorAll('[data-flip-card]').forEach((card) => {
+            function toggleCard() {
+                const isFlipped = card.classList.toggle('is-flipped');
+                card.setAttribute('aria-label', card.getAttribute('aria-label').replace(isFlipped ? 'öffnen' : 'schließen', isFlipped ? 'schließen' : 'öffnen'));
+            }
+
+            card.addEventListener('click', toggleCard);
+            card.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                toggleCard();
+            });
+        });
+
+        const countNumbers = document.querySelectorAll('[data-count-to]');
+
+        function animateCount(numberElement) {
+            const target = Number(numberElement.dataset.countTo);
+            const suffix = numberElement.dataset.countSuffix || '';
+            const duration = target > 10 ? 1400 : 850;
+            const startTime = performance.now();
+
+            function tick(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                const currentValue = Math.round(target * easedProgress);
+
+                numberElement.textContent = `${currentValue}${suffix}`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(tick);
+                }
+            }
+
+            requestAnimationFrame(tick);
+        }
+
+        const countObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+
+                animateCount(entry.target);
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.45 });
+
+        countNumbers.forEach((numberElement) => countObserver.observe(numberElement));
+
+        document.querySelectorAll('[data-compare-slider]').forEach((slider) => {
+            const handle = slider.querySelector('.compare-handle');
+            let position = 50;
+            let direction = 1;
+            let isDragging = false;
+            let autoResumeAt = 0;
+
+            function setComparePosition(nextPosition) {
+                position = Math.max(18, Math.min(82, nextPosition));
+                slider.style.setProperty('--compare-position', `${position}%`);
+                handle.setAttribute('aria-valuenow', Math.round(position));
+            }
+
+            function setPositionFromPointer(event) {
+                const rect = slider.getBoundingClientRect();
+                const nextPosition = ((event.clientX - rect.left) / rect.width) * 100;
+                setComparePosition(nextPosition);
+            }
+
+            function pauseAutoMove() {
+                autoResumeAt = Date.now() + 3200;
+            }
+
+            slider.addEventListener('pointerdown', (event) => {
+                isDragging = true;
+                pauseAutoMove();
+                slider.setPointerCapture(event.pointerId);
+                setPositionFromPointer(event);
+            });
+
+            slider.addEventListener('pointermove', (event) => {
+                if (!isDragging) return;
+                setPositionFromPointer(event);
+            });
+
+            slider.addEventListener('pointerup', (event) => {
+                isDragging = false;
+                pauseAutoMove();
+                slider.releasePointerCapture(event.pointerId);
+            });
+
+            slider.addEventListener('pointercancel', () => {
+                isDragging = false;
+                pauseAutoMove();
+            });
+
+            handle.addEventListener('keydown', (event) => {
+                if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+                event.preventDefault();
+                pauseAutoMove();
+                setComparePosition(position + (event.key === 'ArrowRight' ? 4 : -4));
+            });
+
+            function autoMove() {
+                if (!isDragging && Date.now() > autoResumeAt) {
+                    position += direction * 0.08;
+                    if (position >= 76 || position <= 24) {
+                        direction *= -1;
+                    }
+                    setComparePosition(position);
+                }
+
+                requestAnimationFrame(autoMove);
+            }
+
+            setComparePosition(position);
+            requestAnimationFrame(autoMove);
+        });
+
+        if (logoLink && secretBomb) {
+            logoLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                logoClickCount += 1;
+                clearTimeout(logoClickTimer);
+
+                logoLink.classList.add('logo-clicked');
+                setTimeout(() => logoLink.classList.remove('logo-clicked'), 180);
+
+                if (logoClickCount >= 3) {
+                    secretBomb.classList.add('active');
+                    secretBomb.setAttribute('aria-hidden', 'false');
+                    logoClickCount = 0;
+                    return;
+                }
+
+                logoClickTimer = setTimeout(() => {
+                    logoClickCount = 0;
+                    window.location.href = logoLink.href;
+                }, 360);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "geberit-projekt",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:supabase-env": "node 04_Datenbank/check-supabase-env.js"
+  },
+  "dependencies": {
+    "@supabase/server": "latest"
+  }
+}

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tung Tung Tung Sahur im Himmel</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.92), transparent 16%),
+      radial-gradient(circle at 16% 70%, rgba(255, 205, 250, 0.65), transparent 24%),
+      radial-gradient(circle at 86% 74%, rgba(255, 238, 142, 0.55), transparent 22%),
+      linear-gradient(180deg, #7fd9ff 0%, #dff7ff 42%, #fff8d7 100%);
+    color: #12344a;
+  }
+
+  body::before,
+  body::after {
+    content: "☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁ ☁";
+    position: fixed;
+    left: -10vw;
+    right: -10vw;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: clamp(3rem, 9vw, 8rem);
+    letter-spacing: 0.35em;
+    white-space: nowrap;
+    filter: drop-shadow(0 12px 18px rgba(64, 128, 160, 0.2));
+    animation: cloudDrift 22s linear infinite;
+  }
+
+  body::before {
+    top: 10vh;
+  }
+
+  body::after {
+    bottom: 8vh;
+    animation-duration: 30s;
+    animation-direction: reverse;
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 3vh, 2rem) 1rem 5rem;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0 0 0.65rem;
+    font-size: clamp(2rem, 7vw, 5.2rem);
+    line-height: 0.98;
+    letter-spacing: 0;
+    color: #ffffff;
+    text-shadow:
+      0 0 18px rgba(42, 166, 255, 0.9),
+      0 10px 0 rgba(35, 103, 145, 0.22),
+      0 18px 38px rgba(20, 80, 120, 0.25);
+  }
+
+  .sahur-card {
+    width: min(90vw, 560px);
+    margin: 0.85rem auto;
+    padding: clamp(0.85rem, 3vw, 1.4rem);
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.96), transparent 20%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(155, 231, 255, 0.72) 48%, rgba(255, 209, 251, 0.72));
+    box-shadow:
+      0 24px 60px rgba(30, 118, 160, 0.24),
+      0 0 52px rgba(255, 255, 255, 0.92);
+    animation: sahurFloat 1.35s ease-in-out infinite alternate;
+  }
+
+  .sahur-card::before {
+    content: "";
+    position: absolute;
+    inset: -38px;
+    background:
+      conic-gradient(from 0deg, transparent 0 8%, rgba(255, 255, 255, 0.82) 9% 11%, transparent 12% 20%, rgba(255, 242, 166, 0.74) 21% 23%, transparent 24% 100%);
+    border-radius: 50%;
+    opacity: 0.78;
+    filter: blur(1px);
+    animation: haloSpin 10s linear infinite;
+    z-index: -1;
+  }
+
+  .sahur-card::after {
+    content: "";
+    position: absolute;
+    inset: -14px;
+    border-radius: 34px;
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    box-shadow:
+      0 0 28px rgba(255, 255, 255, 0.95),
+      0 0 60px rgba(255, 232, 142, 0.85),
+      0 0 92px rgba(155, 231, 255, 0.75);
+    pointer-events: none;
+    animation: heavenlyGlow 1.6s ease-in-out infinite alternate;
+  }
+
+  .sahur-name {
+    display: block;
+    color: #21617f;
+    font-size: clamp(1.8rem, 7vw, 4.3rem);
+    font-weight: 1000;
+    line-height: 0.96;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 14px rgba(255, 255, 255, 0.95),
+      0 0 28px rgba(255, 232, 142, 0.95),
+      0 0 42px rgba(155, 231, 255, 0.95),
+      0 9px 0 rgba(35, 103, 145, 0.16);
+    animation: nameGlow 1.2s ease-in-out infinite alternate;
+  }
+
+  .sahur-figure {
+    width: min(62vw, 240px);
+    height: auto;
+    margin: 0.75rem auto 0;
+    display: block;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.38);
+    box-shadow:
+      0 18px 36px rgba(30, 118, 160, 0.2),
+      0 0 38px rgba(255, 255, 255, 0.92),
+      0 0 70px rgba(255, 232, 142, 0.8);
+    object-fit: contain;
+    animation: figureBlessed 1.4s ease-in-out infinite alternate;
+  }
+
+  p {
+    margin: 0;
+    font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+    font-weight: 900;
+    color: #236789;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 0.85rem;
+    padding: 0.72rem 1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: #236789;
+    text-decoration: none;
+    font-weight: 900;
+    box-shadow: 0 10px 24px rgba(30, 118, 160, 0.18);
+  }
+
+  .music-hint {
+    position: fixed;
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    padding: 0.55rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    color: #236789;
+    font-weight: 900;
+    box-shadow: 0 10px 24px rgba(30, 118, 160, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+  }
+
+  .music-hint.active {
+    opacity: 1;
+  }
+
+  @keyframes cloudDrift {
+    from {
+      transform: translateX(-12vw);
+    }
+    to {
+      transform: translateX(12vw);
+    }
+  }
+
+  @keyframes sahurFloat {
+    from {
+      transform: translateY(0) rotate(-2deg) scale(1);
+    }
+    to {
+      transform: translateY(-10px) rotate(2deg) scale(1.025);
+    }
+  }
+
+  @keyframes haloSpin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes heavenlyGlow {
+    from {
+      opacity: 0.58;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+
+  @keyframes nameGlow {
+    from {
+      filter: brightness(1);
+    }
+    to {
+      filter: brightness(1.25);
+    }
+  }
+
+  @keyframes figureBlessed {
+    from {
+      filter: brightness(1) saturate(1);
+    }
+    to {
+      filter: brightness(1.18) saturate(1.25);
+    }
+  }
+
+  @media (max-height: 760px) {
+    main {
+      align-items: start;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 6vh, 3.5rem);
+    }
+
+    .sahur-card {
+      width: min(88vw, 480px);
+    }
+
+    .sahur-name {
+      font-size: clamp(1.55rem, 6vh, 3.2rem);
+    }
+
+    .sahur-figure {
+      width: min(48vw, 180px);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .sahur-card {
+      border-radius: 20px;
+    }
+
+    .sahur-card::before {
+      inset: -24px;
+    }
+
+    .sahur-name {
+      font-size: clamp(1.55rem, 10vw, 2.85rem);
+    }
+
+    .sahur-figure {
+      width: min(72vw, 210px);
+    }
+  }
+</style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>BRAINROT<br>IM HIMMEL</h1>
+      <div class="sahur-card" aria-label="Tung Tung Tung Sahur">
+        <span class="sahur-name">Tung Tung<br>Tung Sahur</span>
+        <img
+          class="sahur-figure"
+          src="https://media1.tenor.com/m/aKkEkdUDCdMAAAAd/tung-tung-tung-sahur-tung-tung-god.gif"
+          alt="Tung Tung Tung Sahur mit Flügeln und Heiligenschein">
+      </div>
+      <p>tung tung tung sahur ist angekommen</p>
+      <a href="Tictactoe.html">zurück ins Secret Game</a>
+    </section>
+  </main>
+  <div class="music-hint" id="musicHint">Klicke einmal für himmlische Musik</div>
+  <audio
+    id="heavenMusic"
+    loop
+    preload="auto"
+    src="https://commons.wikimedia.org/wiki/Special:Redirect/file/U.S._Army_Band_-_Angels_We_Have_Heard_on_High.ogg">
+  </audio>
+  <script>
+    let soundStarted = false;
+    const heavenMusic = document.getElementById('heavenMusic');
+    const musicHint = document.getElementById('musicHint');
+
+    function playHeavenSound() {
+      if (soundStarted) return;
+      soundStarted = true;
+
+      if (heavenMusic) {
+        heavenMusic.volume = 0.42;
+        heavenMusic.play()
+          .then(() => {
+            musicHint.classList.remove('active');
+          })
+          .catch(() => {
+            soundStarted = false;
+            musicHint.classList.add('active');
+          });
+      }
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(playHeavenSound, 250);
+    });
+    document.addEventListener('click', playHeavenSound);
+  </script>
+</body>
+</html>
