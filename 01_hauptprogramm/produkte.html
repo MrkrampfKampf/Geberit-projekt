@@ -923,13 +923,29 @@
             const recentProducts = getRecentProducts().filter(entry => entry.name !== item.name);
             recentProducts.unshift(item);
             localStorage.setItem(recommendationsStorageKey, JSON.stringify(recentProducts.slice(0, 3)));
-            renderProducts();
         }
 
         function isRecommendedProduct(product) {
             return getRecentProducts()
                 .slice(0, 3)
                 .some(entry => entry.name === product.name);
+        }
+
+        function sortRecommendedProducts(products) {
+            const recentProductNames = getRecentProducts().slice(0, 3).map(product => product.name);
+            if (recentProductNames.length === 0) {
+                return products;
+            }
+
+            return [...products].sort((firstProduct, secondProduct) => {
+                const firstIndex = recentProductNames.indexOf(firstProduct.name);
+                const secondIndex = recentProductNames.indexOf(secondProduct.name);
+
+                if (firstIndex === -1 && secondIndex === -1) return 0;
+                if (firstIndex === -1) return 1;
+                if (secondIndex === -1) return -1;
+                return firstIndex - secondIndex;
+            });
         }
 
         function saveProductClick(product) {
@@ -985,13 +1001,14 @@
             const visibleProducts = activeCategory.products.filter(product => {
                 return !searchTerm || getProductSearchText(product, activeCategory.id).includes(searchTerm);
             });
+            const sortedProducts = sortRecommendedProducts(visibleProducts);
 
             document.querySelectorAll('.category-button').forEach(button => button.classList.remove('active'));
             document.getElementById(`btn-${activeCategory.id}`)?.classList.add('active');
             dom.categoryTitle.textContent = activeCategory.label;
             dom.container.innerHTML = '';
-            visibleProducts.forEach(product => dom.container.appendChild(createProductCard(product)));
-            dom.emptyState.classList.toggle('active', visibleProducts.length === 0);
+            sortedProducts.forEach(product => dom.container.appendChild(createProductCard(product)));
+            dom.emptyState.classList.toggle('active', sortedProducts.length === 0);
         }
 
         function renderNavSearchResults() {
