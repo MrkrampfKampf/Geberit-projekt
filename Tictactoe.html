@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Geberit Snake Game</title>
+ 
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 40px;
+    background-color: #f5f5f5;
+    color: #2f3e46;
+  }
+
+  h1 {
+    color: #2f3e46;
+  }
+
+  #gameContainer {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #1a1a1a;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  canvas {
+    border: 3px solid #4f5d66;
+    display: block;
+    background-color: #000;
+  }
+
+  #status {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #2f6f9f;
+  }
+
+  #score {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #555;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #4f5d66;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  button:hover {
+    background-color: #2f3e46;
+  }
+
+  .instructions {
+    margin-top: 20px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .instructions p {
+    margin: 5px 0;
+  }
+</style>
+ 
+</head>
+ 
+<body>
+ 
+<h1>🐍 Geberit Snake  🏢</h1>
+<p>Hilf der Geberit-Schlange, ihre Produkte zu sammeln!</p>
+
+<div id="gameContainer">
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+</div>
+
+<div id="status">Spiel aktiv</div>
+<div id="score">Punkte: 0</div>
+
+<button onclick="resetGame()">Neu starten</button>
+
+<div class="instructions">
+  <p><strong>Steuerung:</strong></p>
+  <p>Pfeiltasten oder WASD zum Steuern</p>
+  <p>Sammle die Produkte (🟦) ohne die Wände zu berühren!</p>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const statusDiv = document.getElementById('status');
+const scoreDiv = document.getElementById('score');
+
+const gridSize = 20;
+const tileCount = canvas.width / gridSize;
+
+let snake = [{ x: 5, y: 5 }];
+let direction = { x: 1, y: 0 };
+let nextDirection = { x: 1, y: 0 };
+let food = { x: 10, y: 10 };
+let score = 0;
+let gameActive = true;
+let gameSpeed = 100;
+let lastMoveTime = 0;
+
+// Geberit Farben
+const snakeColor = '#4f5d66';
+const foodColor = '#2f6f9f';
+const backgroundColor = '#000';
+const borderColor = '#2f3e46';
+
+function generateFood() {
+  food = {
+    x: Math.floor(Math.random() * tileCount),
+    y: Math.floor(Math.random() * tileCount)
+  };
+
+  // Stelle sicher, dass Essen nicht auf der Schlange spawnt
+  if (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
+    generateFood();
+  }
+}
+
+function draw() {
+  // Hintergrund
+  ctx.fillStyle = backgroundColor;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Gitter zeichnen
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= tileCount; i++) {
+    ctx.beginPath();
+    ctx.moveTo(i * gridSize, 0);
+    ctx.lineTo(i * gridSize, canvas.height);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, i * gridSize);
+    ctx.lineTo(canvas.width, i * gridSize);
+    ctx.stroke();
+  }
+
+  // Schlange zeichnen
+  snake.forEach((segment, index) => {
+    if (index === 0) {
+      // Kopf
+      ctx.fillStyle = '#7fc3e8';
+      ctx.shadowColor = 'rgba(127, 195, 232, 0.5)';
+      ctx.shadowBlur = 10;
+    } else {
+      // Körper
+      ctx.fillStyle = snakeColor;
+      ctx.shadowColor = 'rgba(79, 93, 102, 0.3)';
+      ctx.shadowBlur = 5;
+    }
+    ctx.fillRect(
+      segment.x * gridSize + 1,
+      segment.y * gridSize + 1,
+      gridSize - 2,
+      gridSize - 2
+    );
+  });
+  ctx.shadowBlur = 0;
+
+  // Essen zeichnen (Geberit Produkt)
+  ctx.fillStyle = foodColor;
+  ctx.shadowColor = 'rgba(47, 111, 159, 0.6)';
+  ctx.shadowBlur = 8;
+  ctx.fillRect(
+    food.x * gridSize + 3,
+    food.y * gridSize + 3,
+    gridSize - 6,
+    gridSize - 6
+  );
+  ctx.shadowBlur = 0;
+
+  // Text im Produkt
+  ctx.fillStyle = '#fff';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('G', food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2);
+}
+
+function update(currentTime) {
+  if (!gameActive) return;
+
+  if (currentTime - lastMoveTime > gameSpeed) {
+    direction = nextDirection;
+
+    const head = snake[0];
+    const newHead = {
+      x: head.x + direction.x,
+      y: head.y + direction.y
+    };
+
+    // Wand-Kollision
+    if (newHead.x < 0 || newHead.x >= tileCount || newHead.y < 0 || newHead.y >= tileCount) {
+      endGame('Du hast die Wand berührt! 💥');
+      return;
+    }
+
+    // Selbst-Kollision
+    if (snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
+      endGame('Du hast dich selbst berührt! 💥');
+      return;
+    }
+
+    snake.unshift(newHead);
+
+    // Essen gegessen
+    if (newHead.x === food.x && newHead.y === food.y) {
+      score += 10;
+      scoreDiv.textContent = `Punkte: ${score}`;
+      generateFood();
+      
+      // Schneller werden
+      gameSpeed = Math.max(50, gameSpeed - 2);
+    } else {
+      snake.pop();
+    }
+
+    lastMoveTime = currentTime;
+  }
+
+  draw();
+  requestAnimationFrame(update);
+}
+
+function endGame(message) {
+  gameActive = false;
+  statusDiv.textContent = message;
+  statusDiv.style.color = '#ff6b6b';
+}
+
+function resetGame() {
+  snake = [{ x: 5, y: 5 }];
+  direction = { x: 1, y: 0 };
+  nextDirection = { x: 1, y: 0 };
+  score = 0;
+  gameActive = true;
+  gameSpeed = 100;
+  lastMoveTime = 0;
+  scoreDiv.textContent = `Punkte: ${score}`;
+  statusDiv.textContent = 'Spiel aktiv';
+  statusDiv.style.color = '#2f6f9f';
+  generateFood();
+  draw();
+  requestAnimationFrame(update);
+}
+
+// Steuerung
+document.addEventListener('keydown', (e) => {
+  if (!gameActive) return;
+
+  switch(e.key) {
+    case 'ArrowUp':
+    case 'w':
+    case 'W':
+      if (direction.y === 0) nextDirection = { x: 0, y: -1 };
+      e.preventDefault();
+      break;
+    case 'ArrowDown':
+    case 's':
+    case 'S':
+      if (direction.y === 0) nextDirection = { x: 0, y: 1 };
+      e.preventDefault();
+      break;
+    case 'ArrowLeft':
+    case 'a':
+    case 'A':
+      if (direction.x === 0) nextDirection = { x: -1, y: 0 };
+      e.preventDefault();
+      break;
+    case 'ArrowRight':
+    case 'd':
+    case 'D':
+      if (direction.x === 0) nextDirection = { x: 1, y: 0 };
+      e.preventDefault();
+      break;
+  }
+});
+
+generateFood();
+draw();
+requestAnimationFrame(update);
+</script>
+ 
+</body>
+</html>

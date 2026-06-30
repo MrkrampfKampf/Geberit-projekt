@@ -5,125 +5,315 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produkte - GeberitProdukte</title>
     <style>
+        :root {
+            --geberit-blue: #3f6f8f;
+            --geberit-dark: #2f3f47;
+            --geberit-text: #23343b;
+            --geberit-border: #b8c3ca;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.5;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
-            color: #222;
+            background: linear-gradient(135deg, #f7f9fb 0%, #eef4f7 100%);
+            color: var(--geberit-text);
         }
+
         header {
-            background-color: #2f3e46;
+            background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
             color: #fff;
-            padding: 1rem;
+            padding: 1.2rem 1rem 1.4rem;
+            box-shadow: 0 4px 14px rgba(47, 63, 71, 0.16);
+        }
+
+        .header-brand {
+            max-width: 1100px;
+            margin: 0 auto;
             text-align: center;
         }
+
+        .header-brand h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #ffffff;
+            letter-spacing: 0.02em;
+        }
+
         nav {
-            background-color: #4f5d66;
-            padding: 0.7rem;
+            background-color: #5f767d;
+            padding: 0.8rem 1rem;
             text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
         }
+
         nav a {
             color: #fff;
             margin: 0 0.8rem;
             text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
         }
+
         nav a:hover {
-            text-decoration: underline;
+            opacity: 0.85;
         }
+
         main {
             max-width: 1100px;
-            margin: 1.5rem auto;
-            padding: 1.5rem;
-            background-color: #fff;
-            border-radius: 6px;
+            margin: 1.2rem auto 1.6rem;
+            padding: 1rem;
         }
+
+        .hero {
+            background: linear-gradient(135deg, #f8fbfd 0%, #eef4f7 100%);
+            border: 1px solid #c9d4db;
+            border-radius: 18px;
+            padding: 1rem 1.15rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 28px rgba(47, 63, 71, 0.08);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background-color: #e8f0f5;
+            color: #3f6f8f;
+            padding: 0.28rem 0.6rem;
+            border: 1px solid #c3d5e0;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            margin-bottom: 0.55rem;
+        }
+
+        .hero h2 {
+            margin: 0 0 0.35rem;
+            font-size: 1.3rem;
+            color: var(--geberit-dark);
+        }
+
+        .hero p {
+            margin: 0;
+            color: #5e6a70;
+        }
+
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-top: 1.2rem;
+            gap: 0.9rem;
         }
+
         .product-card {
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 0.9rem;
-            background-color: #fafafa;
+            border: 1px solid var(--geberit-border);
+            border-radius: 14px;
+            padding: 0;
+            background-color: #fff;
             text-align: left;
             width: 100%;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(47, 63, 71, 0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
         }
+
         .product-card:hover {
-            box-shadow: none;
-            cursor: default;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(47, 63, 71, 0.12);
+            background-color: #f8fbfd;
         }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #ece7df;
+            display: block;
+        }
+
+        .product-info {
+            padding: 0.8rem;
+        }
+
         .product-card h3 {
-            margin: 0 0 0.4rem;
-            color: #333;
-            font-size: 1rem;
+            margin: 0 0 0.35rem;
+            color: var(--geberit-dark);
+            font-size: 0.95rem;
         }
+
         .product-card p {
-            color: #666;
+            color: #5f6b70;
             margin: 0.2rem 0;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
         }
+
         .product-card .price {
             font-weight: bold;
-            color: #2f6f9f;
-            margin-top: 0.6rem;
+            color: var(--geberit-blue);
+            margin-top: 0.5rem;
         }
+
         .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.6);
             display: none;
             align-items: center;
             justify-content: center;
             padding: 1rem;
             z-index: 1000;
         }
+
         .modal-backdrop.active {
             display: flex;
         }
+
         .modal {
             background: #fff;
-            border-radius: 8px;
-            width: min(100%, 560px);
+            border: 1px solid #c2cfd6;
+            border-radius: 16px;
+            width: min(100%, 720px);
             max-height: 90vh;
             overflow-y: auto;
-            padding: 1.2rem;
+            padding: 1rem;
             position: relative;
+            box-shadow: 0 16px 40px rgba(47, 63, 71, 0.16);
         }
+
+        .modal-content {
+            display: grid;
+            grid-template-columns: minmax(220px, 280px) 1fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border: 1px solid #dce5eb;
+            background-color: #f1f5f7;
+        }
+
         .modal-close {
             position: absolute;
-            top: 0.6rem;
-            right: 0.6rem;
+            top: 0.5rem;
+            right: 0.5rem;
+            border: none;
+            background: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .modal h3 {
+            margin: 0 0 0.4rem;
+            color: var(--geberit-dark);
+            font-size: 1.15rem;
+        }
+
+        .modal p {
+            margin: 0.25rem 0 0;
+            color: #53656d;
+        }
+
+        .modal .meta {
+            margin-top: 0.8rem;
+            font-weight: bold;
+            color: var(--geberit-blue);
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-image {
+                height: 180px;
+            }
+        }
+
+        footer {
+            background: linear-gradient(90deg, #4d5b61 0%, #2f3f47 100%);
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .snake-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 2000;
+            padding: 1rem;
+        }
+
+        .snake-modal.active {
+            display: flex;
+        }
+
+        .snake-content {
+            background: #fff;
+            border-radius: 18px;
+            max-width: 520px;
+            width: 100%;
+            padding: 1rem;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .snake-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .snake-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--geberit-dark);
+        }
+
+        .snake-close {
             border: none;
             background: none;
             font-size: 1.4rem;
             cursor: pointer;
+            color: var(--geberit-dark);
         }
-        .modal h3 {
-            margin: 0 0 0.4rem;
-            color: #333;
+
+        .snake-board {
+            background: #111;
+            border-radius: 14px;
+            overflow: hidden;
+            display: inline-block;
+            margin-bottom: 0.75rem;
         }
-        .modal .meta {
-            margin-top: 0.8rem;
-            font-weight: bold;
-            color: #2f6f9f;
+
+        .snake-info {
+            color: #5e6a70;
+            margin: 0;
         }
-        footer {
-            background-color: #2f3e46;
-            color: #fff;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 2rem;
-        }
+
     </style>
 </head>
 <body>
     <header>
-        <h1>Unsere fortschrittlichen Produkte</h1>
+        <div class="header-brand">
+            <h1>Unsere Produkte</h1>
+        </div>
     </header>
 
     <nav>
@@ -134,8 +324,11 @@
     </nav>
 
     <main>
-        <h2>Geberit Produkte</h2>
-        <p>Hier finden Sie alle unsere Produkte. Klicken Sie auf ein Produkt, um die Details zu sehen.</p>
+        <section class="hero">
+            <span class="hero-badge">eine kleine Auswahl</span>
+            <h2>Hier sind ausgewählte Geberit-Produkte</h2>
+            <p>Die Übersicht ist bewusst einfach gehalten, aber trotzdem ordentlich aufgebaut. Klicke auf ein Produkt, um mehr zur Funktion und zum Aufbau zu erfahren.</p>
+        </section>
 
         <div class="products-grid" id="productsContainer"></div>
     </main>
@@ -143,11 +336,16 @@
     <div class="modal-backdrop" id="productModal" aria-hidden="true">
         <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
             <button class="modal-close" id="closeModal" aria-label="Produktdetails schließen">×</button>
-            <h3 id="modalTitle"></h3>
-            <p id="modalDescription"></p>
-            <div class="meta">
-                <span id="modalPrice"></span>
-                <span id="modalArticle"></span>
+            <div class="modal-content">
+                <img id="modalImage" class="modal-image" src="" alt="">
+                <div>
+                    <h3 id="modalTitle"></h3>
+                    <p id="modalDescription"></p>
+                    <div class="meta">
+                        <span id="modalPrice"></span>
+                        <span id="modalArticle"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -156,95 +354,283 @@
         <p>&copy; 2026 GeberitPraktikanten vorbehalten.</p>
     </footer>
 
+    <div class="snake-modal" id="snakeModal" aria-hidden="true">
+        <div class="snake-content" role="dialog" aria-modal="true" aria-labelledby="snakeTitle">
+            <div class="snake-header">
+                <h3 id="snakeTitle">Snake Easter Egg</h3>
+                <button class="snake-close" id="closeSnakeButton" aria-label="Snake-Spiel schließen">×</button>
+            </div>
+            <div class="snake-board">
+                <canvas id="snakeCanvas" width="400" height="400"></canvas>
+            </div>
+            <p class="snake-info">Benutze die Pfeiltasten oder WASD. Drücke Esc zum Beenden.</p>
+            <p class="snake-info">Punkte: <span id="snakeScore">0</span></p>
+        </div>
+    </div>
+
     <script>
         const products = [
             {
-                name: 'Produkt 1',
-                description: 'Beschreibung Produkt 1.',
-                price: 'Preis hier',
-                articleNumber: 'ART-001'
+                name: 'Geberit Sigma20 Betätigungsplatte für 2-Mengen-Spülung',
+                description: 'Saubere und moderne Bedienung für eine praktische 2-Mengen-Spülung mit ansprechender Optik im WC-Bereich.',
+                price: 'ab € 135',
+                articleNumber: 'ART-115882161',
+                image: 'https://www.baedermaxx.at/media/image/4f/e6/82/Geberit-Sigma20-Bet-tigungsplatte-f-r-2-Mengen-Sp-lung-schwarzchrom-hochglanzschwarz_1_600x600@2x.webp'
             },
             {
-                name: 'Produkt 2',
-                description: 'Beschreibung Produkt 2.',
-                price: 'Preis hier',
-                articleNumber: 'ART-002'
+                name: 'Geberit Delta50 Betätigungsplatte für 2-Mengen-Spülung',
+                description: 'Komfortable und einfache Bedienung für eine moderne Spülung mit zeitgemäßem Design.',
+                price: 'ab € 61',
+                articleNumber: 'ART-115135465',
+                image: 'https://www.baedermaxx.at/media/image/36/26/82/Geberit-Delta50-Bet-tigungsplatte-f-r-2-Mengen-Sp-lung-mattchrom_1_600x600@2x.webp'
             },
             {
-                name: 'Produkt 3',
-                description: 'Beschreibung Produkt 3.',
-                price: 'Preis hier',
-                articleNumber: 'ART-003'
+                name: 'Geberit AquaClean Mera',
+                description: 'Eine hochwertige Dusch-WC-Lösung mit komfortabler Technik und angenehmer Nutzung im Alltag.',
+                price: 'ab € 3.660',
+                articleNumber: 'ART-146210111',
+                image: 'https://www.baedermaxx.at/media/image/b4/1f/60/Geberit-AquaClean-Mera-Comfort-Wand-Dusch-WC-Komplettanlage_600x600@2x.webp'
             },
             {
-                name: 'Produkt 4',
-                description: 'Beschreibung Produkt 4.',
-                price: 'Preis hier',
-                articleNumber: 'ART-004'
+                name: 'Geberit Monolith Sanitärmodul für Wand-WC',
+                description: 'Ein modernes Sanitärmodul für Wand-WCs mit sauberer Optik und gut durchdachter Installation.',
+                price: 'ab € 1150',
+                articleNumber: 'ART-131031SI5',
+                image: 'https://www.baedermaxx.at/media/image/2a/71/g0/Geberit-Monolith-Sanit-rmodul-f-r-Wand-WC-114cm-131031SI5_600x600@2x.webp'
             },
             {
-                name: 'Produkt 5',
-                description: 'Beschreibung Produkt 5.',
-                price: 'Preis hier',
-                articleNumber: 'ART-005'
+                name: 'Geberit Renova WC-Sitz mit Sitzring für Kinder, mit Absenkautomatik',
+                description: 'Praktischer WC-Sitz mit angenehmer Nutzung, einfacher Bedienung und kindersicherem Komfort.',
+                price: 'ab € 209',
+                articleNumber: 'ART-500981011',
+                image: 'https://www.baedermaxx.at/media/image/8b/75/dc/Geberit-Renova-WC-Sitz-mit-Sitzring-f-r-Kinder-mit-Absenkautomatik-weiss-500981011_600x600@2x.webp'
             },
             {
-                name: 'Produkt 6',
-                description: 'Beschreibung Produkt 6.',
-                price: 'Preis hier',
-                articleNumber: 'ART-006'
+                name: 'Geberit Duofix Montageelement für Wand-WC mit UP-Spülkasten Sigma UP320',
+                description: 'Robuste Montage für Wand-WCs mit durchdachtem Spülkastensystem und zuverlässiger Funktion.',
+                price: 'ab € 325',
+                articleNumber: 'ART-111311006',
+                image: 'https://www.baedermaxx.at/media/image/bd/f2/da/Geberit-Duofix-Montageelement-f-r-Wand-WC-mit-UP-Sp-lkasten-UP320-BH-112cm-111-311-00-5_1_600x600@2x.webp'
             }
         ];
 
-        const container = document.getElementById('productsContainer');
-        const modal = document.getElementById('productModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalDescription = document.getElementById('modalDescription');
-        const modalPrice = document.getElementById('modalPrice');
-        const modalArticle = document.getElementById('modalArticle');
-        const closeButton = document.getElementById('closeModal');
+        const dom = {
+            container: document.getElementById('productsContainer'),
+            modal: document.getElementById('productModal'),
+            modalTitle: document.getElementById('modalTitle'),
+            modalDescription: document.getElementById('modalDescription'),
+            modalPrice: document.getElementById('modalPrice'),
+            modalArticle: document.getElementById('modalArticle'),
+            modalImage: document.getElementById('modalImage'),
+            closeModalButton: document.getElementById('closeModal'),
+            snakeModal: document.getElementById('snakeModal'),
+            snakeCanvas: document.getElementById('snakeCanvas'),
+            snakeScore: document.getElementById('snakeScore'),
+            closeSnakeButton: document.getElementById('closeSnakeButton')
+        };
 
-        products.forEach(product => {
+        const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%22200%22 y=%22150%22 font-size=%2235%22 fill=%22%23999%22 text-anchor=%22middle%22 font-family=%22Arial%22 dy=%22.3em%22%3E%5BBild%5D%3C/text%3E%3C/svg%3E';
+        const snakeSequence = 'snake';
+        let typedKeys = '';
+
+        const snakeState = {
+            tileSize: 20,
+            tileCount: 20,
+            direction: { x: 1, y: 0 },
+            snake: [{ x: 9, y: 9 }],
+            food: { x: 5, y: 5 },
+            score: 0,
+            intervalId: null,
+            running: false
+        };
+
+        const snakeCtx = dom.snakeCanvas.getContext('2d');
+
+        function createProductCard(product) {
             const button = document.createElement('button');
-            button.className = 'product-card';
             button.type = 'button';
+            button.className = 'product-card';
             button.innerHTML = `
-                <h3>${product.name}</h3>
-                <p>${product.description}</p>
-                <p class="price">${product.price}</p>
+                <img src="${product.image || placeholderImage}" alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <p class="price">${product.price}</p>
+                </div>
             `;
             button.addEventListener('click', () => openModal(product));
-            container.appendChild(button);
-        });
+            return button;
+        }
+
+        function renderProducts() {
+            dom.container.innerHTML = '';
+            products.forEach(product => dom.container.appendChild(createProductCard(product)));
+        }
 
         function openModal(product) {
-            modalTitle.textContent = product.name;
-            modalDescription.textContent = product.description;
-            modalPrice.textContent = `Preis: ${product.price}`;
-            modalArticle.textContent = `Artikelnummer: ${product.articleNumber}`;
-            modal.classList.add('active');
-            modal.setAttribute('aria-hidden', 'false');
+            dom.modalTitle.textContent = product.name;
+            dom.modalDescription.textContent = product.description;
+            dom.modalPrice.textContent = `Preis: ${product.price}`;
+            dom.modalArticle.textContent = `Artikelnummer: ${product.articleNumber}`;
+            dom.modalImage.src = product.image || placeholderImage;
+            dom.modalImage.alt = product.name;
+            dom.modal.classList.add('active');
+            dom.modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            modal.classList.remove('active');
-            modal.setAttribute('aria-hidden', 'true');
+            dom.modal.classList.remove('active');
+            dom.modal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
         }
 
-        closeButton.addEventListener('click', closeModal);
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
+        function handleBackdropClick(event) {
+            if (event.target === dom.modal) {
                 closeModal();
             }
-        });
+        }
 
-        document.addEventListener('keydown', (event) => {
+        function resetSnakeGame() {
+            snakeState.direction = { x: 1, y: 0 };
+            snakeState.snake = [{ x: 9, y: 9 }];
+            snakeState.food = { x: 5, y: 5 };
+            snakeState.score = 0;
+            snakeState.running = true;
+            dom.snakeScore.textContent = snakeState.score;
+            if (snakeState.intervalId) {
+                clearInterval(snakeState.intervalId);
+            }
+            snakeState.intervalId = setInterval(updateSnakeGame, 120);
+        }
+
+        function placeFood() {
+            const freeTiles = [];
+            for (let x = 0; x < snakeState.tileCount; x++) {
+                for (let y = 0; y < snakeState.tileCount; y++) {
+                    if (!snakeState.snake.some(segment => segment.x === x && segment.y === y)) {
+                        freeTiles.push({ x, y });
+                    }
+                }
+            }
+            snakeState.food = freeTiles[Math.floor(Math.random() * freeTiles.length)];
+        }
+
+        function updateSnakeGame() {
+            const head = {
+                x: snakeState.snake[0].x + snakeState.direction.x,
+                y: snakeState.snake[0].y + snakeState.direction.y
+            };
+
+            if (head.x < 0 || head.x >= snakeState.tileCount || head.y < 0 || head.y >= snakeState.tileCount) {
+                return endSnakeGame();
+            }
+
+            if (snakeState.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                return endSnakeGame();
+            }
+
+            snakeState.snake.unshift(head);
+            if (head.x === snakeState.food.x && head.y === snakeState.food.y) {
+                snakeState.score += 10;
+                dom.snakeScore.textContent = snakeState.score;
+                placeFood();
+            } else {
+                snakeState.snake.pop();
+            }
+
+            drawSnake();
+        }
+
+        function drawSnake() {
+            snakeCtx.fillStyle = '#111';
+            snakeCtx.fillRect(0, 0, dom.snakeCanvas.width, dom.snakeCanvas.height);
+
+            snakeCtx.fillStyle = '#2f6f9f';
+            snakeState.snake.forEach((segment, index) => {
+                snakeCtx.fillRect(segment.x * snakeState.tileSize, segment.y * snakeState.tileSize, snakeState.tileSize - 1, snakeState.tileSize - 1);
+                if (index === 0) {
+                    snakeCtx.fillStyle = '#7fc3e8';
+                    snakeCtx.fillRect(segment.x * snakeState.tileSize, segment.y * snakeState.tileSize, snakeState.tileSize - 1, snakeState.tileSize - 1);
+                    snakeCtx.fillStyle = '#2f6f9f';
+                }
+            });
+
+            snakeCtx.fillStyle = '#ff8c00';
+            snakeCtx.fillRect(snakeState.food.x * snakeState.tileSize, snakeState.food.y * snakeState.tileSize, snakeState.tileSize - 1, snakeState.tileSize - 1);
+        }
+
+        function endSnakeGame() {
+            snakeState.running = false;
+            clearInterval(snakeState.intervalId);
+            snakeState.intervalId = null;
+            dom.snakeScore.textContent = `${snakeState.score} (Game over)`;
+        }
+
+        function openSnakeModal() {
+            dom.snakeModal.classList.add('active');
+            dom.snakeModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            resetSnakeGame();
+        }
+
+        function closeSnakeModal() {
+            dom.snakeModal.classList.remove('active');
+            dom.snakeModal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            if (snakeState.intervalId) {
+                clearInterval(snakeState.intervalId);
+                snakeState.intervalId = null;
+            }
+        }
+
+        function handleGlobalKeydown(event) {
             if (event.key === 'Escape') {
                 closeModal();
+                closeSnakeModal();
+                return;
             }
-        });
+
+            typedKeys += event.key.toLowerCase();
+            if (typedKeys.includes(snakeSequence)) {
+                openSnakeModal();
+                typedKeys = '';
+                return;
+            }
+
+            if (typedKeys.length > snakeSequence.length * 2) {
+                typedKeys = typedKeys.slice(-snakeSequence.length * 2);
+            }
+        }
+
+        function handleSnakeControl(event) {
+            if (!snakeState.running) return;
+
+            const key = event.key.toLowerCase();
+            let nextDirection = { ...snakeState.direction };
+            if (key === 'arrowup' || key === 'w') nextDirection = { x: 0, y: -1 };
+            if (key === 'arrowdown' || key === 's') nextDirection = { x: 0, y: 1 };
+            if (key === 'arrowleft' || key === 'a') nextDirection = { x: -1, y: 0 };
+            if (key === 'arrowright' || key === 'd') nextDirection = { x: 1, y: 0 };
+
+            if (nextDirection.x !== -snakeState.direction.x || nextDirection.y !== -snakeState.direction.y) {
+                snakeState.direction = nextDirection;
+            }
+        }
+
+        function handleSnakeBackdropClick(event) {
+            if (event.target === dom.snakeModal) {
+                closeSnakeModal();
+            }
+        }
+
+        renderProducts();
+        dom.closeModalButton.addEventListener('click', closeModal);
+        dom.modal.addEventListener('click', handleBackdropClick);
+        dom.closeSnakeButton.addEventListener('click', closeSnakeModal);
+        dom.snakeModal.addEventListener('click', handleSnakeBackdropClick);
+        document.addEventListener('keydown', handleGlobalKeydown);
+        document.addEventListener('keydown', handleSnakeControl);
     </script>
 </body>
 </html>
