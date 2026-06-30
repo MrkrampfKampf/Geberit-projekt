@@ -25,43 +25,41 @@
             color: var(--geberit-text);
         }
 
-        header {
+        nav {
+            position: sticky;
+            top: 0;
             background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
-            color: #fff;
-            padding: 1.2rem 1rem 1.4rem;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
             box-shadow: 0 4px 14px rgba(47, 63, 71, 0.16);
         }
 
-        .header-brand {
-            max-width: 1100px;
-            margin: 0 auto;
-            text-align: center;
+        .logo {
+            margin-right: 40px;
         }
 
-        .header-brand h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: #ffffff;
-            letter-spacing: 0.02em;
+        .logo img {
+            height: 25px;
+            transition: transform 0.3s ease;
         }
 
-        nav {
-            background-color: #5f767d;
-            padding: 0.8rem 1rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
+        .logo img:hover {
+            transform: scale(1.1);
         }
 
         nav a {
-            color: #fff;
-            margin: 0 0.8rem;
+            color: white;
             text-decoration: none;
-            font-weight: 600;
-            transition: opacity 0.2s ease;
+            font-weight: bold;
+            margin-right: 25px;
+            transition: 0.3s;
         }
 
         nav a:hover {
-            opacity: 0.85;
+            color: #4fc3f7;
+            transform: scale(1.05);
         }
 
         main {
@@ -310,13 +308,12 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-brand">
-            <h1>Unsere Produkte</h1>
-        </div>
-    </header>
-
     <nav>
+        <div class="logo">
+            <a href="Grundseite.html#home">
+                <img src="images/geberit-logo.png" alt="Geberit Logo">
+            </a>
+        </div>
         <a href="Grundseite.html">Home</a>
         <a href="Grundseite.html#about">Über Geberit</a>
         <a href="produkte.html">Produkte</a>
@@ -326,7 +323,7 @@
     <main>
         <section class="hero">
             <span class="hero-badge">eine kleine Auswahl</span>
-            <h2>Hier sind ausgewählte Geberit-Produkte</h2>
+            <h2>Unsere Produkte</h2>
             <p>Die Übersicht ist bewusst einfach gehalten, aber trotzdem ordentlich aufgebaut. Klicke auf ein Produkt, um mehr zur Funktion und zum Aufbau zu erfahren.</p>
         </section>
 
