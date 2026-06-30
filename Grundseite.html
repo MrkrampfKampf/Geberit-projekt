@@ -18,28 +18,54 @@
             padding: 1rem;
             text-align: center;
         }
-        nav {
-            background-color: #555;
-            padding: 0.5rem;
-        }
-        nav a {
-            color: #fff;
-            margin: 0 1rem;
-            text-decoration: none;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 5px;
-        }
+nav {
+    position: sticky;
+    top: 0;
+    background: #3f6f8f;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+
+.logo {
+    margin-right: 40px;
+}
+
+.logo img {
+    height: 25px;
+
+
+}
+.logo img:hover {
+   
+    transform: scale(1.1);
+   
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 25px;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #4fc3f7;
+    transform: scale(1.2);
+    
+}
+       main {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+    
+}
+        
         footer {
-            background-color: #333;
+            background-color: #3f6f8f;
             color: #fff;
             text-align: center;
             padding: 1rem;
@@ -51,11 +77,21 @@
 
 
     <nav>
-        <a href="#home">Home</a>
-        <a href="#about">Über Geberit</a>
-        <a href="#services">Produkte</a>
-        <a href="#contact">Kontakt</a>
-    </nav>
+    <div class="logo">
+      
+      
+      <a href="#home">
+        <img src="images/geberit-logo.png" alt="Geberit Logo">
+         </a>
+   
+   
+        </div>
+
+    <a href="#home">Home</a>
+    <a href="#about">Über Geberit</a>
+    <a href="#services">Produkte</a>
+    <a href="#contact">Kontakt</a>
+</nav>
 
     <main>
        <section id="home">
@@ -65,29 +101,7 @@ html {
     scroll-behavior: smooth;
 }
 
-/* NAV */
-nav {
-    position: sticky;
-    top: 0;
-    background: rgba(0,0,0,0.85);
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    z-index: 1000;
-}
 
-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-nav a:hover {
-    color: #4fc3f7;
-    transform: scale(1.2);
-}
 
 /* HOME */
 #home {
