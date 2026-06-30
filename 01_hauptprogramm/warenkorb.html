@@ -10,6 +10,9 @@
             --geberit-dark: #2f3f47;
             --geberit-text: #23343b;
             --geberit-border: #b8c3ca;
+            --geberit-soft: #eef4f7;
+            --geberit-success: #2f7d55;
+            --geberit-danger: #9b2f2f;
         }
 
         * {
@@ -65,12 +68,16 @@
         }
 
         main {
-            max-width: 1100px;
+            max-width: 1120px;
             margin: 0 auto;
-            padding: 2rem 1rem;
+            padding: 2rem 1rem 3rem;
         }
 
         .page-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-end;
             margin-bottom: 1.25rem;
         }
 
@@ -78,11 +85,44 @@
             margin: 0;
             color: var(--geberit-dark);
             font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.05;
+        }
+
+        .page-head p {
+            max-width: 640px;
+            margin: 0.45rem 0 0;
+            color: #5d6f77;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            margin-bottom: 0.35rem;
+            color: var(--geberit-blue);
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .continue-link,
+        .empty-state a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            border: 1px solid #c3d5e0;
+            border-radius: 10px;
+            padding: 0.55rem 0.9rem;
+            color: var(--geberit-dark);
+            background: #fff;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
         }
 
         .cart-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 340px;
+            grid-template-columns: minmax(0, 1fr) 350px;
             gap: 1rem;
             align-items: start;
         }
@@ -99,9 +139,22 @@
             overflow: hidden;
         }
 
+        .cart-list-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.9rem 1rem;
+            color: #5d6f77;
+            background: #f8fbfc;
+            border-bottom: 1px solid #e4edf2;
+            font-size: 0.92rem;
+            font-weight: 800;
+        }
+
         .cart-item {
             display: grid;
-            grid-template-columns: 96px 1fr auto;
+            grid-template-columns: 104px 1fr 120px auto;
             gap: 1rem;
             align-items: center;
             padding: 1rem;
@@ -113,11 +166,11 @@
         }
 
         .cart-item img {
-            width: 96px;
-            height: 76px;
+            width: 104px;
+            height: 82px;
             object-fit: cover;
             border-radius: 8px;
-            background: #eef4f7;
+            background: var(--geberit-soft);
         }
 
         .cart-item h2 {
@@ -126,9 +179,23 @@
             font-size: 1rem;
         }
 
-        .cart-item p {
-            margin: 0.2rem 0;
-            color: #64737a;
+        .item-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-top: 0.45rem;
+        }
+
+        .item-chip {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #c9dbe5;
+            border-radius: 999px;
+            padding: 0.12rem 0.55rem;
+            color: var(--geberit-blue);
+            background: #f3f8fa;
+            font-size: 0.82rem;
+            font-weight: 800;
         }
 
         .quantity-controls {
@@ -154,14 +221,40 @@
             font-weight: 800;
         }
 
+        .quantity-controls span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2rem;
+            font-weight: 900;
+        }
+
         .remove-button {
             color: #8a1f1f;
+        }
+
+        .line-total {
+            text-align: right;
+        }
+
+        .line-total span {
+            display: block;
+            color: #64737a;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .line-total strong {
+            color: var(--geberit-dark);
+            font-size: 1rem;
         }
 
         .cart-summary-card {
             padding: 1rem;
             display: grid;
             gap: 0.85rem;
+            position: sticky;
+            top: 78px;
         }
 
         .cart-summary-card h2 {
@@ -183,11 +276,35 @@
             font: inherit;
         }
 
+        .discount-message {
+            min-height: 1.2rem;
+            margin: -0.35rem 0 0;
+            color: #64737a;
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        .discount-message.valid {
+            color: var(--geberit-success);
+        }
+
+        .discount-message.invalid {
+            color: var(--geberit-danger);
+        }
+
         .summary-button.primary {
             background: linear-gradient(90deg, #3f6f8f 0%, #2f3f47 100%);
             color: #fff;
             border: 0;
             padding: 0.7rem 1rem;
+        }
+
+        .summary-button.secondary {
+            background: #fff;
+            color: var(--geberit-dark);
+            padding: 0.7rem 1rem;
+            text-align: center;
+            text-decoration: none;
         }
 
         .summary-line {
@@ -205,8 +322,16 @@
         }
 
         .empty-state {
+            display: grid;
+            gap: 0.7rem;
+            justify-items: start;
             padding: 1.25rem;
             color: #64737a;
+        }
+
+        .empty-state strong {
+            color: var(--geberit-dark);
+            font-size: 1.1rem;
         }
 
         .note {
@@ -230,6 +355,14 @@
                 margin-right: 18px;
             }
 
+            .page-head {
+                display: block;
+            }
+
+            .continue-link {
+                margin-top: 1rem;
+            }
+
             .cart-layout {
                 grid-template-columns: 1fr;
             }
@@ -238,9 +371,23 @@
                 grid-template-columns: 78px 1fr;
             }
 
+            .cart-item img {
+                width: 78px;
+                height: 70px;
+            }
+
+            .line-total {
+                grid-column: 2;
+                text-align: left;
+            }
+
             .remove-button {
                 grid-column: 2;
                 width: max-content;
+            }
+
+            .cart-summary-card {
+                position: static;
             }
         }
     </style>
@@ -253,7 +400,7 @@
             </a>
         </div>
         <a href="Grundseite.html">Home</a>
-        <a href="Über-Uns.html">Über Geberit</a>
+        <a href="&Uuml;ber-Uns.html">&Uuml;ber Geberit</a>
         <a href="produkte.html">Produkte</a>
         <a href="warenkorb.html" class="active">Warenkorb</a>
         <a href="Grundseite.html#contact">Kontakt</a>
@@ -261,12 +408,22 @@
 
     <main>
         <div class="page-head">
-            <h1>Warenkorb</h1>
-            <p>Produkte können nur über die Produktseite hinzugefügt werden.</p>
+            <div>
+                <span class="eyebrow">Geberit Auswahl</span>
+                <h1>Warenkorb</h1>
+                <p>Produkte k&ouml;nnen nur &uuml;ber die Produktseite hinzugef&uuml;gt werden. Dein Warenkorb bleibt &uuml;ber IP-Adresse und Browser-ID gespeichert.</p>
+            </div>
+            <a class="continue-link" href="produkte.html">Weiter einkaufen</a>
         </div>
 
         <div class="cart-layout">
-            <section class="cart-list" id="cartList" aria-label="Warenkorb-Produkte"></section>
+            <section class="cart-list" aria-label="Warenkorb-Produkte">
+                <div class="cart-list-header">
+                    <span id="cartOverview">0 Artikel</span>
+                    <span>Produkt / Menge / Summe</span>
+                </div>
+                <div id="cartList"></div>
+            </section>
 
             <aside class="cart-summary-card">
                 <h2>Zusammenfassung</h2>
@@ -274,9 +431,10 @@
                     <input id="discountCode" type="text" placeholder="Rabattcode" autocomplete="off">
                     <button class="summary-button" id="applyDiscount" type="button">OK</button>
                 </div>
+                <p class="discount-message" id="discountMessage"></p>
                 <div class="summary-line">
                     <span>Zwischensumme</span>
-                    <strong id="subtotalValue">0,00 €</strong>
+                    <strong id="subtotalValue">0,00 EUR</strong>
                 </div>
                 <div class="summary-line">
                     <span>Rabatt</span>
@@ -284,10 +442,12 @@
                 </div>
                 <div class="summary-line total">
                     <span>Gesamt</span>
-                    <strong id="totalValue">0,00 €</strong>
+                    <strong id="totalValue">0,00 EUR</strong>
                 </div>
+                <a class="summary-button primary" id="requestLink" href="mailto:info@geberit.com">Anfrage vorbereiten</a>
                 <button class="summary-button primary" id="clearCart" type="button">Warenkorb leeren</button>
-                <p class="note">Gespeichert wird über IP-Adresse und Browser-ID. Rabattcodes: GEBERIT10, SCHULE15, PRAKTIKUM20.</p>
+                <a class="summary-button secondary" href="produkte.html">Weitere Produkte ansehen</a>
+                <p class="note">Rabattcodes: GEBERIT10, SCHULE15, PRAKTIKUM20.</p>
             </aside>
         </div>
     </main>
@@ -305,7 +465,10 @@
             subtotalValue: document.getElementById('subtotalValue'),
             discountValue: document.getElementById('discountValue'),
             totalValue: document.getElementById('totalValue'),
-            clearCart: document.getElementById('clearCart')
+            clearCart: document.getElementById('clearCart'),
+            cartOverview: document.getElementById('cartOverview'),
+            discountMessage: document.getElementById('discountMessage'),
+            requestLink: document.getElementById('requestLink')
         };
 
         function getVisitorId() {
@@ -358,6 +521,29 @@
             return value.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
         }
 
+        function getItemCount(items) {
+            return items.reduce((sum, item) => sum + item.quantity, 0);
+        }
+
+        function buildRequestMail(items, total) {
+            const lines = items.map(item => {
+                const lineTotal = parsePriceValue(item.price) * item.quantity;
+                return `- ${item.quantity}x ${item.name} (${formatCurrency(lineTotal)})`;
+            });
+            const body = [
+                'Hallo Geberit Team,',
+                '',
+                'ich interessiere mich fuer folgende Produkte:',
+                ...lines,
+                '',
+                `Gesamt: ${formatCurrency(total)}`,
+                '',
+                'Viele Gruesse'
+            ].join('\n');
+
+            return `mailto:info@geberit.com?subject=${encodeURIComponent('Geberit Warenkorb Anfrage')}&body=${encodeURIComponent(body)}`;
+        }
+
         function syncCartItem(item) {
             GeberitDatabase.saveCartItem({
                 visitor_id: getVisitorId(),
@@ -372,7 +558,7 @@
 
         function removeCartItemFromDatabase(productName) {
             GeberitDatabase.removeCartItem(getVisitorId(), productName)
-                .catch(error => console.warn('Warenkorb-Eintrag konnte nicht gelöscht werden.', error));
+                .catch(error => console.warn('Warenkorb-Eintrag konnte nicht geloescht werden.', error));
         }
 
         function renderCart() {
@@ -381,30 +567,55 @@
             const discountPercent = getDiscountPercent(discountCode);
             const subtotal = items.reduce((sum, item) => sum + parsePriceValue(item.price) * item.quantity, 0);
             const total = subtotal * (1 - discountPercent / 100);
+            const itemCount = getItemCount(items);
 
             dom.discountCode.value = discountCode;
             dom.subtotalValue.textContent = formatCurrency(subtotal);
             dom.discountValue.textContent = discountPercent ? `${discountPercent}%` : '0%';
             dom.totalValue.textContent = formatCurrency(total);
+            dom.cartOverview.textContent = `${itemCount} Artikel`;
+            dom.requestLink.href = items.length ? buildRequestMail(items, total) : 'mailto:info@geberit.com';
+            dom.requestLink.style.pointerEvents = items.length ? 'auto' : 'none';
+            dom.requestLink.style.opacity = items.length ? '1' : '0.55';
+
+            dom.discountMessage.className = 'discount-message';
+            if (discountCode && discountPercent) {
+                dom.discountMessage.textContent = `${discountCode} wurde angewendet.`;
+                dom.discountMessage.classList.add('valid');
+            } else if (discountCode) {
+                dom.discountMessage.textContent = 'Dieser Rabattcode wurde nicht erkannt.';
+                dom.discountMessage.classList.add('invalid');
+            } else {
+                dom.discountMessage.textContent = 'Rabattcode eingeben und mit OK bestaetigen.';
+            }
 
             dom.cartList.innerHTML = items.length === 0
-                ? '<p class="empty-state">Dein Warenkorb ist leer.</p>'
-                : items.map(item => `
-                    <article class="cart-item">
-                        <img src="${item.image}" alt="">
-                        <div>
-                            <h2>${item.name}</h2>
-                            <p>${item.category || 'Produkt'}</p>
-                            <p><strong>${item.price || 'Preis nicht angegeben'}</strong></p>
-                            <div class="quantity-controls">
-                                <button type="button" data-action="decrease" data-product="${encodeURIComponent(item.name)}">−</button>
-                                <span>${item.quantity}</span>
-                                <button type="button" data-action="increase" data-product="${encodeURIComponent(item.name)}">+</button>
+                ? '<div class="empty-state"><strong>Dein Warenkorb ist leer.</strong><span>Waehle Produkte auf der Produktseite aus, dann erscheinen sie hier.</span><a href="produkte.html">Produkte ansehen</a></div>'
+                : items.map(item => {
+                    const lineTotal = parsePriceValue(item.price) * item.quantity;
+                    return `
+                        <article class="cart-item">
+                            <img src="${item.image || '../02_images/product-portfolio-01.jpg'}" alt="">
+                            <div>
+                                <h2>${item.name}</h2>
+                                <div class="item-meta">
+                                    <span class="item-chip">${item.category || 'Produkt'}</span>
+                                    <span class="item-chip">${item.price || 'Preis nicht angegeben'}</span>
+                                </div>
+                                <div class="quantity-controls">
+                                    <button type="button" data-action="decrease" data-product="${encodeURIComponent(item.name)}">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button type="button" data-action="increase" data-product="${encodeURIComponent(item.name)}">+</button>
+                                </div>
                             </div>
-                        </div>
-                        <button class="remove-button" type="button" data-action="remove" data-product="${encodeURIComponent(item.name)}">×</button>
-                    </article>
-                `).join('');
+                            <div class="line-total">
+                                <span>Summe</span>
+                                <strong>${formatCurrency(lineTotal)}</strong>
+                            </div>
+                            <button class="remove-button" type="button" data-action="remove" data-product="${encodeURIComponent(item.name)}">x</button>
+                        </article>
+                    `;
+                }).join('');
         }
 
         function updateItem(productName, change) {
