@@ -871,7 +871,7 @@
         <a href="Grundseite.html">Home</a>
         <a href="Über-Uns.html">Über Geberit</a>
         <a href="produkte.html" class="active">Produkte</a>
-        <a href="warenkorb.html" class="cart-nav-link" id="cartNavLink">Warenkorb <span class="cart-nav-count" id="cartNavCount">0</span></a>
+        <a href="warenkorb.html" class="cart-nav-link" id="cartNavLink" aria-label="Einkaufswagen"><span class="cart-nav-icon" aria-hidden="true">&#128722;</span><span class="cart-nav-count" id="cartNavCount">0</span></a>
         <a href="Grundseite.html#contact">Kontakt</a>
         <div class="nav-search" role="search">
             <input class="nav-search-input" type="search" placeholder="Suchen" aria-label="Produkte suchen" autocomplete="off">
@@ -911,7 +911,7 @@
                         <span id="modalPrice"></span>
                         <span id="modalArticle"></span>
                     </div>
-                    <button class="modal-cart-button" id="modalCartButton" type="button">In den Warenkorb</button>
+                    <button class="modal-cart-button" id="modalCartButton" type="button">In den Einkaufswagen</button>
                 </div>
             </div>
         </div>
@@ -921,6 +921,7 @@
         <p>&copy; 2026 Geberit Produktübersicht</p>
     </footer>
 
+    <script src="cart-nav.js"></script>
     <script src="../04_Datenbank/db-config.js"></script>
     <script>
         const originalProducts = [
@@ -1200,9 +1201,15 @@
 
         function updateCartNavCount() {
             const count = getCartItemCount();
-            if (!dom.cartNavLink || !dom.cartNavCount) return;
-            dom.cartNavCount.textContent = count;
-            dom.cartNavLink.classList.toggle('has-items', count > 0);
+            const cartNavLink = document.getElementById('cartNavLink') || dom.cartNavLink;
+            const cartNavCount = document.getElementById('cartNavCount') || dom.cartNavCount;
+            if (cartNavLink && cartNavCount) {
+                cartNavCount.textContent = count;
+                cartNavLink.classList.toggle('has-items', count > 0);
+            }
+            if (window.updateCartNavigation) {
+                window.updateCartNavigation();
+            }
         }
 
         function showCartToast(productName) {
@@ -1211,7 +1218,7 @@
 
             const toast = document.createElement('div');
             toast.className = 'cart-toast';
-            toast.innerHTML = `<strong>Im Warenkorb</strong><span>${productName} wurde hinzugefuegt.</span>`;
+            toast.innerHTML = `<strong>Im Einkaufswagen</strong><span>${productName} wurde hinzugefuegt.</span>`;
             document.body.appendChild(toast);
 
             setTimeout(() => {
@@ -1387,7 +1394,7 @@
                     <p>${getProductDescription(product)}</p>
                     <p class="price">${getProductPrice(product)}</p>
                     <div class="product-actions">
-                        <button class="cart-add-button" type="button">In den Warenkorb</button>
+                        <button class="cart-add-button" type="button">In den Einkaufswagen</button>
                     </div>
                 </div>
             `;

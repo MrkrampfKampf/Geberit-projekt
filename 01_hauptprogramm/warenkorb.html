@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warenkorb - Geberit</title>
+    <title>Einkaufswagen - Geberit</title>
     <style>
         :root {
             --geberit-blue: #3f6f8f;
@@ -539,13 +539,13 @@
         <a href="Grundseite.html">Home</a>
         <a href="&Uuml;ber-Uns.html">&Uuml;ber Geberit</a>
         <a href="produkte.html">Produkte</a>
-        <a href="warenkorb.html" class="active">Warenkorb</a>
+        <a href="warenkorb.html" class="active cart-nav-link" aria-label="Einkaufswagen"><span class="cart-nav-icon" aria-hidden="true">&#128722;</span><span class="cart-nav-count">0</span></a>
         <a href="Grundseite.html#contact">Kontakt</a>
+        <input class="cart-search" id="cartSearch" type="search" placeholder="Einkaufswagen durchsuchen..." aria-label="Einkaufswagen durchsuchen" autocomplete="off">
     </nav>
 
     <div class="cart-toolbar">
-        <span class="toolbar-label">Warenkorb Werkzeuge</span>
-        <input class="cart-search" id="cartSearch" type="search" placeholder="Warenkorb durchsuchen..." aria-label="Warenkorb durchsuchen" autocomplete="off">
+        <span class="toolbar-label">Einkaufswagen Werkzeuge</span>
         <select class="currency-select" id="currencySelect" aria-label="Waehrung auswaehlen">
             <option value="EUR">EUR</option>
             <option value="CHF">CHF</option>
@@ -559,7 +559,7 @@
         <div class="page-head">
             <div>
                 <span class="eyebrow">Geberit Auswahl</span>
-                <h1>Warenkorb</h1>
+                <h1>Einkaufswagen</h1>
                 <div class="cart-status-card">
                     <strong id="cartStatusTitle">Noch keine Produkte</strong>
                     <span id="cartStatusText">W&auml;hle Produkte auf der Produktseite aus.</span>
@@ -597,12 +597,13 @@
                     <strong id="totalValue">0,00 EUR</strong>
                 </div>
                 <a class="summary-button primary" id="requestLink" href="mailto:info@geberit.com">Anfrage vorbereiten</a>
-                <button class="summary-button primary" id="clearCart" type="button">Warenkorb leeren</button>
+                <button class="summary-button primary" id="clearCart" type="button">Einkaufswagen leeren</button>
                 <a class="summary-button secondary" href="produkte.html">Weitere Produkte ansehen</a>
             </aside>
         </div>
     </main>
 
+    <script src="cart-nav.js"></script>
     <script src="../04_Datenbank/db-config.js"></script>
     <script>
         const visitorStorageKey = 'geberitVisitorId';
@@ -653,6 +654,9 @@
 
         function setCartItems(items) {
             localStorage.setItem(cartStorageKey, JSON.stringify(items));
+            if (window.updateCartNavigation) {
+                window.updateCartNavigation();
+            }
         }
 
         function getDiscountCode() {
@@ -787,8 +791,8 @@
             dom.subtotalValue.textContent = formatCurrency(subtotal);
             dom.discountValue.textContent = discountPercent ? `${discountPercent}%` : '0%';
             dom.totalValue.textContent = formatCurrency(total);
-            dom.cartOverview.textContent = itemCount ? `${itemCount} Artikel im Warenkorb` : 'Warenkorb leer';
-            dom.cartStatusTitle.textContent = itemCount ? `${itemCount} Artikel im Warenkorb` : 'Noch keine Produkte';
+            dom.cartOverview.textContent = itemCount ? `${itemCount} Artikel im Einkaufswagen` : 'Einkaufswagen leer';
+            dom.cartStatusTitle.textContent = itemCount ? `${itemCount} Artikel im Einkaufswagen` : 'Noch keine Produkte';
             dom.cartStatusText.textContent = itemCount ? `${formatCurrency(total)} Gesamtwert` : 'Waehle Produkte auf der Produktseite aus.';
             dom.requestLink.href = items.length ? buildRequestMail(items, total) : 'mailto:info@geberit.com';
             dom.requestLink.style.pointerEvents = items.length ? 'auto' : 'none';
@@ -808,7 +812,7 @@
             }
 
             dom.cartList.innerHTML = items.length === 0
-                ? '<div class="empty-state"><strong>Dein Warenkorb ist leer.</strong><span>Waehle Produkte auf der Produktseite aus, dann erscheinen sie hier.</span><a href="produkte.html">Produkte ansehen</a></div>'
+                ? '<div class="empty-state"><strong>Dein Einkaufswagen ist leer.</strong><span>Waehle Produkte auf der Produktseite aus, dann erscheinen sie hier.</span><a href="produkte.html">Produkte ansehen</a></div>'
                 : visibleItems.length === 0
                     ? '<div class="empty-state"><strong>Nichts gefunden.</strong><span>Keine Produkte passen zu deiner Suche.</span></div>'
                     : visibleItems.map(item => {
@@ -916,9 +920,9 @@
 
         dom.clearCart.addEventListener('click', () => {
             if (getCartItems().length === 0) return;
-            const confirmed = window.confirm('Warenkorb wirklich leeren?');
+            const confirmed = window.confirm('Einkaufswagen wirklich leeren?');
             if (!confirmed) return;
-            showToast('Warenkorb geleert');
+            showToast('Einkaufswagen geleert');
             setCartItems([]);
             GeberitDatabase.clearCartItems(getVisitorId())
                 .catch(error => console.warn('Warenkorb konnte nicht geleert werden.', error));

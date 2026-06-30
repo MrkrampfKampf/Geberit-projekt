@@ -712,7 +712,7 @@
         <a href="Grundseite.html">Home</a>
         <a href="Über-Uns.html" class="active">Über Geberit</a>
         <a href="produkte.html">Produkte</a>
-        <a href="warenkorb.html">Warenkorb</a>
+        <a href="warenkorb.html" class="cart-nav-link" aria-label="Einkaufswagen"><span class="cart-nav-icon" aria-hidden="true">&#128722;</span><span class="cart-nav-count">0</span></a>
         <a href="#contact">Kontakt</a>
         <div class="nav-search" role="search">
             <input class="nav-search-input" type="search" placeholder="Suchen" aria-label="Produkte suchen" autocomplete="off">
@@ -906,6 +906,7 @@
     <footer>
         <p>&copy; 2026 Geberit | Alle Rechte vorbehalten.</p>
     </footer>
+    <script src="cart-nav.js"></script>
     <script>
         const navLinks = document.querySelectorAll('nav > a');
         const navSearchInput = document.querySelector('.nav-search-input');
