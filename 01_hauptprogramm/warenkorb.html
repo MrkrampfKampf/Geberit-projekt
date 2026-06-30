@@ -183,6 +183,44 @@
             font-weight: 800;
         }
 
+        .cart-header-left {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .clear-cart-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid #e2b8b8;
+            border-radius: 8px;
+            background: #fff3f3;
+            color: var(--geberit-danger);
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .clear-cart-icon:hover {
+            background: #9b2f2f;
+            color: #fff;
+            border-color: #9b2f2f;
+        }
+
+        .clear-cart-icon:disabled {
+            cursor: default;
+            opacity: 0.45;
+        }
+
+        .clear-cart-icon:disabled:hover {
+            background: #fff3f3;
+            color: var(--geberit-danger);
+            border-color: #e2b8b8;
+        }
+
         .cart-item {
             display: grid;
             grid-template-columns: 104px 1fr 120px auto;
@@ -499,7 +537,10 @@
         <div class="cart-layout">
             <section class="cart-list" aria-label="Einkaufswagen-Produkte">
                 <div class="cart-list-header">
-                    <span id="cartOverview">0 Artikel</span>
+                    <span class="cart-header-left">
+                        <span id="cartOverview">0 Artikel</span>
+                        <button class="clear-cart-icon" id="clearCart" type="button" title="Einkaufswagen leeren" aria-label="Einkaufswagen leeren">&#128465;</button>
+                    </span>
                     <span>Gesamtwert</span>
                 </div>
                 <div id="cartList"></div>
@@ -525,7 +566,6 @@
                     <strong id="totalValue">0,00 EUR</strong>
                 </div>
                 <a class="summary-button primary" id="requestLink" href="mailto:info@geberit.com">Anfrage vorbereiten</a>
-                <button class="summary-button primary" id="clearCart" type="button">Einkaufswagen leeren</button>
                 <a class="summary-button secondary" href="produkte.html">Weitere Produkte ansehen</a>
             </aside>
         </div>
