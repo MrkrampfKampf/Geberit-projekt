@@ -385,38 +385,6 @@
             text-decoration: none;
         }
 
-        .clear-confirm {
-            display: none;
-            gap: 0.55rem;
-            border: 1px solid #e2c2c2;
-            border-radius: 10px;
-            padding: 0.75rem;
-            background: #fff7f7;
-        }
-
-        .clear-confirm.active {
-            display: grid;
-        }
-
-        .clear-confirm p {
-            margin: 0;
-            color: var(--geberit-danger);
-            font-size: 0.92rem;
-            font-weight: 800;
-        }
-
-        .confirm-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-        }
-
-        .summary-button.danger {
-            background: #9b2f2f;
-            color: #fff;
-            border-color: #9b2f2f;
-        }
-
         .summary-line {
             display: flex;
             justify-content: space-between;
@@ -630,13 +598,6 @@
                 </div>
                 <a class="summary-button primary" id="requestLink" href="mailto:info@geberit.com">Anfrage vorbereiten</a>
                 <button class="summary-button primary" id="clearCart" type="button">Warenkorb leeren</button>
-                <div class="clear-confirm" id="clearConfirm" aria-live="polite">
-                    <p>Warenkorb wirklich leeren?</p>
-                    <div class="confirm-actions">
-                        <button class="summary-button danger" id="confirmClearCart" type="button">Ja, leeren</button>
-                        <button class="summary-button" id="cancelClearCart" type="button">Abbrechen</button>
-                    </div>
-                </div>
                 <a class="summary-button secondary" href="produkte.html">Weitere Produkte ansehen</a>
             </aside>
         </div>
@@ -666,9 +627,6 @@
             discountValue: document.getElementById('discountValue'),
             totalValue: document.getElementById('totalValue'),
             clearCart: document.getElementById('clearCart'),
-            clearConfirm: document.getElementById('clearConfirm'),
-            confirmClearCart: document.getElementById('confirmClearCart'),
-            cancelClearCart: document.getElementById('cancelClearCart'),
             cartOverview: document.getElementById('cartOverview'),
             cartStatusTitle: document.getElementById('cartStatusTitle'),
             cartStatusText: document.getElementById('cartStatusText'),
@@ -837,9 +795,6 @@
             dom.requestLink.style.opacity = items.length ? '1' : '0.55';
             dom.clearCart.disabled = items.length === 0;
             dom.clearCart.style.opacity = items.length ? '1' : '0.55';
-            if (items.length === 0) {
-                dom.clearConfirm.classList.remove('active');
-            }
 
             dom.discountMessage.className = 'discount-message';
             if (discountCode && discountPercent) {
@@ -961,19 +916,12 @@
 
         dom.clearCart.addEventListener('click', () => {
             if (getCartItems().length === 0) return;
-            dom.clearConfirm.classList.add('active');
-        });
-
-        dom.cancelClearCart.addEventListener('click', () => {
-            dom.clearConfirm.classList.remove('active');
-        });
-
-        dom.confirmClearCart.addEventListener('click', () => {
+            const confirmed = window.confirm('Warenkorb wirklich leeren?');
+            if (!confirmed) return;
             showToast('Warenkorb geleert');
             setCartItems([]);
             GeberitDatabase.clearCartItems(getVisitorId())
                 .catch(error => console.warn('Warenkorb konnte nicht geleert werden.', error));
-            dom.clearConfirm.classList.remove('active');
             renderCart();
         });
 
