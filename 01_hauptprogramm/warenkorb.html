@@ -34,40 +34,72 @@
             padding: 12px 20px;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
             z-index: 1000;
             box-shadow: 0 4px 14px rgba(47, 63, 71, 0.10);
         }
 
         .logo {
-            margin-right: 0;
+            margin-right: auto;
         }
 
         .logo img {
             height: 25px;
         }
 
+        nav > a {
+            position: relative;
+            color: #111;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 28px;
+            padding: 0.25rem 0;
+        }
+
+        nav > a.active::after,
+        nav > a:hover::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -6px;
+            height: 2px;
+            border-radius: 999px;
+            background: #111;
+        }
+
+        .cart-toolbar {
+            position: sticky;
+            top: 49px;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.75rem 20px;
+            background: rgba(248, 251, 252, 0.94);
+            border-bottom: 1px solid #dce7ed;
+            backdrop-filter: blur(10px);
+        }
+
+        .toolbar-label {
+            color: var(--geberit-blue);
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
         .cart-search {
-            width: min(420px, 48vw);
+            flex: 1;
+            min-width: 160px;
+            max-width: 560px;
             border: 1px solid #c3d5e0;
             border-radius: 999px;
             padding: 0.58rem 0.9rem;
             color: var(--geberit-text);
-            background: #f8fbfc;
+            background: #fff;
             font: inherit;
             outline: none;
-        }
-
-        .cart-search:focus {
-            border-color: #7abde9;
-            box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.18);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            margin-left: auto;
         }
 
         .currency-select {
@@ -80,25 +112,30 @@
             font-weight: 800;
         }
 
-        .small-link {
-            color: var(--geberit-dark);
-            font-weight: 800;
-            text-decoration: none;
-            white-space: nowrap;
+        .cart-search:focus,
+        .currency-select:focus {
+            border-color: #7abde9;
+            box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.18);
+            outline: none;
         }
 
         main {
             max-width: 1120px;
             margin: 0 auto;
-            padding: 2rem 1rem 3rem;
+            padding: 1.5rem 1rem 3rem;
         }
 
         .page-head {
             display: flex;
             justify-content: space-between;
             gap: 1rem;
-            align-items: flex-end;
+            align-items: center;
             margin-bottom: 1.25rem;
+            border: 1px solid #d6e2e8;
+            border-radius: 12px;
+            padding: 1rem;
+            background: linear-gradient(120deg, #fff 0%, #f3f8fa 100%);
+            box-shadow: 0 10px 24px rgba(47, 63, 71, 0.08);
         }
 
         .page-head h1 {
@@ -122,7 +159,7 @@
             border-radius: 12px;
             padding: 0.8rem 0.95rem;
             background: #fff;
-            box-shadow: 0 8px 20px rgba(47, 63, 71, 0.08);
+            box-shadow: none;
         }
 
         .cart-status-card strong {
@@ -460,20 +497,26 @@
             }
 
             .logo {
-                width: auto;
-                margin-bottom: 0;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            nav > a {
+                margin-left: 0;
+                margin-right: 18px;
+            }
+
+            .cart-toolbar {
+                top: 96px;
+                flex-wrap: wrap;
+            }
+
+            .toolbar-label {
+                width: 100%;
             }
 
             .cart-search {
-                flex: 1;
-                min-width: 0;
-                width: auto;
-            }
-
-            .nav-actions {
-                width: 100%;
-                margin-left: 0;
-                justify-content: space-between;
+                max-width: none;
             }
 
             .page-head {
@@ -525,18 +568,24 @@
                 <img src="../02_images/geberit-logo.png" alt="Geberit Logo">
             </a>
         </div>
-        <input class="cart-search" id="cartSearch" type="search" placeholder="Warenkorb durchsuchen..." aria-label="Warenkorb durchsuchen" autocomplete="off">
-        <div class="nav-actions">
-            <select class="currency-select" id="currencySelect" aria-label="Waehrung auswaehlen">
-                <option value="EUR">EUR</option>
-                <option value="CHF">CHF</option>
-                <option value="USD">USD</option>
-                <option value="GBP">GBP</option>
-                <option value="TRY">TRY</option>
-            </select>
-            <a class="small-link" href="produkte.html">Produkte</a>
-        </div>
+        <a href="Grundseite.html">Home</a>
+        <a href="&Uuml;ber-Uns.html">&Uuml;ber Geberit</a>
+        <a href="produkte.html">Produkte</a>
+        <a href="warenkorb.html" class="active">Warenkorb</a>
+        <a href="Grundseite.html#contact">Kontakt</a>
     </nav>
+
+    <div class="cart-toolbar">
+        <span class="toolbar-label">Warenkorb Werkzeuge</span>
+        <input class="cart-search" id="cartSearch" type="search" placeholder="Warenkorb durchsuchen..." aria-label="Warenkorb durchsuchen" autocomplete="off">
+        <select class="currency-select" id="currencySelect" aria-label="Waehrung auswaehlen">
+            <option value="EUR">EUR</option>
+            <option value="CHF">CHF</option>
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="TRY">TRY</option>
+        </select>
+    </div>
 
     <main>
         <div class="page-head">
