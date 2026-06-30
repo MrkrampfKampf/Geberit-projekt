@@ -193,21 +193,27 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border: 1px solid #e2b8b8;
-            border-radius: 8px;
+            border-radius: 7px;
             background: #fff3f3;
             color: var(--geberit-danger);
             cursor: pointer;
-            font-size: 1rem;
-            line-height: 1;
+            padding: 0;
         }
 
         .clear-cart-icon:hover {
             background: #9b2f2f;
             color: #fff;
             border-color: #9b2f2f;
+        }
+
+        .clear-cart-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2.2;
         }
 
         .clear-cart-icon:disabled {
@@ -538,8 +544,16 @@
             <section class="cart-list" aria-label="Einkaufswagen-Produkte">
                 <div class="cart-list-header">
                     <span class="cart-header-left">
-                        <span id="cartOverview">0 Artikel</span>
-                        <button class="clear-cart-icon" id="clearCart" type="button" title="Einkaufswagen leeren" aria-label="Einkaufswagen leeren">&#128465;</button>
+                        <span id="cartOverview">0 Artikel im Warenkorb</span>
+                        <button class="clear-cart-icon" id="clearCart" type="button" title="Warenkorb leeren" aria-label="Warenkorb leeren">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                                <path d="M3 6h18"></path>
+                                <path d="M8 6V4h8v2"></path>
+                                <path d="M6.5 6l1 14h9l1-14"></path>
+                                <path d="M10 10v6"></path>
+                                <path d="M14 10v6"></path>
+                            </svg>
+                        </button>
                     </span>
                     <span>Gesamtwert</span>
                 </div>
@@ -757,7 +771,7 @@
             dom.subtotalValue.textContent = formatCurrency(subtotal);
             dom.discountValue.textContent = discountPercent ? `${discountPercent}%` : '0%';
             dom.totalValue.textContent = formatCurrency(total);
-            dom.cartOverview.textContent = itemCount ? `${itemCount} Artikel im Einkaufswagen` : 'Einkaufswagen leer';
+            dom.cartOverview.textContent = itemCount ? `${itemCount} Artikel im Warenkorb` : 'Warenkorb leer';
             dom.requestLink.href = items.length ? buildRequestMail(items, total) : 'mailto:info@geberit.com';
             dom.requestLink.style.pointerEvents = items.length ? 'auto' : 'none';
             dom.requestLink.style.opacity = items.length ? '1' : '0.55';
@@ -884,9 +898,9 @@
 
         dom.clearCart.addEventListener('click', () => {
             if (getCartItems().length === 0) return;
-            const confirmed = window.confirm('Einkaufswagen wirklich leeren?');
+            const confirmed = window.confirm('Warenkorb wirklich leeren?');
             if (!confirmed) return;
-            showToast('Einkaufswagen geleert');
+            showToast('Warenkorb geleert');
             setCartItems([]);
             GeberitDatabase.clearCartItems(getVisitorId())
                 .catch(error => console.warn('Warenkorb konnte nicht geleert werden.', error));
