@@ -1,11 +1,11 @@
 const GeberitDatabase = (() => {
-    const SUPABASE_URL = 'HIER_DEINE_SUPABASE_URL_EINFUEGEN';
-    const SUPABASE_ANON_KEY = 'HIER_DEINEN_SUPABASE_ANON_KEY_EINFUEGEN';
+    const SUPABASE_URL = 'https://dfqezgjgvevietewqrci.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_R__QyYodPo3dnVb9RJqqkg_UTAZXqyP';
     const PRODUCTS_TABLE = 'products';
 
     function isConfigured() {
         return !SUPABASE_URL.includes('HIER_DEINE')
-            && !SUPABASE_ANON_KEY.includes('HIER_DEINEN');
+            && !SUPABASE_PUBLISHABLE_KEY.includes('HIER_DEINEN');
     }
 
     function normalizeProduct(row) {
@@ -29,8 +29,8 @@ const GeberitDatabase = (() => {
         const endpoint = `${SUPABASE_URL}/rest/v1/${PRODUCTS_TABLE}?select=*&active=eq.true&order=sort_order.asc`;
         const response = await fetch(endpoint, {
             headers: {
-                apikey: SUPABASE_ANON_KEY,
-                Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+                apikey: SUPABASE_PUBLISHABLE_KEY,
+                Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
             }
         });
 
