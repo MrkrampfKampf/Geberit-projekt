@@ -26,8 +26,8 @@
 
             .cart-nav-icon {
                 display: inline-flex;
-                width: 1.45rem;
-                height: 1.45rem;
+                width: 1.75rem;
+                height: 1.75rem;
                 color: #111;
                 line-height: 1;
             }
@@ -37,7 +37,7 @@
                 height: 100%;
                 display: block;
                 stroke: currentColor;
-                stroke-width: 2.5;
+                stroke-width: 2.8;
                 stroke-linecap: round;
                 stroke-linejoin: round;
             }
@@ -66,12 +66,16 @@
     function getCartIcon() {
         return `
             <span class="cart-nav-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 1.9-1.4L21 8H7"></path>
-                    <path d="M9 20h.01"></path>
-                    <path d="M17 20h.01"></path>
-                    <path d="M9 11h10"></path>
-                    <path d="M10 14h8"></path>
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M3 5h4l3.2 16h15.2l2.2-11.2H8.2"></path>
+                    <path d="M10 10h17"></path>
+                    <path d="M11.1 15.5h15.1"></path>
+                    <path d="M12.2 21h13.2"></path>
+                    <path d="M13 10l1.2 11"></path>
+                    <path d="M19 10v11"></path>
+                    <path d="M25 10l-1.2 11"></path>
+                    <circle cx="13" cy="26" r="2"></circle>
+                    <circle cx="24" cy="26" r="2"></circle>
                 </svg>
             </span>
         `;
