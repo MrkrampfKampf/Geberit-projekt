@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeberitProdukte</title>
+    <title>Geberit</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,9 +48,7 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Willkommen auf GeberitProdukte!</h1>
-    </header>
+
 
     <nav>
         <a href="#home">Home</a>
@@ -60,10 +58,120 @@
     </nav>
 
     <main>
-        <section id="home">
-            <h2>Home</h2>
-            <p>Das sind die Produkte von Geberit.</p>
-        </section>
+       <section id="home">
+
+<style>
+html {
+    scroll-behavior: smooth;
+}
+
+/* NAV */
+nav {
+    position: sticky;
+    top: 0;
+    background: rgba(0,0,0,0.85);
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    z-index: 1000;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #4fc3f7;
+    transform: scale(1.2);
+}
+
+/* HOME */
+#home {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    color: white;
+    overflow: hidden;
+}
+
+/* Hintergrund */
+#home::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("https://www.geberit.de/_assetsmaster/global-media/pictures/ueber-uns/img-main-building-jona-790-444.jpg");
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.35);
+    z-index: 0;
+}
+
+/* Inhalt über Bild */
+#home h2,
+#home p,
+#home strong {
+    position: relative;
+    z-index: 1;
+}
+
+/* Styling */
+#home h2 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+}
+
+#home p {
+    max-width: 800px;
+    margin: 10px auto;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* Animation */
+#home {
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<h2>Willkommen bei Geberit</h2>
+
+<p>
+    Geberit ist europäischer Marktführer für Sanitärprodukte und steht
+    seit über 150 Jahren für Innovation, Qualität und nachhaltige Lösungen.
+</p>
+
+<p>
+    Moderne WC-Systeme, elegante Badserien und intelligente Installationen –
+    alles aus einer Hand.
+</p>
+
+<p>
+    <strong>Innovation. Qualität. Nachhaltigkeit.</strong>
+</p>
+
+
+
+
+</section>
 
         <section id="about">
             <h2>Über Geberit</h2>
