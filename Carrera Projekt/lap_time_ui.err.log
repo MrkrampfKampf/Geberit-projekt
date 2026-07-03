@@ -1,0 +1,22 @@
+Exception in thread Thread-3:
+Traceback (most recent call last):
+  File "C:\Users\G-SCHULPRAKT\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\G-SCHULPRAKT\OneDrive - Geberit\Desktop\Carrera Projekt\.venv\Lib\site-packages\carreralib\ble.py", line 27, in run
+    asyncio.run(self.main())
+  File "C:\Users\G-SCHULPRAKT\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\G-SCHULPRAKT\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\G-SCHULPRAKT\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\G-SCHULPRAKT\OneDrive - Geberit\Desktop\Carrera Projekt\.venv\Lib\site-packages\carreralib\ble.py", line 81, in main
+    await client.write_gatt_char(OUTPUT_UUID, data)
+  File "C:\Users\G-SCHULPRAKT\OneDrive - Geberit\Desktop\Carrera Projekt\.venv\Lib\site-packages\bleak\__init__.py", line 835, in write_gatt_char
+    await self._backend.write_gatt_char(characteristic, data, response)
+  File "C:\Users\G-SCHULPRAKT\OneDrive - Geberit\Desktop\Carrera Projekt\.venv\Lib\site-packages\bleak\backends\winrt\client.py", line 936, in write_gatt_char
+    raise BleakError("Not connected")
+bleak.exc.BleakError: Not connected

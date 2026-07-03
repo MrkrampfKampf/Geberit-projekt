@@ -1,0 +1,96 @@
+Lernprofil geladen: base_gas=30, bekannte Zellen=76, lokale Bremsstellen=36
+cmd: speed 1200
+pico: ok speed 1200
+cmd: range 870
+pico: ok range 870
+cmd: gasdir ccw
+pico: ok gasdir ccw
+cmd: release
+pico: ok release
+AI Race Trainer bereit.
+S/Leertaste = Start nach Auto-Aufsetzen, Q = Ende, R = Lernkarte resetten, M = Kartenbild speichern
+Basisgas: 30%, lokale Stellen: 36
+cmd: gas 0
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+cmd: speed 1200
+pico: ok speed 1200
+cmd: range 870
+pico: ok range 870
+cmd: gasdir ccw
+pico: ok gasdir ccw
+cmd: gas 0
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+cmd: zero
+pico: ok zero
+cmd: gas 0
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+Run 1 gestartet mit Basisgas 30%
+cmd: gas 30
+cmd: gas 10
+pico: ok pos -261
+pico: ok gas 30 target -261 pos -261
+cmd: gas 12
+pico: ok pos -87
+pico: ok gas 10 target -87 pos -87
+pico: ok pos -104
+pico: ok gas 12 target -104 pos -104
+cmd: gas 25
+Stall-Boost temporaer: 30% -> 35%
+cmd: gas 35
+pico: ok pos -218
+pico: ok gas 25 target -218 pos -218
+cmd: gas 25
+pico: ok pos -304
+pico: ok gas 35 target -304 pos -304
+cmd: gas 35
+pico: ok pos -218
+pico: ok gas 25 target -218 pos -218
+cmd: gas 0
+pico: ok pos -304
+pico: ok gas 35 target -304 pos -304
+cmd: release
+Kurven-Loss: 1 Kurvenzellen, 9 Zellen langsamer (steht > 1.0s)
+cmd: speed 1200
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+pico: ok release
+pico: ok speed 1200
+cmd: range 870
+pico: ok range 870
+cmd: gasdir ccw
+pico: ok gasdir ccw
+cmd: gas 0
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+cmd: zero
+pico: ok zero
+cmd: gas 0
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+Run 2 gestartet mit Basisgas 30%
+cmd: gas 30
+cmd: gas 10
+pico: ok pos -261
+pico: ok gas 30 target -261 pos -261
+cmd: gas 22
+pico: ok pos -87
+pico: ok gas 10 target -87 pos -87
+cmd: gas 0
+pico: ok pos -191
+pico: ok gas 22 target -191 pos -191
+cmd: release
+Kurven-Loss: 4 Kurvenzellen, 47 Zellen langsamer (nicht erkannt)
+Kein Kamerabild.
+cmd: gas 0
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+pico: ok release
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+cmd: release
+pico: ok release
+Log gespeichert: C:\Users\G-SCHULPRAKT\OneDrive - Geberit\Carrera Projekt\ai_race_trainer_log.csv
+Lernprofil gespeichert: C:\Users\G-SCHULPRAKT\OneDrive - Geberit\Carrera Projekt\ai_race_profile.json

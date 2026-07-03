@@ -1,0 +1,22 @@
+{
+  "best_lap_s": null,
+  "profile": {
+    "bottom_straight": 32,
+    "left_curve": 18,
+    "not_found": 0,
+    "right_curve": 18,
+    "s_curve": 16,
+    "start_finish": 26,
+    "top_straight": 28,
+    "transition": 18
+  },
+  "tune_order": [
+    "bottom_straight",
+    "top_straight",
+    "start_finish",
+    "left_curve",
+    "right_curve",
+    "s_curve"
+  ],
+  "updated_at": "2026-07-02 13:06:34"
+}

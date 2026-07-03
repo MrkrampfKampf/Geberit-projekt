@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrera Browser Tracker</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #f2f2f2;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      background: #111;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #1b1b1b;
+      border-bottom: 1px solid #333;
+    }
+    select, button {
+      height: 34px;
+      border: 1px solid #555;
+      background: #252525;
+      color: #fff;
+      border-radius: 4px;
+      padding: 0 10px;
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+      background: #2f5f9f;
+      border-color: #4377bd;
+    }
+    #status {
+      margin-left: auto;
+      font-size: 14px;
+      color: #ddd;
+      white-space: nowrap;
+    }
+    main {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      overflow: auto;
+    }
+    canvas {
+      display: block;
+      width: auto;
+      height: calc(100vh - 56px);
+      max-width: 100vw;
+      max-height: calc(100vh - 56px);
+      object-fit: contain;
+      background: #000;
+      border: 0;
+    }
+    main.full-width canvas {
+      width: 100vw;
+      height: auto;
+      max-width: none;
+      max-height: none;
+    }
+    video {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Carrera Tracker</strong>
+    <select id="cameraSelect"></select>
+    <select id="resolutionSelect">
+      <option value="auto" selected>Auto</option>
+      <option value="1920x1080">1920x1080</option>
+      <option value="1280x720">1280x720</option>
+      <option value="1280x960">1280x960</option>
+      <option value="1024x768">1024x768</option>
+      <option value="640x480">640x480</option>
+    </select>
+    <select id="trackSelect">
+      <option value="orange" selected>Orange tracken</option>
+      <option value="cyan">Cyan tracken</option>
+      <option value="both">Beide tracken</option>
+      <option value="off">Nur Kamera</option>
+    </select>
+    <select id="fitSelect">
+      <option value="fit" selected>Ganzes Bild</option>
+      <option value="full-width">Breite</option>
+    </select>
+    <button id="startButton">Start</button>
+    <span id="status">bereit</span>
+  </header>
+  <main>
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas" width="1280" height="720"></canvas>
+  </main>
+
+  <script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const main = document.querySelector("main");
+    const select = document.getElementById("cameraSelect");
+    const resolutionSelect = document.getElementById("resolutionSelect");
+    const trackSelect = document.getElementById("trackSelect");
+    const fitSelect = document.getElementById("fitSelect");
+    const startButton = document.getElementById("startButton");
+    const statusEl = document.getElementById("status");
+    let stream = null;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    async function listCameras() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(device => device.kind === "videoinput");
+      select.innerHTML = "";
+      cameras.forEach((camera, index) => {
+        const option = document.createElement("option");
+        option.value = camera.deviceId;
+        option.textContent = camera.label || `Kamera ${index + 1}`;
+        select.appendChild(option);
+      });
+      setStatus(`${cameras.length} Kamera(s) gefunden`);
+    }
+
+    function stopStream() {
+      if (!stream) return;
+      for (const track of stream.getTracks()) track.stop();
+      stream = null;
+    }
+
+    async function startCamera() {
+      stopStream();
+      const deviceId = select.value;
+      const videoConstraints = {
+        deviceId: deviceId ? { exact: deviceId } : undefined,
+      };
+      if (resolutionSelect.value !== "auto") {
+        const [width, height] = resolutionSelect.value.split("x").map(Number);
+        videoConstraints.width = { exact: width };
+        videoConstraints.height = { exact: height };
+      }
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: videoConstraints,
+          audio: false,
+        });
+      } catch (_error) {
+        const fallbackVideo = {
+          deviceId: deviceId ? { exact: deviceId } : undefined,
+        };
+        if (resolutionSelect.value !== "auto") {
+          const [width, height] = resolutionSelect.value.split("x").map(Number);
+          fallbackVideo.width = { ideal: width };
+          fallbackVideo.height = { ideal: height };
+        }
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: fallbackVideo,
+          audio: false,
+        });
+      }
+      video.srcObject = stream;
+      await video.play();
+      await listCameras();
+      if (deviceId) select.value = deviceId;
+      const settings = stream.getVideoTracks()[0].getSettings();
+      setStatus(`${settings.label || "Kamera"} ${settings.width || "?"}x${settings.height || "?"}`);
+      requestAnimationFrame(draw);
+    }
+
+    function classifyOrange(r, g, b) {
+      return r > 150 && g > 35 && g < 150 && b < 110 && r > g * 1.25;
+    }
+
+    function classifyCyan(r, g, b) {
+      return g > 120 && b > 130 && r < 95 && b > r * 1.6 && g > r * 1.35;
+    }
+
+    function isDarkTrackAt(data, width, height, x, y) {
+      const radius = 22;
+      let dark = 0;
+      let total = 0;
+      for (let yy = Math.max(0, y - radius); yy < Math.min(height, y + radius); yy += 6) {
+        for (let xx = Math.max(0, x - radius); xx < Math.min(width, x + radius); xx += 6) {
+          const i = (yy * width + xx) * 4;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          const gray = (r + g + b) / 3;
+          if (gray < 95) dark++;
+          total++;
+        }
+      }
+      return total > 0 && dark / total > 0.22;
+    }
+
+    function findBlob(data, width, height, classifier) {
+      const step = 4;
+      const gridW = Math.ceil(width / step);
+      const gridH = Math.ceil(height / step);
+      const marked = new Uint8Array(gridW * gridH);
+      for (let y = 0; y < height; y += step) {
+        for (let x = 0; x < width; x += step) {
+          const i = (y * width + x) * 4;
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          if (classifier(r, g, b) && isDarkTrackAt(data, width, height, x, y)) {
+            marked[Math.floor(y / step) * gridW + Math.floor(x / step)] = 1;
+          }
+        }
+      }
+
+      const seen = new Uint8Array(marked.length);
+      const queue = [];
+      let best = null;
+
+      for (let gy = 0; gy < gridH; gy++) {
+        for (let gx = 0; gx < gridW; gx++) {
+          const start = gy * gridW + gx;
+          if (!marked[start] || seen[start]) continue;
+
+          let minGX = gx, maxGX = gx, minGY = gy, maxGY = gy, count = 0;
+          queue.length = 0;
+          queue.push(start);
+          seen[start] = 1;
+
+          while (queue.length) {
+            const cell = queue.pop();
+            const cx = cell % gridW;
+            const cy = Math.floor(cell / gridW);
+            count++;
+            minGX = Math.min(minGX, cx);
+            maxGX = Math.max(maxGX, cx);
+            minGY = Math.min(minGY, cy);
+            maxGY = Math.max(maxGY, cy);
+
+            const neighbors = [cell - 1, cell + 1, cell - gridW, cell + gridW];
+            for (const next of neighbors) {
+              if (next < 0 || next >= marked.length) continue;
+              const nx = next % gridW;
+              if (next === cell - 1 && nx !== cx - 1) continue;
+              if (next === cell + 1 && nx !== cx + 1) continue;
+              if (marked[next] && !seen[next]) {
+                seen[next] = 1;
+                queue.push(next);
+              }
+            }
+          }
+
+          const boxW = (maxGX - minGX + 1) * step;
+          const boxH = (maxGY - minGY + 1) * step;
+          if (count < 6 || boxW < 10 || boxH < 8 || boxW > 130 || boxH > 100) continue;
+          const blob = {
+            x: minGX * step,
+            y: minGY * step,
+            w: boxW,
+            h: boxH,
+            cx: Math.round((minGX + maxGX + 1) * step / 2),
+            cy: Math.round((minGY + maxGY + 1) * step / 2),
+            count,
+          };
+          if (!best || blob.count > best.count) best = blob;
+        }
+      }
+
+      return best;
+    }
+
+    function drawBox(blob, color, label) {
+      if (!blob) return;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(blob.x, blob.y, blob.w, blob.h);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(blob.cx, blob.cy, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = "22px Arial";
+      ctx.fillText(`${label} x=${blob.cx} y=${blob.cy}`, blob.x, Math.max(26, blob.y - 8));
+    }
+
+    function draw() {
+      if (!stream || video.readyState < 2) {
+        requestAnimationFrame(draw);
+        return;
+      }
+      const width = video.videoWidth || 1280;
+      const height = video.videoHeight || 720;
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      ctx.drawImage(video, 0, 0, width, height);
+      const image = ctx.getImageData(0, 0, width, height);
+      const mode = trackSelect.value;
+      const orange = mode === "orange" || mode === "both" ? findBlob(image.data, width, height, classifyOrange) : null;
+      const cyan = mode === "cyan" || mode === "both" ? findBlob(image.data, width, height, classifyCyan) : null;
+      if (mode !== "off") {
+        drawBox(orange, "#ff9f1a", "orange");
+        drawBox(cyan, "#00e5ff", "cyan");
+      }
+      const settings = stream.getVideoTracks()[0].getSettings();
+      setStatus(`${settings.label || "Kamera"} ${settings.width || width}x${settings.height || height} orange:${orange ? "ok" : "-"} cyan:${cyan ? "ok" : "-"}`);
+      requestAnimationFrame(draw);
+    }
+
+    startButton.addEventListener("click", () => {
+      startCamera().catch(error => setStatus(error.message));
+    });
+
+    fitSelect.addEventListener("change", () => {
+      main.className = fitSelect.value === "full-width" ? "full-width" : "";
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then(initialStream => {
+        stream = initialStream;
+        video.srcObject = stream;
+        return video.play();
+      })
+      .then(listCameras)
+      .then(() => requestAnimationFrame(draw))
+      .catch(error => setStatus(error.message));
+  </script>
+</body>
+</html>

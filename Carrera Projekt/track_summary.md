@@ -1,0 +1,21 @@
+# Track Summary
+
+- Samples: 295
+- Duration: 29.44 s
+- Camera path distance: 20581 px
+
+## Sections
+
+| Section | Samples | Avg px/s | Min px/s | Max px/s |
+| --- | ---: | ---: | ---: | ---: |
+| bottom_straight | 71 | 834.3 | 495.5 | 1167.3 |
+| left_curve | 58 | 680.1 | 490.9 | 1083.1 |
+| right_curve | 50 | 663.3 | 496.0 | 926.3 |
+| s_curve | 50 | 609.0 | 391.0 | 1039.0 |
+| start_finish | 8 | 922.3 | 818.4 | 968.0 |
+| top_straight | 57 | 679.9 | 493.7 | 795.8 |
+
+## Meaning
+
+This is the first local learning layer: it converts camera x/y points into rough track sections.
+Later, when the Pico W can control the trigger, these sections become the places where the driving agent changes throttle.

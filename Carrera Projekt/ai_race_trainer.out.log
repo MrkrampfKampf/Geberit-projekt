@@ -1,0 +1,18 @@
+Lernprofil geladen: base_gas=60, bekannte Zellen=19, lokale Bremsstellen=18
+AppConnect wird verbunden: device=C5:7D:F4:7A:AC:42 car=6 sector=1
+cmd: speed 1200
+pico: ok speed 1200
+cmd: range 290
+pico: ok range 290
+cmd: gasdir ccw
+pico: ok gasdir ccw
+cmd: release
+pico: ok release
+AI Race Trainer bereit.
+S/Leertaste = Start nach Auto-Aufsetzen, Q = Ende, R = Lernkarte resetten, M = Kartenbild speichern
+Basisgas: 60%, lokale Stellen: 18
+Start ist gesperrt, bis AppConnect verbunden ist.
+cmd: gas 0
+pico: ok pos 0
+pico: ok gas 0 target 0 pos 0
+AppConnect verbunden: 5339
